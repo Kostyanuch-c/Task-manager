@@ -21,10 +21,11 @@ lint:
 run:
 	@$(MANAGE) runserver
 
+.PHONY: collectstatic
+collectstatic:
+	@$(MANAGE) collectstatic --noinput
+
 .PHONY: start
-start: migrate
+start: migrate collectstatic
 	poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) task_manager.wsgi:application
 
-.PHONY: build
-build:
-	@poetry install --without dev
