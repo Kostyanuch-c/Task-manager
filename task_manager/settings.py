@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'webserver',
     'task-manager-zhuv.onrender.com',
+    '0.0.0.0',
 ]
 
 INTERNAL_IPS = [
