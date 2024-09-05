@@ -24,3 +24,7 @@ run:
 .PHONY: start
 start: migrate
 	poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) task_manager.wsgi:application
+
+.PHONY: build
+build:
+	@poetry install --without dev
