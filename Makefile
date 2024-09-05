@@ -1,4 +1,5 @@
 MANAGE := poetry run python manage.py
+PORT ?= 8000
 
 .PHONY: install
 install:
@@ -19,3 +20,7 @@ lint:
 .PHONY: run
 run:
 	@$(MANAGE) runserver
+
+.PHONY: start
+start: migrate
+	poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) task_manager.wsgi:application
