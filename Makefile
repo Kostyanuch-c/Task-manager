@@ -27,5 +27,12 @@ collectstatic:
 
 .PHONY: start
 start: migrate collectstatic
-	poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) task_manager.wsgi:application
+	@poetry run gunicorn -w 5 -b 0.0.0.0:$(PORT) task_manager.wsgi:application
 
+.PHONY: translate
+translate:
+	@poetry run django-admin makemessages --ignore="static" --ignore=".env"  -l ru
+
+.PHONY: upload_translate
+upload_translate:
+	@poetry run django-admin compilemessages

@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 
 from task_manager import settings
-from task_manager.view import IndexView
+from task_manager.view import IndexView, AboutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', IndexView.as_view(), name="index")
+    path('', IndexView.as_view(), name="index"),
+    path('about/', AboutView.as_view(), name="about"),
 ]
 
 if settings.DEBUG:
