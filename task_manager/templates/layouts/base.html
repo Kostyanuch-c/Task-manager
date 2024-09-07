@@ -21,7 +21,7 @@
                    aria-current="page" href="#">{% translate "Users" %}</a>
                 <a class="fs-4 text-white-50 mx-4  link-offset-2 link-offset-3-hover link-underline
                    link-underline-opacity-0 link-underline-opacity-75-hover"
-                   href="#">{% translate "Login" %}</a>
+                   href="{% url 'create_user' %}">{% translate "Login" %}</a>
                 <a class="fs-4 text-white-50 mx-4 link-offset-2 link-offset-3-hover link-underline
                    link-underline-opacity-0 link-underline-opacity-75-hover"
                    href="#">{% translate "Registration" %}</a>
@@ -30,24 +30,24 @@
     </header>
 </div>
 {% block content %}
-<main class="px-3 mt-5 d-flex flex-column justify-content-center align-items-center flex-grow-1">
-    <h1 class="fs-1">Task Manager</h1>
-    <p class="lead fs-4 mt-2">{% translate "Task Manager is a convenient tool for managing tasks." %}</p>
-    <p class="lead fs-4">
-        {% translate "Register or log in to create tasks, assign them statuses, add tags and assign assignees." %}
-    </p>
-    <p class="lead fs-4">
-    {% translate "You can always be aware of the status of each task, which will allow you to easily control the workflow." %}
-    </p>
-    <p class="lead fs-4">{% translate "Unauthorized users can only view the list of system users" %}</p>
-    <!--    <p class="lead fs-4">Управляйте задачами, улучшайте продуктивность и добивайтесь успеха с Task Manager!</p>-->
-</main>
+    <main class="px-3 mt-5 d-flex flex-column justify-content-center align-items-center flex-grow-1">
+        <h1 class="fs-1">Task Manager</h1>
+        <p class="lead fs-4 mt-2">{% translate "Task Manager is a convenient tool for managing tasks." %}</p>
+        <p class="lead fs-4">
+            {% translate "Register or log in to create tasks, assign them statuses, add tags and assign assignees." %}
+        </p>
+        <p class="lead fs-4">
+            {% translate "You can always be aware of the status of each tasks, which will allow you to easily control the workflow." %}
+        </p>
+        <p class="lead fs-4">{% translate "Unauthorized users can only view the list of system users" %}</p>
+        <!--    <p class="lead fs-4">Управляйте задачами, улучшайте продуктивность и добивайтесь успеха с Task Manager!</p>-->
+    </main>
 {% endblock %}
 {% block footer %}
-<footer class="container my-5 pt-4 border-top">
+    <footer class="container my-5 pt-4 border-top">
     <span> <a href="https://github.com/Kostyanuch-c/python-project-52"
               class="text-decoration-none ">Task Manager</a></span>
-</footer>
+    </footer>
 {% endblock %}
 
 {% bootstrap_javascript %}

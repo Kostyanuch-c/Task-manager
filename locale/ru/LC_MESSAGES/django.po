@@ -49,7 +49,7 @@ msgstr ""
 "им статусы, добавлять теги и назначать  исполнителей."
 
 msgid ""
-"You can always be aware of the status of each task, which will allow you to "
+"You can always be aware of the status of each tasks, which will allow you to "
 "easily control the workflow."
 msgstr ""
 "Вы всегда сможете быть в курсе состояния каждой задачи, что позволит легко "

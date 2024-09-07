@@ -30,7 +30,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'webserver',
-    'task-manager-zhuv.onrender.com',
+    'tasks-manager-zhuv.onrender.com',
 ]
 
 INTERNAL_IPS = [
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django_extensions',
     "django_bootstrap5",
     "debug_toolbar",
+    "task_manager.users",
+    "task_manager.tasks",
 ]
 
 MIDDLEWARE = [
@@ -88,8 +90,12 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('NAME'),
+        'USER': os.getenv('USER'),
+        'PASSWORD':os.getenv('PASSWORD'),
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
