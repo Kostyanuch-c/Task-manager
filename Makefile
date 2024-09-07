@@ -36,3 +36,7 @@ translate:
 .PHONY: upload_translate
 upload_translate:
 	@poetry run django-admin compilemessages
+
+.PHONY: export_env
+export_env:
+	export $(cat .env | xargs)

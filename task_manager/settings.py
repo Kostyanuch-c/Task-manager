@@ -30,7 +30,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'webserver',
-    'tasks-manager-zhuv.onrender.com',
+    'task-manager-zhuv.onrender.com',
 ]
 
 INTERNAL_IPS = [
