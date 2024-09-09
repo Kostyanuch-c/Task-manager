@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 
 
 class IndexView(TemplateView):
-    template_name = "layouts/base.html"
+    template_name = "index.html"
 
 
 class AboutView(View):

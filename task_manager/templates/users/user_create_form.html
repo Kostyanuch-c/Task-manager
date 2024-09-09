@@ -1,10 +1,34 @@
 {% extends "layouts/base.html" %}
+{% load i18n %}
 
-
+{% load widget_tweaks %}
 
 {% block content %}
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save">
-    </form>
+    <div class="container-fluid  d-flex flex-column">
+        <div class="row flex-grow-1">
+            <div class="col-md-6 offset-md-3 "><span class="text-white-75 fs-4">{% translate "Registration" %}</span>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-error"> {{ form.non_field_errors }}</div>
+                    {{ formset.management_form }}
+                    {% for field in form %}
+                        <div class="mb-5">
+                            <label class="form-label float-start text-white-75 "
+                                   for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% if field.errors %}
+                                {{ field|add_class:'form-control is-invalid' }}
+                                <p class="mb-0 text-danger"> {{ field.errors.0 }} </p>
+                            {% elif form.is_bound %}
+                                {{ field|add_class:'form-control is-valid' }}
+                            {% else %}
+                                {{ field|add_class:'form-control' }}
+                            {% endif %}
+                            <p class="form-text text-white-50 float-start">{{ field.help_text }}</p>
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn btn-outline-primary">{% translate "Register" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

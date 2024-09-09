@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-06 18:32+0500\n"
+"POT-Creation-Date: 2024-09-09 21:58+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,27 +20,11 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: task_manager/templates/layouts/base.html:9
-msgid "Task manager"
-msgstr "Менеджер задач"
-
-#: task_manager/templates/layouts/base.html:21
-msgid "Users"
-msgstr "Пользователи"
-
-#: task_manager/templates/layouts/base.html:24
-msgid "Login"
-msgstr "Войти"
-
-#: task_manager/templates/layouts/base.html:27
-msgid "Registration"
-msgstr "Регистрация"
-
-#: task_manager/templates/layouts/base.html:35
+#: task_manager/templates/index.html:7
 msgid "Task Manager is a convenient tool for managing tasks."
 msgstr "Task Manager — это удобный инструмент для управления задачами."
 
-#: task_manager/templates/layouts/base.html:37
+#: task_manager/templates/index.html:9
 msgid ""
 "Register or log in to create tasks, assign them statuses, add tags and "
 "assign assignees."
@@ -48,6 +32,7 @@ msgstr ""
 "Зарегистрируйтесь или войдите в систему, чтобы создавать задачи, присваивать "
 "им статусы, добавлять теги и назначать  исполнителей."
 
+#: task_manager/templates/index.html:12
 msgid ""
 "You can always be aware of the status of each tasks, which will allow you to "
 "easily control the workflow."
@@ -55,11 +40,82 @@ msgstr ""
 "Вы всегда сможете быть в курсе состояния каждой задачи, что позволит легко "
 "контролировать рабочий процесс."
 
-#: task_manager/templates/layouts/base.html:42
+#: task_manager/templates/index.html:14
 msgid "Unauthorized users can only view the list of system users"
 msgstr ""
 "Для неавторизованных пользователей доступен только просмотр списка "
 "пользователей системы."
+
+#: task_manager/templates/layouts/base.html:9
+msgid "Task manager"
+msgstr "Менеджер задач"
+
+#: task_manager/templates/layouts/base.html:22
+msgid "Users"
+msgstr "Пользователи"
+
+#: task_manager/templates/layouts/base.html:25
+msgid "Login"
+msgstr "Войти"
+
+#: task_manager/templates/layouts/base.html:28
+#: task_manager/templates/users/user_create_form.html:9
+msgid "Registration"
+msgstr "Регистрация"
+
+#: task_manager/templates/users/user_create_form.html:29
+msgid "Register"
+msgstr "Зарегистрировать"
+
+#: task_manager/users/form.py:8
+msgid "Confirm password"
+msgstr "Подтверждение пароля"
+
+#: task_manager/users/form.py:9
+msgid "To confirm your entry, please enter the password again."
+msgstr "Для подтверждения введите, пожалуйста, пароль ещё раз."
+
+#: task_manager/users/form.py:29
+msgid "passwords do not match"
+msgstr "Пароли не совпадают"
+
+#: task_manager/users/models.py:7
+msgid "Name"
+msgstr "Имя"
+
+#: task_manager/users/models.py:8
+msgid "Surname"
+msgstr "Фамилия"
+
+#: task_manager/users/models.py:10
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: task_manager/users/models.py:12
+msgid ""
+"Required field. 150 characters or fewer. Password must contain only letters, "
+"numbers and symbols @/./+/-/_."
+msgstr "Обязательное поле. Не более 150 символов. Пароль должен содержать только буквы цифры и символы @/./+/-/_."
+
+#: task_manager/users/models.py:17
+msgid "Invalid characters included"
+msgstr "Введены недопустимые символы"
+
+#: task_manager/users/models.py:19
+msgid "Max length is 150 characters"
+msgstr "Максимальная длина — 150 символов."
+
+#: task_manager/users/models.py:22
+msgid "Password"
+msgstr "Пароль"
+
+#: task_manager/users/models.py:23
+msgid "Your password must contain at least 3 characters"
+msgstr "Ваш пароль должен содержать не менее 3 символов."
+
+#: task_manager/users/models.py:25
+msgid "Must be at least 3 characters"
+msgstr "Должно быть не менее 3 символов."
 
 #: task_manager/view.py:14
 msgid "this is some random text"
