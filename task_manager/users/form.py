@@ -30,10 +30,10 @@ class RegisterUserForm(SetPasswordMixin, ModelForm):
             })
 
     def clean(self):
-        password = self.cleaned_data.get('password')
-        confirm_password = self.cleaned_data.get('confirm_password')
-        if password and confirm_password and password != confirm_password:
-            self.add_error('confirm_password', _('passwords do not match'))
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            self.add_error('password2', _('passwords do not match'))
 
     def save(self, commit=True):
         user = super().save(commit=False)

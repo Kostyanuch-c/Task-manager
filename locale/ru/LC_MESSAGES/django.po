@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-09 21:58+0500\n"
+"POT-Creation-Date: 2024-09-10 19:16+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,73 +50,102 @@ msgstr ""
 msgid "Task manager"
 msgstr "Менеджер задач"
 
-#: task_manager/templates/layouts/base.html:22
+#: task_manager/templates/layouts/base.html:24
 msgid "Users"
 msgstr "Пользователи"
 
-#: task_manager/templates/layouts/base.html:25
+#: task_manager/templates/layouts/base.html:27
+msgid "Tasks"
+msgstr "Задачи"
+
+#: task_manager/templates/layouts/base.html:29
+msgid "Statuses"
+msgstr "Статусы"
+
+#: task_manager/templates/layouts/base.html:31
+msgid "Labels"
+msgstr "Метки"
+
+#: task_manager/templates/layouts/base.html:33
+msgid "Logout"
+msgstr "Выйти"
+
+#: task_manager/templates/layouts/base.html:37
+#: task_manager/templates/users/login.html:24
 msgid "Login"
 msgstr "Войти"
 
-#: task_manager/templates/layouts/base.html:28
-#: task_manager/templates/users/user_create_form.html:9
+#: task_manager/templates/layouts/base.html:40
+#: task_manager/templates/users/user_create_form.html:8
 msgid "Registration"
 msgstr "Регистрация"
 
-#: task_manager/templates/users/user_create_form.html:29
+#: task_manager/templates/users/login.html:9
+msgid "Entry"
+msgstr "Вход"
+
+#: task_manager/templates/users/user_create_form.html:28
 msgid "Register"
 msgstr "Зарегистрировать"
 
-#: task_manager/users/form.py:8
-msgid "Confirm password"
-msgstr "Подтверждение пароля"
-
-#: task_manager/users/form.py:9
-msgid "To confirm your entry, please enter the password again."
-msgstr "Для подтверждения введите, пожалуйста, пароль ещё раз."
-
-#: task_manager/users/form.py:29
-msgid "passwords do not match"
-msgstr "Пароли не совпадают"
-
-#: task_manager/users/models.py:7
-msgid "Name"
-msgstr "Имя"
-
-#: task_manager/users/models.py:8
-msgid "Surname"
-msgstr "Фамилия"
-
-#: task_manager/users/models.py:10
-msgid "Username"
-msgstr "Имя пользователя"
-
-#: task_manager/users/models.py:12
-msgid ""
-"Required field. 150 characters or fewer. Password must contain only letters, "
-"numbers and symbols @/./+/-/_."
-msgstr "Обязательное поле. Не более 150 символов. Пароль должен содержать только буквы цифры и символы @/./+/-/_."
-
-#: task_manager/users/models.py:17
-msgid "Invalid characters included"
-msgstr "Введены недопустимые символы"
-
-#: task_manager/users/models.py:19
-msgid "Max length is 150 characters"
-msgstr "Максимальная длина — 150 символов."
-
-#: task_manager/users/models.py:22
+#: task_manager/users/form.py:10
 msgid "Password"
 msgstr "Пароль"
 
-#: task_manager/users/models.py:23
-msgid "Your password must contain at least 3 characters"
-msgstr "Ваш пароль должен содержать не менее 3 символов."
-
-#: task_manager/users/models.py:25
-msgid "Must be at least 3 characters"
+#: task_manager/users/form.py:12 task_manager/users/form.py:13
+#, fuzzy
+#| msgid "Must be at least 3 characters"
+msgid "Password must be at least 3 characters long."
 msgstr "Должно быть не менее 3 символов."
 
-#: task_manager/view.py:14
-msgid "this is some random text"
-msgstr "Какое-то сообщение"
+#: task_manager/users/form.py:16
+msgid "Confirm password"
+msgstr "Подтверждение пароля"
+
+#: task_manager/users/form.py:17
+msgid "To confirm your entry, please enter the password again."
+msgstr "Для подтверждения введите, пожалуйста, пароль ещё раз."
+
+#: task_manager/users/form.py:36
+msgid "passwords do not match"
+msgstr "Пароли не совпадают"
+
+#: task_manager/users/views.py:16
+msgid "You have been logged in."
+msgstr "Вы залогинены"
+
+#: task_manager/users/views.py:21
+msgid "You have been logged out."
+msgstr "Вы разлогинены"
+
+#: task_manager/users/views.py:30
+msgid "You have been registered successfully."
+msgstr "Пользователь успешно зарегистрирован"
+
+#~ msgid "Name"
+#~ msgstr "Имя"
+
+#~ msgid "Surname"
+#~ msgstr "Фамилия"
+
+#~ msgid "Username"
+#~ msgstr "Имя пользователя"
+
+#~ msgid ""
+#~ "Required field. 150 characters or fewer. Password must contain only "
+#~ "letters, numbers and symbols @/./+/-/_."
+#~ msgstr ""
+#~ "Обязательное поле. Не более 150 символов. Пароль должен содержать только "
+#~ "буквы цифры и символы @/./+/-/_."
+
+#~ msgid "Invalid characters included"
+#~ msgstr "Введены недопустимые символы"
+
+#~ msgid "Max length is 150 characters"
+#~ msgstr "Максимальная длина — 150 символов."
+
+#~ msgid "Your password must contain at least 3 characters"
+#~ msgstr "Ваш пароль должен содержать не менее 3 символов."
+
+#~ msgid "this is some random text"
+#~ msgstr "Какое-то сообщение"
