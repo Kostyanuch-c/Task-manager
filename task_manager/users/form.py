@@ -35,6 +35,12 @@ class RegisterUserForm(SetPasswordMixin, ModelForm):
         if password1 and password2 and password1 != password2:
             self.add_error('password2', _('passwords do not match'))
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if get_user_model().objects.filter(username=username).exists():
+            self.add_error('username', _('Username with this name already exists.'))
+        return username
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user = self.set_password_and_save(user, commit=commit)

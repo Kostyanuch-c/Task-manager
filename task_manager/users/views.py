@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from task_manager.users.form import RegisterUserForm
@@ -28,3 +28,8 @@ class RegisterUserView(SuccessMessageMixin, CreateView):
     template_name = 'users/user_create_form.html'
     success_url = reverse_lazy('login')
     success_message = _('You have been registered successfully.')
+
+
+class GetUsersView(ListView):
+    model = get_user_model()
+    template_name = 'users/users_list.html'
