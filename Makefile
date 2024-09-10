@@ -39,4 +39,4 @@ upload_translate:
 
 .PHONY: export_env
 export_env:
-	export $(cat .env | xargs)
+	export $$(grep -v '^#' .env | xargs)

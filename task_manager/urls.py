@@ -17,14 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from task_manager import settings, users
-from task_manager.view import IndexView, AboutView
+from task_manager import settings
+from task_manager.view import IndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name="index"),
-    path('about/', AboutView.as_view(), name="about"),
-    path('users/', include('task_manager.users.urls')),
+    path('', include('task_manager.users.urls')),
+    path('', include('task_manager.tasks.urls')),
 ]
 
 if settings.DEBUG:
