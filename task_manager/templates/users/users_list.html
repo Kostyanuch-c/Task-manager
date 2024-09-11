@@ -16,7 +16,7 @@
                     <th></th>
                 </tr>
                 </thead>
-                <tbody">
+                <tbody>
                 {% for object in object_list %}
                     <tr>
                         <td>{{ object.pk }}</td>
@@ -25,12 +25,12 @@
                         <td>{{ object.date_joined|date:"d:m:Y H:i" }}</td>
                         <td>
                             <div>
-                                <a class="link-info link-offset-2 link-underline-opacity-0 
-                                link-underline-opacity-100-hover" href="">Изменить</a>
+                                <a class="link-info link-offset-2 link-underline-opacity-0
+                                link-underline-opacity-100-hover" href="{% url "update_user" object.pk %}">Изменить</a>
                             </div>
                             <div>
                                 <a class="link-danger link-offset-2 link-underline-opacity-0
-                                 link-underline-opacity-100-hover" href="">Удалить </a>
+                                 link-underline-opacity-100-hover" href="{% url "delete_user" object.pk %}">Удалить </a>
                             </div>
                         </td>
                     </tr>

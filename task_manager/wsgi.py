@@ -16,4 +16,5 @@ from task_manager.settings import BASE_DIR
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'task_manager.settings')
 
 application = get_wsgi_application()
-application = WhiteNoise(application, root=os.path.join(BASE_DIR, 'staticfiles'))
+application = WhiteNoise(application,
+                         root=os.path.join(BASE_DIR, 'staticfiles'))

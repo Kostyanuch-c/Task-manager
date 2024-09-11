@@ -1,9 +1,10 @@
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
-from django.views import View
 from django.views.generic import TemplateView
-from django.utils.translation import gettext as _
+from django.shortcuts import render
 
 
 class IndexView(TemplateView):
     template_name = "index.html"
+
+
+def page_not_found_view(request, exception):
+    return render(request, 'errors/404.html', status=404)

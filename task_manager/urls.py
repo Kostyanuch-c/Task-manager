@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('task_manager.tasks.urls')),
 ]
 
+handler404 = 'task_manager.view.page_not_found_view'
 if settings.DEBUG:
     import debug_toolbar
 

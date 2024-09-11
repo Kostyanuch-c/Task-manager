@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-10 19:16+0500\n"
+"POT-Creation-Date: 2024-09-11 17:42+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,11 +20,57 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: task_manager/templates/index.html:7
+#: task_manager/templates/errors/404.html:13
+msgid "Page not found"
+msgstr "Страницы не найдена"
+
+#: task_manager/templates/errors/404.html:14
+msgid "What you are looking for is not here"
+msgstr "Здесь нет того, что вы ищете"
+
+#: task_manager/templates/errors/404.html:16
+msgid "Return to home"
+msgstr "Вернуться на главную"
+
+#: task_manager/templates/index.html:8"
+msgid "Welcome to Task Manager!"
+msgstr "Добро пожаловать в Task Manager!"
+
+#: task_manager/templates/index.html:10
+msgid "Now you have access to the full functionality of the system."
+msgstr "Теперь у вас есть доступ к полному функционалу системы"
+
+#: task_manager/templates/index.html:13
+msgid "- Create new tasks for yourself and other users."
+msgstr "-Создавайте новые задачи для себя и других пользователей."
+
+#: task_manager/templates/index.html:16
+msgid ""
+"- Create your own statuses and assign them to tasks to monitor their "
+"implementation."
+msgstr "- Создавайте свои статусы и присваиваете их к задачам для контроля их выполнения."
+
+#: task_manager/templates/index.html:20
+msgid "- Create and add tags to tasks to quickly categorize them."
+msgstr "- Создавайте и добавляйте теги к задачам для их быстрой категоризации."
+
+#: task_manager/templates/index.html:24
+msgid "- Assign tasks to people to share responsibility."
+msgstr "- Назначайте исполнителей для задач, чтобы распределить ответственность."
+
+#: task_manager/templates/index.html:28
+msgid "- Monitor the progress of tasks."
+msgstr "- Контролируйте ход выполнения задач."
+
+#: task_manager/templates/index.html:31
+msgid "Use Task Manager to optimize your workflow and achieve your goals!"
+msgstr "Используйте Task Manager для оптимизации своего рабочего процесса и достижения целей!"
+
+#: task_manager/templates/index.html:35
 msgid "Task Manager is a convenient tool for managing tasks."
 msgstr "Task Manager — это удобный инструмент для управления задачами."
 
-#: task_manager/templates/index.html:9
+#: task_manager/templates/index.html:37
 msgid ""
 "Register or log in to create tasks, assign them statuses, add tags and "
 "assign assignees."
@@ -32,7 +78,7 @@ msgstr ""
 "Зарегистрируйтесь или войдите в систему, чтобы создавать задачи, присваивать "
 "им статусы, добавлять теги и назначать  исполнителей."
 
-#: task_manager/templates/index.html:12
+#: task_manager/templates/index.html:40
 msgid ""
 "You can always be aware of the status of each tasks, which will allow you to "
 "easily control the workflow."
@@ -40,7 +86,7 @@ msgstr ""
 "Вы всегда сможете быть в курсе состояния каждой задачи, что позволит легко "
 "контролировать рабочий процесс."
 
-#: task_manager/templates/index.html:14
+#: task_manager/templates/index.html:42
 msgid "Unauthorized users can only view the list of system users"
 msgstr ""
 "Для неавторизованных пользователей доступен только просмотр списка "
@@ -51,32 +97,32 @@ msgid "Task manager"
 msgstr "Менеджер задач"
 
 #: task_manager/templates/layouts/base.html:24
+#: task_manager/templates/users/users_list.html:7
 msgid "Users"
 msgstr "Пользователи"
 
-#: task_manager/templates/layouts/base.html:27
+#: task_manager/templates/layouts/base.html:28
 msgid "Tasks"
 msgstr "Задачи"
 
-#: task_manager/templates/layouts/base.html:29
+#: task_manager/templates/layouts/base.html:31
 msgid "Statuses"
 msgstr "Статусы"
 
-#: task_manager/templates/layouts/base.html:31
+#: task_manager/templates/layouts/base.html:34
 msgid "Labels"
 msgstr "Метки"
 
-#: task_manager/templates/layouts/base.html:33
+#: task_manager/templates/layouts/base.html:36
 msgid "Logout"
 msgstr "Выйти"
 
-#: task_manager/templates/layouts/base.html:37
+#: task_manager/templates/layouts/base.html:40
 #: task_manager/templates/users/login.html:24
 msgid "Login"
 msgstr "Войти"
 
-#: task_manager/templates/layouts/base.html:40
-#: task_manager/templates/users/user_create_form.html:8
+#: task_manager/templates/layouts/base.html:43 task_manager/users/views.py:34
 msgid "Registration"
 msgstr "Регистрация"
 
@@ -84,43 +130,71 @@ msgstr "Регистрация"
 msgid "Entry"
 msgstr "Вход"
 
-#: task_manager/templates/users/user_create_form.html:28
-msgid "Register"
-msgstr "Зарегистрировать"
-
 #: task_manager/users/form.py:10
 msgid "Password"
 msgstr "Пароль"
 
-#: task_manager/users/form.py:12 task_manager/users/form.py:13
+#: task_manager/users/form.py:15 task_manager/users/form.py:17
 #, fuzzy
 #| msgid "Must be at least 3 characters"
 msgid "Password must be at least 3 characters long."
 msgstr "Должно быть не менее 3 символов."
 
-#: task_manager/users/form.py:16
+#: task_manager/users/form.py:20
 msgid "Confirm password"
 msgstr "Подтверждение пароля"
 
-#: task_manager/users/form.py:17
+#: task_manager/users/form.py:21
 msgid "To confirm your entry, please enter the password again."
 msgstr "Для подтверждения введите, пожалуйста, пароль ещё раз."
 
-#: task_manager/users/form.py:36
+#: task_manager/users/form.py:41
 msgid "passwords do not match"
 msgstr "Пароли не совпадают"
 
-#: task_manager/users/views.py:16
+#: task_manager/users/form.py:47
+msgid "Username with this name already exists."
+msgstr "Имя пользователя с таким именем уже существует."
+
+#: task_manager/users/utils.py:26
+msgid "You are not authorized! Please log in."
+msgstr "Вы не авторизованы! Пожалуйста, войдите в систему."
+
+#: task_manager/users/utils.py:27
+msgid "You do not have permission to change another user."
+msgstr "У вас нет прав на изменение другого пользователя."
+
+#: task_manager/users/views.py:18
 msgid "You have been logged in."
 msgstr "Вы залогинены"
 
-#: task_manager/users/views.py:21
+#: task_manager/users/views.py:23
 msgid "You have been logged out."
 msgstr "Вы разлогинены"
 
-#: task_manager/users/views.py:30
+#: task_manager/users/views.py:32
 msgid "You have been registered successfully."
 msgstr "Пользователь успешно зарегистрирован"
+
+#: task_manager/users/views.py:35
+msgid "Register"
+msgstr "Зарегистрировать"
+
+#: task_manager/users/views.py:49
+msgid "User successfully changed."
+msgstr "Пользователь успешно изменен."
+
+#: task_manager/users/views.py:51
+msgid "Edit user"
+msgstr "Изменение пользователя"
+
+#: task_manager/users/views.py:52
+msgid "Update"
+msgstr "Изменить"
+
+#: task_manager/users/views.py:58
+msgid "User successfully deleted."
+msgstr "Пользователь успешно удален."
 
 #~ msgid "Name"
 #~ msgstr "Имя"

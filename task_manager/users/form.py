@@ -9,7 +9,11 @@ class RegisterUserForm(SetPasswordMixin, ModelForm):
     password1 = CharField(
         label=_('Password'),
         widget=PasswordInput(),
-        validators=[MinLengthValidator(3, message=_('Password must be at least 3 characters long.'))],
+        validators=[
+            MinLengthValidator(
+                3,
+                message=_('Password must be at least 3 characters long.'))
+        ],
         help_text=_('Password must be at least 3 characters long.'),
     )
     password2 = CharField(
@@ -20,7 +24,8 @@ class RegisterUserForm(SetPasswordMixin, ModelForm):
 
     class Meta:
         model = get_user_model()
-        fields = ['first_name', 'last_name', 'username', 'password1', 'password2']
+        fields = ['first_name', 'last_name',
+                  'username', 'password1', 'password2']
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -38,7 +43,8 @@ class RegisterUserForm(SetPasswordMixin, ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if get_user_model().objects.filter(username=username).exists():
-            self.add_error('username', _('Username with this name already exists.'))
+            self.add_error('username',
+                           _('Username with this name already exists.'))
         return username
 
     def save(self, commit=True):

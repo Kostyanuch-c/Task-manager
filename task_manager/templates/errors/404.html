@@ -1,0 +1,22 @@
+{% extends "layouts/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <section class="py-3 py-md-5 min-vh-100 d-flex justify-content-center align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="text-center">
+                        <h2 class="d-flex justify-content-center align-items-center gap-2 mb-4">
+                            <span class="display-1 fw-bold">404</span>
+                        </h2>
+                        <h3 class="h2 mb-2">{% translate "Page not found" %}</h3>
+                        <p class="mb-5">{% translate "What you are looking for is not here" %}</p>
+                        <a class="btn bsb-btn-5xl btn-outline-primary rounded-pill px-5 fs-6 m-0"
+                           href="{% url "index" %}" role="button">{% translate "Return to home" %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
