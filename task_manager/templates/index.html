@@ -2,16 +2,41 @@
 {% load i18n %}
 
 {% block content %}
+
     <main class="px-3 mt-5 d-flex flex-column justify-content-center align-items-center flex-grow-1">
-        <h1 class="fs-1">Task Manager</h1>
-        <p class="lead fs-4 mt-2">{% translate "Task Manager is a convenient tool for managing tasks." %}</p>
-        <p class="lead fs-4">
-            {% translate "Register or log in to create tasks, assign them statuses, add tags and assign assignees." %}
-        </p>
-        <p class="lead fs-4">
-            {% translate "You can always be aware of the status of each tasks, which will allow you to easily control the workflow." %}
-        </p>
-        <p class="lead fs-4">{% translate "Unauthorized users can only view the list of system users" %}</p>
-        <!--    <p class="lead fs-4">Управляйте задачами, улучшайте продуктивность и добивайтесь успеха с Task Manager!</p>-->
-    </main>
+        {% if user.is_authenticated %}
+            <h1 class="fs-1">Добро пожаловать в Task Manager!</h1>
+            <p class="lead fs-4 mt-2">Теперь у вас есть доступ к полному функционалу
+                системы.</p>
+            <p class="lead fs-4">
+                - Создавайте новые задачи для себя и других пользователей.
+            </p>
+            <p class="lead fs-4">
+                - Создавайте свои статусы и присваиваете их к задачам для контроля их выполнения.
+            </p>
+            <p class="lead fs-4">
+                - Создавайте и добавляйте теги к задачам для их быстрой категоризации.
+            </p>
+            <p class="lead fs-4">
+                - Назначайте исполнителей для задач, чтобы распределить ответственность.
+            </p>
+            <p class="lead fs-4">
+                - Контролируйте ход выполнения задач.
+            </p>
+            <p class="lead fs-4">
+                Используйте Task Manager для оптимизации своего рабочего процесса и достижения целей!
+            </p>
+        {% else %}
+            <h1 class="fs-1">Task Manager</h1>
+            <p class="lead fs-4 mt-2">{% translate "Task Manager is a convenient tool for managing tasks." %}</p>
+            <p class="lead fs-4">
+                {% translate "Register or log in to create tasks, assign them statuses, add tags and assign assignees." %}
+            </p>
+            <p class="lead fs-4">
+                {% translate "You can always be aware of the status of each tasks, which will allow you to easily control the workflow." %}
+            </p>
+            <p class="lead fs-4">{% translate "Unauthorized users can only view the list of system users" %}</p>
+            <!--    <p class="lead fs-4">Управляйте задачами, улучшайте продуктивность и добивайтесь успеха с Task Manager!</p>-->
+            </main>
+        {% endif %}
 {% endblock %}

@@ -3,4 +3,40 @@
 {% load i18n %}
 
 {% block content %}
+    <div class="container-lg mt-3 ">
+        <h1>{% translate "Users" %}</h1>
+        <div class="table-responsive ">
+            <table class="table table-bordered text-nowrap table-striped table-dark">
+                <thead>
+                <tr>
+                    <th class="">ID</th>
+                    <th>Имя</th>
+                    <th>Полное имя</th>
+                    <th>Дата создания</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody">
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ object.pk }}</td>
+                        <td>{{ object.username }}</td>
+                        <td>{{ object.first_name }} {{ object.last_name }}</td>
+                        <td>{{ object.date_joined|date:"d:m:Y H:i" }}</td>
+                        <td>
+                            <div>
+                                <a class="link-info link-offset-2 link-underline-opacity-0 
+                                link-underline-opacity-100-hover" href="">Изменить</a>
+                            </div>
+                            <div>
+                                <a class="link-danger link-offset-2 link-underline-opacity-0
+                                 link-underline-opacity-100-hover" href="">Удалить </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
