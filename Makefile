@@ -5,7 +5,11 @@ PORT ?= 8000
 install:
 	@poetry install
 
-.PHONY: migrate
+.PHONY: makemigrations
+create_migrations:
+	@$(MANAGE) makemigrations
+
+.PHONY: create_migrations migrate
 migrate:
 	@$(MANAGE) migrate
 

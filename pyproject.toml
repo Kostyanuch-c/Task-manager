@@ -5,7 +5,7 @@ description = ""
 authors = ["Konstantin Kiselev <konstantin.kiselev.1998@mail.ru>"]
 readme = "README.md"
 packages = [
-  { include = "task_manager" },
+    { include = "task_manager" },
 ]
 
 [tool.poetry.dependencies]
@@ -17,6 +17,7 @@ gunicorn = "^23.0.0"
 django-bootstrap5 = "^24.2"
 psycopg2-binary = "^2.9.9"
 django-widget-tweaks = "^1.5.0"
+whitenoise = "^6.7.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -24,8 +25,43 @@ flake8 = "^7.1.1"
 django-extensions = "^3.2.3"
 ipython = "^8.27.0"
 django-debug-toolbar = "^4.4.6"
-whitenoise = "^6.7.0"
+isort = "^5.13.2"
+pre-commit = "^3.8.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+line_length = 80
+lines_after_imports = 2
+lines_between_sections = 1
+lines_between_types = 0
+force_alphabetical_sort_within_sections = true
+ensure_newline_before_comments = true
+combine_as_imports = true
+combine_star = true
+skip_gitignore = true
+balanced_wrapping = true
+force_grid_wrap = 2
+src_paths = ["task_manager", ]
+skip_glob = [
+    ".git",
+    ".idea",
+    "venv",
+    ".env",
+]
+known_django = ["django", ]
+known_first_party = ["task_manager"]
+sections = [
+    "FUTURE",
+    "STDLIB",
+    "DJANGO",
+    "THIRDPARTY",
+    "FIRSTPARTY",
+    "LOCALFOLDER",
+]
