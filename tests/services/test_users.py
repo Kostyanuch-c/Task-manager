@@ -2,6 +2,10 @@ from django.http import Http404
 
 import pytest
 from tests.factories.users import UserModelFactory
+from tests.fixtures.user_service import (  # noqa
+    user_create_data,
+    user_service,
+)
 
 from task_manager.users.entities import UserChangeOrCreate
 from task_manager.users.exceptions import UsernameIsNotFreeException

@@ -5,6 +5,11 @@ from django.shortcuts import reverse
 
 import pytest
 from tests.factories.users import UserModelFactory
+from tests.fixtures.user_service import (  # noqa
+    user_create_data,
+    user_service,
+)
+from tests.fixtures.users_form_data import users_form_data  # noqa
 
 from task_manager.users.entities import UserChangeOrCreate
 from task_manager.users.services.user_service import UserService
