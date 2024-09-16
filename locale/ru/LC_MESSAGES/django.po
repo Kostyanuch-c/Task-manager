@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-11 17:42+0500\n"
+"POT-Creation-Date: 2024-09-15 11:22+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr "Здесь нет того, что вы ищете"
 msgid "Return to home"
 msgstr "Вернуться на главную"
 
-#: task_manager/templates/index.html:8"
+#: task_manager/templates/index.html:8
 msgid "Welcome to Task Manager!"
 msgstr "Добро пожаловать в Task Manager!"
 
@@ -48,7 +48,9 @@ msgstr "-Создавайте новые задачи для себя и дру�
 msgid ""
 "- Create your own statuses and assign them to tasks to monitor their "
 "implementation."
-msgstr "- Создавайте свои статусы и присваиваете их к задачам для контроля их выполнения."
+msgstr ""
+"- Создавайте свои статусы и присваиваете их к задачам для контроля их "
+"выполнения."
 
 #: task_manager/templates/index.html:20
 msgid "- Create and add tags to tasks to quickly categorize them."
@@ -56,7 +58,8 @@ msgstr "- Создавайте и добавляйте теги к задача�
 
 #: task_manager/templates/index.html:24
 msgid "- Assign tasks to people to share responsibility."
-msgstr "- Назначайте исполнителей для задач, чтобы распределить ответственность."
+msgstr ""
+"- Назначайте исполнителей для задач, чтобы распределить ответственность."
 
 #: task_manager/templates/index.html:28
 msgid "- Monitor the progress of tasks."
@@ -64,7 +67,9 @@ msgstr "- Контролируйте ход выполнения задач."
 
 #: task_manager/templates/index.html:31
 msgid "Use Task Manager to optimize your workflow and achieve your goals!"
-msgstr "Используйте Task Manager для оптимизации своего рабочего процесса и достижения целей!"
+msgstr ""
+"Используйте Task Manager для оптимизации своего рабочего процесса и "
+"достижения целей!"
 
 #: task_manager/templates/index.html:35
 msgid "Task Manager is a convenient tool for managing tasks."
@@ -118,11 +123,11 @@ msgid "Logout"
 msgstr "Выйти"
 
 #: task_manager/templates/layouts/base.html:40
-#: task_manager/templates/users/login.html:24
+#: task_manager/templates/users/login.html:23
 msgid "Login"
 msgstr "Войти"
 
-#: task_manager/templates/layouts/base.html:43 task_manager/users/views.py:34
+#: task_manager/templates/layouts/base.html:43 task_manager/users/views.py:43
 msgid "Registration"
 msgstr "Регистрация"
 
@@ -130,71 +135,94 @@ msgstr "Регистрация"
 msgid "Entry"
 msgstr "Вход"
 
-#: task_manager/users/form.py:10
+#: task_manager/templates/users/user_delete.html:6
+msgid "Delete user"
+msgstr "Изменение пользователя"
+
+#: task_manager/templates/users/user_delete.html:7
+msgid "Are you sure you want to delete"
+msgstr "Вы уверены, что хотите удалить"
+
+#: task_manager/templates/users/user_delete.html:10
+msgid "Yes, delete"
+msgstr "Да, удалить"
+
+#: task_manager/users/form.py:13
 msgid "Password"
 msgstr "Пароль"
 
-#: task_manager/users/form.py:15 task_manager/users/form.py:17
-#, fuzzy
-#| msgid "Must be at least 3 characters"
+#: task_manager/users/form.py:18 task_manager/users/form.py:21
 msgid "Password must be at least 3 characters long."
 msgstr "Должно быть не менее 3 символов."
 
-#: task_manager/users/form.py:20
+#: task_manager/users/form.py:24
 msgid "Confirm password"
 msgstr "Подтверждение пароля"
 
-#: task_manager/users/form.py:21
+#: task_manager/users/form.py:25
 msgid "To confirm your entry, please enter the password again."
 msgstr "Для подтверждения введите, пожалуйста, пароль ещё раз."
 
-#: task_manager/users/form.py:41
+#: task_manager/users/form.py:47
 msgid "passwords do not match"
 msgstr "Пароли не совпадают"
 
-#: task_manager/users/form.py:47
-msgid "Username with this name already exists."
-msgstr "Имя пользователя с таким именем уже существует."
+#: task_manager/users/user_service.py:32 task_manager/users/user_service.py:41
+msgid "Username already exists"
+msgstr "Пользователь с таким именем уже существует."
 
-#: task_manager/users/utils.py:26
+#: task_manager/users/utils.py:37
 msgid "You are not authorized! Please log in."
 msgstr "Вы не авторизованы! Пожалуйста, войдите в систему."
 
-#: task_manager/users/utils.py:27
+#: task_manager/users/utils.py:39
 msgid "You do not have permission to change another user."
 msgstr "У вас нет прав на изменение другого пользователя."
 
-#: task_manager/users/views.py:18
-msgid "You have been logged in."
-msgstr "Вы залогинены"
+#: task_manager/users/utils.py:47
+msgid "Service not defined"
+msgstr "Сервис не определен"
 
-#: task_manager/users/views.py:23
-msgid "You have been logged out."
-msgstr "Вы разлогинены"
+#: task_manager/users/utils.py:68
 
-#: task_manager/users/views.py:32
-msgid "You have been registered successfully."
-msgstr "Пользователь успешно зарегистрирован"
+msgid "User created successfully"
+msgstr "Пользователь зарегистрирован."
 
-#: task_manager/users/views.py:35
-msgid "Register"
-msgstr "Зарегистрировать"
-
-#: task_manager/users/views.py:49
+#: task_manager/users/utils.py:69
 msgid "User successfully changed."
 msgstr "Пользователь успешно изменен."
 
-#: task_manager/users/views.py:51
+#: task_manager/users/utils.py:89
+msgid "Username is already taken."
+msgstr "Пользователь с таким именем уже существует."
+
+#: task_manager/users/utils.py:103 task_manager/users/views.py:64
+msgid "User successfully deleted."
+msgstr "Пользователь успешно удален."
+
+#: task_manager/users/views.py:41
+msgid "You have been registered successfully."
+msgstr "Пользователь успешно зарегистрирован"
+
+#: task_manager/users/views.py:44
+msgid "Register"
+msgstr "Зарегистрировать"
+
+#: task_manager/users/views.py:55
 msgid "Edit user"
 msgstr "Изменение пользователя"
 
-#: task_manager/users/views.py:52
+#: task_manager/users/views.py:56
 msgid "Update"
 msgstr "Изменить"
 
-#: task_manager/users/views.py:58
-msgid "User successfully deleted."
-msgstr "Пользователь успешно удален."
+#: task_manager/users/views.py:74
+msgid "You have been logged in."
+msgstr "Вы залогинены"
+
+#: task_manager/users/views.py:79
+msgid "You have been logged out."
+msgstr "Вы разлогинены"
 
 #~ msgid "Name"
 #~ msgstr "Имя"

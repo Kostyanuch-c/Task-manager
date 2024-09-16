@@ -1,5 +1,3 @@
-from collections.abc import Iterable
-
 from django.contrib.auth.hashers import make_password
 from django.db import (
     IntegrityError,
@@ -9,9 +7,9 @@ from django.utils.translation import gettext_lazy as _
 
 from task_manager.users.entities import (
     User as UserEntity,
-    UserCreate,
+    UserChangeOrCreate,
 )
-from task_manager.users.exceptions import UsernameIsNotFreeError
+from task_manager.users.exceptions import UsernameIsNotFreeException
 from task_manager.users.user_repository import UserRepository
 
 
@@ -19,26 +17,34 @@ class UserService:
     def __init__(self):
         self.user_repository = UserRepository()
 
-    def get_all_users(self) -> Iterable[UserEntity]:
+    def get_all_objects(self) -> list[UserEntity]:
         return self.user_repository.get_all_users()
 
-    def register_user(self, user: UserCreate) -> UserEntity:
+    def create_object(self, user: UserChangeOrCreate) -> UserEntity:
         try:
             with transaction.atomic():
                 user.password = make_password(user.password)
                 return self.user_repository.create_user(user)
-        except IntegrityError:
-            raise UsernameIsNotFreeError(_('Username already exists'))
 
-    def update_user(self, user: UserCreate) -> None:
+        except IntegrityError:
+            raise UsernameIsNotFreeException(_("Username already exists"))
+
+    def update_object(
+        self,
+        user_id: int,
+        user_data: UserChangeOrCreate,
+    ) -> None:
         try:
             with transaction.atomic():
-                user.password = make_password(user.password)
-                self.user_repository.update_user(user)
+                user_data.password = make_password(user_data.password)
+                self.user_repository.update_user(user_id, user_data)
+                transaction.on_commit(
+                    lambda: print("Data committed successfully"),
+                )
         except IntegrityError:
-            raise UsernameIsNotFreeError(_('Username already exists'))
+            raise UsernameIsNotFreeException(_("Username already exists"))
 
-    def delete_user(self, user_id: int) -> None:
+    def delete_object(self, user_id: int) -> None:
         return self.user_repository.delete_user(user_id)
 
     def get_object(self, user_id: int) -> UserEntity:

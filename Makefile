@@ -5,7 +5,7 @@ PORT ?= 8000
 install:
 	@poetry install
 
-.PHONY: makemigrations
+.PHONY: create_migrations
 create_migrations:
 	@$(MANAGE) makemigrations
 
@@ -40,6 +40,14 @@ translate:
 .PHONY: upload_translate
 upload_translate:
 	@poetry run django-admin compilemessages
+
+.PHONY: test
+test:
+	poetry run pytest
+
+.PHONY: test-coverage
+test-coverage:
+	poetry run pytest --cov=gendiff --cov-report xml
 
 .PHONY: export_env
 export_env:

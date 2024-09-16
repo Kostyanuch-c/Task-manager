@@ -13,7 +13,7 @@ class User:
 
 
 @dataclass
-class UserCreate:
+class UserChangeOrCreate:
     first_name: str
     last_name: str
     username: str

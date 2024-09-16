@@ -7,7 +7,6 @@
             <form action="" method="post">
                 {% csrf_token %}
                 <div class="form-error"> {{ form.non_field_errors }}</div>
-                {{ formset.management_form }}
                 {% for field in form %}
                     <div class="mb-5">
                         <label class="form-label float-start text-white-75 "
