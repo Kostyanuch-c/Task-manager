@@ -47,7 +47,7 @@ test:
 
 .PHONY: test-coverage
 test-coverage:
-	poetry run pytest --cov=gendiff --cov-report xml
+	poetry run pytest --cov=task_manager --cov-report xml
 
 .PHONY: export_env
 export_env:
