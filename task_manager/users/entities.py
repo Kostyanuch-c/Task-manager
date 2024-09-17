@@ -3,17 +3,16 @@ from datetime import datetime
 
 
 @dataclass
-class User:
+class UserOutputEntity:
     id: int  # noqa
-    first_name: str
-    last_name: str
     username: str
+    full_name: str
     password: str
-    date_joined: datetime
+    created_at: datetime
 
 
 @dataclass
-class UserChangeOrCreate:
+class UserInputEntity:
     first_name: str
     last_name: str
     username: str

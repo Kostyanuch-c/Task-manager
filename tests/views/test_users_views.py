@@ -11,7 +11,7 @@ from tests.fixtures.user_service import (  # noqa
 )
 from tests.fixtures.users_form_data import users_form_data  # noqa
 
-from task_manager.users.entities import UserChangeOrCreate
+from task_manager.users.entities import UserInputEntity
 from task_manager.users.services.user_service import UserService
 
 
@@ -24,7 +24,7 @@ def test_index(client):
 def test_index_after_authorized(
     client,
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     fetched_user = user_service.create_object(user_create_data)
@@ -53,7 +53,7 @@ def test_list_users(client):
 def test_list_users_after_authorized(
     client,
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     fetched_user = user_service.create_object(user_create_data)
@@ -81,7 +81,7 @@ def test_update_user_without_login(client):
 def test_update_user_with_login(
     client,
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
     users_form_data: dict,
 ):
     password = user_create_data.password
@@ -105,7 +105,7 @@ def test_update_user_with_login(
 def test_update_without_permission(
     client,
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     user1 = user_service.create_object(user_create_data)
@@ -136,7 +136,7 @@ def test_delete_user_without_login(client):
 def test_delete_user_with_login(
     client,
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
     users_form_data: dict,
 ):
     password = user_create_data.password
@@ -160,7 +160,7 @@ def test_delete_user_with_login(
 def test_delete_without_permission(
     client,
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     user1 = user_service.create_object(user_create_data)
@@ -179,7 +179,7 @@ def test_delete_without_permission(
 def test_registration_user(
     client,
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
     users_form_data: dict,
 ):
     response = client.post(reverse("create_user"), data=users_form_data)

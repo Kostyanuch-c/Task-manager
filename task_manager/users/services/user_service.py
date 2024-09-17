@@ -5,26 +5,27 @@ from django.db import (
 )
 from django.utils.translation import gettext_lazy as _
 
+from task_manager.common.base_service import BaseService
 from task_manager.users.entities import (
-    User as UserEntity,
-    UserChangeOrCreate,
+    UserInputEntity,
+    UserOutputEntity,
 )
 from task_manager.users.exceptions import UsernameIsNotFreeException
-from task_manager.users.user_repository import UserRepository
+from task_manager.users.repositories.user_repository import UserRepository
 
 
-class UserService:
+class UserService(BaseService):
     def __init__(self):
-        self.user_repository = UserRepository()
+        self.repository = UserRepository()
 
-    def get_all_objects(self) -> list[UserEntity]:
-        return self.user_repository.get_all_users()
+    def get_all_objects(self) -> list[UserOutputEntity]:
+        return self.repository.get_all_objects()
 
-    def create_object(self, user: UserChangeOrCreate) -> UserEntity:
+    def create_object(self, user: UserInputEntity) -> UserOutputEntity:
         try:
             with transaction.atomic():
                 user.password = make_password(user.password)
-                return self.user_repository.create_user(user)
+                return self.repository.create_object(user)
 
         except IntegrityError:
             raise UsernameIsNotFreeException(_("Username already exists"))
@@ -32,20 +33,16 @@ class UserService:
     def update_object(
         self,
         user_id: int,
-        user_data: UserChangeOrCreate,
+        user_data: UserInputEntity,
     ) -> None:
-        try:
-            with transaction.atomic():
-                user_data.password = make_password(user_data.password)
-                self.user_repository.update_user(user_id, user_data)
-                transaction.on_commit(
-                    lambda: print("Data committed successfully"),
-                )
-        except IntegrityError:
+        if not self.repository.is_username_free(user_data.username):
             raise UsernameIsNotFreeException(_("Username already exists"))
 
-    def delete_object(self, user_id: int) -> None:
-        return self.user_repository.delete_user(user_id)
+        user_data.password = make_password(user_data.password)
+        self.repository.update_object(user_id, user_data)
 
-    def get_object(self, user_id: int) -> UserEntity:
-        return self.user_repository.get_user(user_id)
+    def delete_object(self, user_id: int) -> None:
+        return self.repository.delete_object(user_id)
+
+    def get_object(self, user_id: int) -> UserOutputEntity:
+        return self.repository.get_object(user_id)

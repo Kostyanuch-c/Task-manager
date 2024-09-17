@@ -5,7 +5,10 @@ from django.http import (
     HttpRequest,
     HttpResponse,
 )
-from django.shortcuts import redirect
+from django.shortcuts import (
+    redirect,
+    render,
+)
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
@@ -13,20 +16,33 @@ from django.views.generic import (
     TemplateView,
 )
 
-from task_manager.users.entities import UserChangeOrCreate
+from task_manager.common.utils import (
+    CreateObjectMixin,
+    DeleteWithPermissionsMixin,
+    MessagesLoginRequiredMixin,
+    UpdateWithPermissionsMixin,
+)
+from task_manager.users.entities import UserInputEntity
 from task_manager.users.exceptions import UsernameIsNotFreeException
 from task_manager.users.form import RegisterUserForm
 from task_manager.users.services.auth_service import AuthService
 from task_manager.users.services.user_service import UserService
-from task_manager.users.utils import (
-    CreateObjectMixin,
-    DeleteUserMixin,
-    UpdateUserFormMixin,
-)
+
+
+class IndexView(TemplateView):
+    template_name = "index.html"
 
 
 class UsersListView(TemplateView):
     template_name = "users/users_list.html"
+    fields = ["username", "full_name"]
+    extra_context = {
+        "title_list": _("Users"),
+        "titles_columns": (_("Name user"), _("Full name")),
+        "url_to_update": "update_user",
+        "url_to_delete": "delete_user",
+        "fields": fields,
+    }
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
@@ -49,7 +65,7 @@ class RegisterUserView(CreateObjectMixin, FormView):
     service = UserService()
 
     def form_valid(self, form: RegisterUserForm) -> HttpResponse:
-        entity = UserChangeOrCreate(
+        entity = UserInputEntity(
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
             username=form.cleaned_data["username"],
@@ -66,11 +82,13 @@ class RegisterUserView(CreateObjectMixin, FormView):
             return self.form_invalid(form)
 
 
-class UserUpdateView(UpdateUserFormMixin, FormView):
+class UserUpdateView(
+    MessagesLoginRequiredMixin, UpdateWithPermissionsMixin, FormView,
+):
     form_class = RegisterUserForm
     template_name = "users/user_update_form.html"
-    success_url = reverse_lazy("users_list")
 
+    success_url = reverse_lazy("users_list")
     success_message = _("User updated successfully.")
 
     extra_context = {
@@ -81,7 +99,7 @@ class UserUpdateView(UpdateUserFormMixin, FormView):
     service = UserService()
 
     def form_valid(self, form: RegisterUserForm) -> HttpResponse:
-        entity = UserChangeOrCreate(
+        entity = UserInputEntity(
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
             username=form.cleaned_data["username"],
@@ -92,13 +110,16 @@ class UserUpdateView(UpdateUserFormMixin, FormView):
                 request=self.request,
                 form=form,
                 object_data=entity,
+                **self.kwargs,
             )
         except UsernameIsNotFreeException as exception:
             form.add_error("username", exception.message)
             return self.form_invalid(form)
 
 
-class UserDeleteView(DeleteUserMixin, TemplateView):
+class UserDeleteView(
+    MessagesLoginRequiredMixin, DeleteWithPermissionsMixin, TemplateView,
+):
     template_name = "users/user_delete.html"
     success_message = _("User successfully deleted.")
 
@@ -107,10 +128,11 @@ class UserDeleteView(DeleteUserMixin, TemplateView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["object"] = self.get_object(**kwargs)
+        context["field"] = "full_name"
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        return self.delete(request)
+        return self.delete(request, **kwargs)
 
 
 class LoginInView(SuccessMessageMixin, FormView):
@@ -133,3 +155,7 @@ def logout_view(request: HttpRequest) -> HttpResponse:
     AuthService().logout_user(request)
     messages.info(request, _("You have been logged out."))
     return redirect(reverse_lazy("index"))
+
+
+def page_not_found_view(request, exception):
+    return render(request, "errors/404.html", status=404)

@@ -21,17 +21,15 @@ from django.urls import (
 )
 
 from task_manager import settings
-from task_manager.views import IndexView
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", IndexView.as_view(), name="index"),
     path("", include("task_manager.users.urls")),
-    path("", include("task_manager.tasks.urls")),
+    path("statuses/", include("task_manager.tasks.urls.status_urls")),
 ]
 
-handler404 = "task_manager.views.page_not_found_view"
+handler404 = "task_manager.users.views.page_not_found_view"
 if settings.DEBUG:
     import debug_toolbar
 

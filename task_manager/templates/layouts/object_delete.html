@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load custom_filters %}
+
+<div class="container wrapper flex-grow-1">
+    <h1 class="my-4"> {% translate "Delete user" %} </h1>
+    <p>{% translate "Are you sure you want to delete" %} {{ object|get_attribute:field }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" class="btn btn-outline-danger">{% translate "Yes, delete" %}</button>
+    </form>
+</div>

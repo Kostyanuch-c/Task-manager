@@ -7,7 +7,7 @@ from tests.fixtures.user_service import (  # noqa
     user_service,
 )
 
-from task_manager.users.entities import UserChangeOrCreate
+from task_manager.users.entities import UserInputEntity
 from task_manager.users.exceptions import UsernameIsNotFreeException
 from task_manager.users.services.user_service import UserService
 
@@ -33,13 +33,15 @@ def test_get_users_zero(user_service: UserService):
 @pytest.mark.django_db
 def test_create_user(
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
 ):
     fetched_user = user_service.create_object(user_create_data)
 
     assert fetched_user is not None, f"{fetched_user=}"
-    assert fetched_user.first_name == user_create_data.first_name
-    assert fetched_user.last_name == user_create_data.last_name
+    assert (
+        fetched_user.full_name
+        == f"{user_create_data.first_name} {user_create_data.last_name}"
+    )
     assert fetched_user.username == user_create_data.username
     assert fetched_user.password == user_create_data.password
 
@@ -47,7 +49,7 @@ def test_create_user(
 @pytest.mark.django_db
 def test_create_user_username_already_exists(
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
 ):
     UserModelFactory.create(
         first_name="New first_name",
@@ -62,7 +64,7 @@ def test_create_user_username_already_exists(
 @pytest.mark.django_db
 def test_update_user_correct(
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
 ):
     user = UserModelFactory.create()
 
@@ -70,18 +72,20 @@ def test_update_user_correct(
 
     fetched_user = user_service.get_object(user.id)
 
-    assert fetched_user.first_name == user_create_data.first_name
-    assert fetched_user.last_name == user_create_data.last_name
+    assert (
+        fetched_user.full_name
+        == f"{user_create_data.first_name} {user_create_data.last_name}"
+    )
     assert fetched_user.username == user_create_data.username
     assert fetched_user.password == user_create_data.password
-    assert fetched_user.date_joined == user.date_joined
+    assert fetched_user.created_at == user.date_joined
     assert fetched_user.id == user.id
 
 
 @pytest.mark.django_db
 def test_update_user_username_already_exists(
     user_service: UserService,
-    user_create_data: UserChangeOrCreate,
+    user_create_data: UserInputEntity,
 ):
     user = UserModelFactory.create(
         first_name="New first_name",
