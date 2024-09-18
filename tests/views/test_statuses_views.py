@@ -33,13 +33,13 @@ def test_get_statuses_create_without_login(client):
     assert response.url.startswith(login_url)
 
 
-def test_get_statuses_update_without_login_and_without_statuses(client):
+def test_statuses_update_without_login_and_without_statuses(client):
     response = client.get("statuses/1/update/")
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert "Здесь нет того, что вы ищете" in response.content.decode("utf-8")
 
 
-def test_get_statuses_delete_without_login_and_without_statuses(client):
+def test_statuses_delete_without_login_and_without_statuses(client):
     response = client.get("statuses/1/delete/")
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert "Здесь нет того, что вы ищете" in response.content.decode("utf-8")

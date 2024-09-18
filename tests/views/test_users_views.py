@@ -18,13 +18,14 @@ from task_manager.users.services.user_service import UserService
 def test_index(client):
     response = client.get("/")
     assert response.status_code == HTTPStatus.OK
+    assert "Task Manager — это удобный инструмент для управления задачами." in response.content.decode('utf-8')
 
 
 @pytest.mark.django_db
 def test_index_after_authorized(
-    client,
-    user_service: UserService,
-    user_create_data: UserInputEntity,
+        client,
+        user_service: UserService,
+        user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     fetched_user = user_service.create_object(user_create_data)
@@ -51,9 +52,9 @@ def test_list_users(client):
 
 @pytest.mark.django_db
 def test_list_users_after_authorized(
-    client,
-    user_service: UserService,
-    user_create_data: UserInputEntity,
+        client,
+        user_service: UserService,
+        user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     fetched_user = user_service.create_object(user_create_data)
@@ -79,10 +80,10 @@ def test_update_user_without_login(client):
 
 @pytest.mark.django_db
 def test_update_user_with_login(
-    client,
-    user_service: UserService,
-    user_create_data: UserInputEntity,
-    users_form_data: dict,
+        client,
+        user_service: UserService,
+        user_create_data: UserInputEntity,
+        users_form_data: dict,
 ):
     password = user_create_data.password
     fetched_user = user_service.create_object(user_create_data)
@@ -103,9 +104,9 @@ def test_update_user_with_login(
 
 @pytest.mark.django_db
 def test_update_without_permission(
-    client,
-    user_service: UserService,
-    user_create_data: UserInputEntity,
+        client,
+        user_service: UserService,
+        user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     user1 = user_service.create_object(user_create_data)
@@ -134,9 +135,9 @@ def test_delete_user_without_login(client):
 
 @pytest.mark.django_db
 def test_delete_user_with_login(
-    client,
-    user_service: UserService,
-    user_create_data: UserInputEntity,
+        client,
+        user_service: UserService,
+        user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     fetched_user = user_service.create_object(user_create_data)
@@ -156,9 +157,9 @@ def test_delete_user_with_login(
 
 @pytest.mark.django_db
 def test_delete_without_permission(
-    client,
-    user_service: UserService,
-    user_create_data: UserInputEntity,
+        client,
+        user_service: UserService,
+        user_create_data: UserInputEntity,
 ):
     password = user_create_data.password
     user1 = user_service.create_object(user_create_data)
@@ -175,10 +176,10 @@ def test_delete_without_permission(
 
 @pytest.mark.django_db
 def test_registration_user(
-    client,
-    user_service: UserService,
-    user_create_data: UserInputEntity,
-    users_form_data: dict,
+        client,
+        user_service: UserService,
+        user_create_data: UserInputEntity,
+        users_form_data: dict,
 ):
     response = client.post(reverse("create_user"), data=users_form_data)
 
@@ -189,8 +190,13 @@ def test_registration_user(
     assert len(users) == 1
 
 
+def test_users_update_without_login_and_without_users(client):
+    response = client.get("users/1/update/")
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert "Здесь нет того, что вы ищете" in response.content.decode("utf-8")
 
-def test_404(client):
-    response = client.get("user/1/update/")
+
+def test_users_delete_without_login_and_without_users(client):
+    response = client.get("users/1/delete/")
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert "Здесь нет того, что вы ищете" in response.content.decode("utf-8")
