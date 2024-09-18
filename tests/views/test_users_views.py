@@ -6,6 +6,7 @@ from django.shortcuts import reverse
 import pytest
 from tests.factories.users import UserModelFactory
 from tests.fixtures.forms.users import users_form_data  # noqa
+from tests.fixtures.login_decorator import login_user
 from tests.fixtures.services.users import (  # noqa
     user_create_data,
     user_service,
@@ -21,22 +22,13 @@ def test_index(client):
     assert "Task Manager — это удобный инструмент для управления задачами." in response.content.decode('utf-8')
 
 
+@login_user
 @pytest.mark.django_db
 def test_index_after_authorized(
         client,
         user_service: UserService,
         user_create_data: UserInputEntity,
 ):
-    password = user_create_data.password
-    fetched_user = user_service.create_object(user_create_data)
-
-    login_success = client.login(
-        username=fetched_user.username,
-        password=password,
-    )
-
-    assert login_success is True
-
     response = client.get("/")
     assert response.status_code == HTTPStatus.OK
     assert "Добро пожаловать в Task Manager!" in response.content.decode(
@@ -200,3 +192,30 @@ def test_users_delete_without_login_and_without_users(client):
     response = client.get("users/1/delete/")
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert "Здесь нет того, что вы ищете" in response.content.decode("utf-8")
+
+
+@pytest.mark.django_db
+def test_login(
+        client,
+        user_service: UserService,
+        user_create_data: UserInputEntity,
+):
+    password = user_create_data.password
+    fetched_user = user_service.create_object(user_create_data)
+    response = client.post(reverse('login'), data={'username': fetched_user.username, 'password': password})
+
+    assert response.status_code == HTTPStatus.FOUND
+    url = reverse("index")
+    assert response.url.startswith(url)
+    assert response.wsgi_request.user.is_authenticated
+
+
+@login_user
+@pytest.mark.django_db
+def test_logout(client):
+    response = client.post(reverse('logout'))
+
+    assert response.status_code == HTTPStatus.FOUND
+    url = reverse("index")
+    assert response.url.startswith(url)
+    assert not response.wsgi_request.user.is_authenticated
