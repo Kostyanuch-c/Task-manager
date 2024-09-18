@@ -3,12 +3,12 @@ from datetime import datetime
 
 
 @dataclass
-class StatusOutputEntity:
+class StatusEntity:
     id: int  # noqa
     title: str
     created_at: datetime
 
 
 @dataclass
-class StatusInputEntity:
+class StatusInput:
     title: str

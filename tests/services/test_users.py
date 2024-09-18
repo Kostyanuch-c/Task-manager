@@ -7,7 +7,7 @@ from tests.fixtures.services.users import (  # noqa
     user_service,
 )
 
-from task_manager.users.entities import UserInputEntity
+from task_manager.users.entities import UserInput
 from task_manager.users.exceptions import UsernameIsNotFreeException
 from task_manager.users.services.user_service import UserService
 
@@ -33,7 +33,7 @@ def test_get_users_zero(user_service: UserService):
 @pytest.mark.django_db
 def test_create_user(
     user_service: UserService,
-    user_create_data: UserInputEntity,
+    user_create_data: UserInput,
 ):
     fetched_user = user_service.create_object(user_create_data)
 
@@ -49,7 +49,7 @@ def test_create_user(
 @pytest.mark.django_db
 def test_create_user_username_already_exists(
     user_service: UserService,
-    user_create_data: UserInputEntity,
+    user_create_data: UserInput,
 ):
     UserModelFactory.create(
         first_name="New first_name",
@@ -64,7 +64,7 @@ def test_create_user_username_already_exists(
 @pytest.mark.django_db
 def test_update_user_correct(
     user_service: UserService,
-    user_create_data: UserInputEntity,
+    user_create_data: UserInput,
 ):
     user = UserModelFactory.create()
 
@@ -85,7 +85,7 @@ def test_update_user_correct(
 @pytest.mark.django_db
 def test_update_user_username_already_exists(
     user_service: UserService,
-    user_create_data: UserInputEntity,
+    user_create_data: UserInput,
 ):
     user = UserModelFactory.create(
         first_name="New first_name",

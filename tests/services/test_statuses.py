@@ -7,7 +7,7 @@ from tests.fixtures.services.statuses import (  # noqa
     status_service,
 )
 
-from task_manager.tasks.entities.status_entity import StatusInputEntity
+from task_manager.tasks.entities.status_entity import StatusInput
 from task_manager.tasks.exceptions.status_exceptions import (
     StatusTitleIsNotFreeException,
 )
@@ -28,20 +28,22 @@ def test_get_status_all(status_service: StatusService):
 
 @pytest.mark.django_db
 def test_create_status(
-        status_service: StatusService,
-        status_create_data: StatusInputEntity,
+    status_service: StatusService,
+    status_create_data: StatusInput,
 ):
     fetched_status = status_service.create_object(status_create_data)
     assert fetched_status is not None
-    assert fetched_status.title == status_create_data.title, f"{fetched_status.title=}"
+    assert (
+        fetched_status.title == status_create_data.title
+    ), f"{fetched_status.title=}"
 
 
 @pytest.mark.django_db
 def test_create_status_title_already_exists(
-        status_service: StatusService,
-        status_create_data: StatusInputEntity,
+    status_service: StatusService,
+    status_create_data: StatusInput,
 ):
-    StatusModelFactory.create(title='new_title')
+    StatusModelFactory.create(title="new_title")
 
     with pytest.raises(StatusTitleIsNotFreeException):
         status_service.create_object(status_create_data)
@@ -49,8 +51,8 @@ def test_create_status_title_already_exists(
 
 @pytest.mark.django_db
 def test_update_user_correct(
-        status_service: StatusService,
-        status_create_data: StatusInputEntity,
+    status_service: StatusService,
+    status_create_data: StatusInput,
 ):
     status = StatusModelFactory.create()
 
@@ -65,11 +67,11 @@ def test_update_user_correct(
 
 @pytest.mark.django_db
 def test_update_user_username_already_exists(
-        status_service: StatusService,
-        status_create_data: StatusInputEntity,
+    status_service: StatusService,
+    status_create_data: StatusInput,
 ):
     status = StatusModelFactory.create(
-        title='new_title',
+        title="new_title",
     )
     with pytest.raises(StatusTitleIsNotFreeException):
         status_service.update_object(status.id, status_create_data)

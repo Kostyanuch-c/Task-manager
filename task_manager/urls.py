@@ -27,9 +27,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("task_manager.users.urls")),
     path("statuses/", include("task_manager.tasks.urls.status_urls")),
+    path("tasks/", include("task_manager.tasks.urls.task_urls")),
 ]
 
-handler404 = "task_manager.users.views.page_not_found_view"
+handler404 = "task_manager.users.views.auth_views.page_not_found_view"
 if settings.DEBUG:
     import debug_toolbar
 

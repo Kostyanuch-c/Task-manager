@@ -1,7 +1,9 @@
+from django.contrib import messages
 from django.http import (
     HttpRequest,
     HttpResponse,
 )
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
@@ -15,8 +17,9 @@ from task_manager.common.utils import (
     MessagesLoginRequiredMixin,
     UpdateObjectMixin,
 )
-from task_manager.tasks.entities.status_entity import StatusInputEntity
+from task_manager.tasks.entities.status_entity import StatusInput
 from task_manager.tasks.exceptions.status_exceptions import (
+    StatusDeleteProtectedError,
     StatusTitleIsNotFreeException,
 )
 from task_manager.tasks.forms.status_form import StatusForm
@@ -57,7 +60,7 @@ class StatusCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
     service = StatusService()
 
     def form_valid(self, form: StatusForm) -> HttpResponse:
-        entity = StatusInputEntity(form.cleaned_data["title"])
+        entity = StatusInput(form.cleaned_data["title"])
         try:
             return self.mixin_form_valid(
                 request=self.request,
@@ -84,7 +87,7 @@ class StatusUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
     service = StatusService()
 
     def form_valid(self, form: StatusForm) -> HttpResponse:
-        entity = StatusInputEntity(form.cleaned_data["title"])
+        entity = StatusInput(form.cleaned_data["title"])
         try:
             return self.mixin_form_valid(
                 request=self.request,
@@ -98,11 +101,17 @@ class StatusUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
 
 
 class StatusDeleteView(
-    MessagesLoginRequiredMixin, DeleteObjectMixin, TemplateView,
+    MessagesLoginRequiredMixin,
+    DeleteObjectMixin,
+    TemplateView,
 ):
     template_name = "tasks/statuses/status_delete.html"
     success_message = _("Status successfully deleted.")
-    success_url = reverse_lazy("status_list")
+    url_to = reverse_lazy("status_list")
+
+    extra_context = {
+        "entity_name": _("as status"),
+    }
 
     service = StatusService()
 
@@ -113,4 +122,8 @@ class StatusDeleteView(
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        return self.delete(request, **kwargs)
+        try:
+            return self.delete(request, **kwargs)
+        except StatusDeleteProtectedError as exception:
+            messages.error(request, exception.message)
+            return redirect(self.url_to)

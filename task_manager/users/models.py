@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 
-from task_manager.users.entities import UserOutputEntity as UserEntity
+from task_manager.users.entities import UserEntity as UserEntity
 
 
 class User(AbstractUser):

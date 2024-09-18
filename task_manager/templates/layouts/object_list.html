@@ -2,15 +2,6 @@
 {% load custom_filters %}
 
 <div class="container-lg mt-3 ">
-    <h1>{{ title_list }}</h1>
-    {% if create_button_name %}
-        <div class="row justify-content-start">
-            <div>
-                <button type="button" class=" float-start btn btn-lg btn-outline-primary mb-2"
-                        onclick="location.href='{% url url_to_create %}'">{{ create_button_name }}</button>
-            </div>
-        </div>
-    {% endif %}
     <div class="table-responsive ">
         <table class="table table-bordered text-nowrap table-striped table-dark">
             <thead>
@@ -28,7 +19,7 @@
                 <tr>
                     <td>{{ object.id }}</td>
                     {% for field in fields %}
-                        <td>{{ object|get_attribute:field }}</td>
+                        <td>{{ object|get_attribute:field|default:'' }}</td>
                     {% endfor %}
                     <td>{{ object.created_at|date:"d:m:Y H:i" }}</td>
                     <td>

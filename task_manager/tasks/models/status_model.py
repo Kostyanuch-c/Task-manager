@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from task_manager.common.models import BaseTimedModel
-from task_manager.tasks.entities.status_entity import StatusOutputEntity
+from task_manager.tasks.entities.status_entity import StatusEntity
 
 
 class Status(BaseTimedModel):
@@ -13,7 +13,7 @@ class Status(BaseTimedModel):
     )
 
     def to_entity(self):
-        return StatusOutputEntity(
+        return StatusEntity(
             id=self.id,
             title=self.title,
             created_at=self.created_at,

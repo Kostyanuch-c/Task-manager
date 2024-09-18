@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 @dataclass
-class UserOutputEntity:
+class UserEntity:
     id: int  # noqa
     username: str
     full_name: str
@@ -12,7 +12,7 @@ class UserOutputEntity:
 
 
 @dataclass
-class UserInputEntity:
+class UserInput:
     first_name: str
     last_name: str
     username: str

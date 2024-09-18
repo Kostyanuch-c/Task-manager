@@ -11,7 +11,7 @@ from tests.fixtures.services.statuses import (  # noqa
     status_service,
 )
 
-from task_manager.tasks.entities.status_entity import StatusInputEntity
+from task_manager.tasks.entities.status_entity import StatusInput
 from task_manager.tasks.services.status_service import StatusService
 
 
@@ -48,9 +48,9 @@ def test_statuses_delete_without_login_and_without_statuses(client):
 @login_user
 @pytest.mark.django_db
 def test_list_status(
-        client,
-        status_service: StatusService,
-        status_create_data: StatusInputEntity,
+    client,
+    status_service: StatusService,
+    status_create_data: StatusInput,
 ):
     fetched_status = status_service.create_object(status_create_data)
     response = client.get("/statuses/")
@@ -62,10 +62,10 @@ def test_list_status(
 @login_user
 @pytest.mark.django_db
 def test_status_update_with_login(
-        client,
-        status_service: StatusService,
-        status_create_data: StatusInputEntity,
-        status_form_data: dict,
+    client,
+    status_service: StatusService,
+    status_create_data: StatusInput,
+    status_form_data: dict,
 ):
     fetched_status = status_service.create_object(status_create_data)
 
@@ -84,9 +84,9 @@ def test_status_update_with_login(
 @login_user
 @pytest.mark.django_db
 def test_status_delete_with_login(
-        client,
-        status_service: StatusService,
-        status_create_data: StatusInputEntity,
+    client,
+    status_service: StatusService,
+    status_create_data: StatusInput,
 ):
     fetched_status = status_service.create_object(status_create_data)
 
@@ -95,7 +95,7 @@ def test_status_delete_with_login(
     )
 
     assert response.status_code == HTTPStatus.FOUND
-    assert response.url.startswith(reverse("status_list"))
+    assert response.url.startswith(reverse("status_list")), f"{response.url}"
 
     with pytest.raises(Http404):
         status_service.get_object(fetched_status.id)
@@ -104,10 +104,10 @@ def test_status_delete_with_login(
 @login_user
 @pytest.mark.django_db
 def test_create_status(
-        client,
-        status_service: StatusService,
-        status_create_data: StatusInputEntity,
-        status_form_data: dict,
+    client,
+    status_service: StatusService,
+    status_create_data: StatusInput,
+    status_form_data: dict,
 ):
     response = client.post(reverse("status_create"), data=status_form_data)
 

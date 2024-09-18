@@ -1,16 +1,9 @@
-from http import HTTPStatus
-
 from django.contrib import messages
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.messages.views import SuccessMessageMixin
 from django.http import (
     HttpRequest,
     HttpResponse,
 )
-from django.shortcuts import (
-    redirect,
-    render,
-)
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
@@ -24,15 +17,13 @@ from task_manager.common.utils import (
     MessagesLoginRequiredMixin,
     UpdateWithPermissionsMixin,
 )
-from task_manager.users.entities import UserInputEntity
-from task_manager.users.exceptions import UsernameIsNotFreeException
+from task_manager.users.entities import UserInput
+from task_manager.users.exceptions import (
+    UserDeleteProtectedError,
+    UsernameIsNotFreeException,
+)
 from task_manager.users.form import RegisterUserForm
-from task_manager.users.services.auth_service import AuthService
 from task_manager.users.services.user_service import UserService
-
-
-class IndexView(TemplateView):
-    template_name = "index.html"
 
 
 class UsersListView(TemplateView):
@@ -67,7 +58,7 @@ class RegisterUserView(CreateObjectMixin, FormView):
     service = UserService()
 
     def form_valid(self, form: RegisterUserForm) -> HttpResponse:
-        entity = UserInputEntity(
+        entity = UserInput(
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
             username=form.cleaned_data["username"],
@@ -85,7 +76,9 @@ class RegisterUserView(CreateObjectMixin, FormView):
 
 
 class UserUpdateView(
-    MessagesLoginRequiredMixin, UpdateWithPermissionsMixin, FormView,
+    MessagesLoginRequiredMixin,
+    UpdateWithPermissionsMixin,
+    FormView,
 ):
     form_class = RegisterUserForm
     template_name = "users/user_update_form.html"
@@ -101,7 +94,7 @@ class UserUpdateView(
     service = UserService()
 
     def form_valid(self, form: RegisterUserForm) -> HttpResponse:
-        entity = UserInputEntity(
+        entity = UserInput(
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
             username=form.cleaned_data["username"],
@@ -120,10 +113,17 @@ class UserUpdateView(
 
 
 class UserDeleteView(
-    MessagesLoginRequiredMixin, DeleteWithPermissionsMixin, TemplateView,
+    MessagesLoginRequiredMixin,
+    DeleteWithPermissionsMixin,
+    TemplateView,
 ):
     template_name = "users/user_delete.html"
     success_message = _("User successfully deleted.")
+    url_to = reverse_lazy("users_list")
+
+    extra_context = {
+        "entity_name": _("user"),
+    }
 
     service = UserService()
 
@@ -134,30 +134,8 @@ class UserDeleteView(
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        return self.delete(request, **kwargs)
-
-
-class LoginInView(SuccessMessageMixin, FormView):
-    form_class = AuthenticationForm
-    template_name = "users/login.html"
-
-    success_message = _("You have been logged in.")
-    success_url = reverse_lazy("index")
-
-    service = AuthService()
-
-    def form_valid(self, form: AuthenticationForm) -> HttpResponse:
-        if self.service.login_user(request=self.request, **form.cleaned_data):
-            return super().form_valid(form)
-
-        return self.form_invalid(form)
-
-
-def logout_view(request: HttpRequest) -> HttpResponse:
-    AuthService().logout_user(request)
-    messages.info(request, _("You have been logged out."))
-    return redirect(reverse_lazy("index"))
-
-
-def page_not_found_view(request, exception):
-    return render(request, "errors/404.html", status=HTTPStatus.NOT_FOUND)
+        try:
+            return self.delete(request, **kwargs)
+        except UserDeleteProtectedError as exception:
+            messages.error(request, exception.message)
+            return redirect(self.url_to)

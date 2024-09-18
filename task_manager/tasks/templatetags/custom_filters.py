@@ -15,7 +15,7 @@ def add_class(field, class_name):
 
 @register.filter
 def get_attribute(obj, field_name):
-    attribute = getattr(obj, field_name, None)
+    attribute = getattr(obj, field_name, '')
     if callable(attribute):
         return attribute()
     return attribute

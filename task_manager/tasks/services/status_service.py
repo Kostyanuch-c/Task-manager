@@ -2,13 +2,15 @@ from django.db import (
     IntegrityError,
     transaction,
 )
+from django.db.models import ProtectedError
 
 from task_manager.common.base_service import BaseService
 from task_manager.tasks.entities.status_entity import (
-    StatusInputEntity,
-    StatusOutputEntity,
+    StatusEntity,
+    StatusInput,
 )
 from task_manager.tasks.exceptions.status_exceptions import (
+    StatusDeleteProtectedError,
     StatusTitleIsNotFreeException,
 )
 from task_manager.tasks.repositories.status_repository import StatusRepository
@@ -18,24 +20,25 @@ class StatusService(BaseService):
     def __init__(self):
         self.repository = StatusRepository()
 
-    def get_all_objects(self) -> list[StatusOutputEntity]:
+    def get_all_objects(self) -> list[StatusEntity]:
         return self.repository.get_all_objects()
 
-    def get_object(self, status_id: int) -> StatusOutputEntity:
+    def get_object(self, status_id: int) -> StatusEntity:
         return self.repository.get_object(status_id)
 
-    def create_object(self, status: StatusInputEntity) -> StatusOutputEntity:
+    def create_object(self, status: StatusInput) -> StatusEntity:
         try:
             with transaction.atomic():
                 return self.repository.create_object(status=status)
 
         except IntegrityError:
+            print(123)
             raise StatusTitleIsNotFreeException()
 
     def update_object(
         self,
         status_id: int,
-        status: StatusInputEntity,
+        status: StatusInput,
     ) -> None:
         if not self.repository.is_object_name_free(status.title):
             raise StatusTitleIsNotFreeException()
@@ -43,4 +46,7 @@ class StatusService(BaseService):
         self.repository.update_object(status_id, status)
 
     def delete_object(self, status_id: int) -> None:
-        return self.repository.delete_object(status_id)
+        try:
+            return self.repository.delete_object(status_id)
+        except ProtectedError:
+            raise StatusDeleteProtectedError

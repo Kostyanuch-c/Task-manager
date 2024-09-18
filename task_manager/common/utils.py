@@ -9,7 +9,6 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
-from task_manager.users.entities import UserOutputEntity as UserEntity
 from task_manager.users.exceptions import ServiceNotDefinedError
 
 
@@ -43,7 +42,7 @@ class BaseObjectMixin(BaseServiceMixin):
         """Return the object id from urls params"""
         return kwargs.get(self.kwargs_key_for_id, 0)
 
-    def get_object(self, **kwargs) -> UserEntity:
+    def get_object(self, **kwargs) -> object:
         """Return object from URL params (loads once)"""
         if self._owner_object is None:
             self._owner_object = self.service.get_object(
@@ -58,10 +57,10 @@ class CreateObjectMixin(BaseServiceMixin):
     success_message = _("Created successfully")
 
     def mixin_form_valid(
-        self,
-        request: HttpRequest,
-        form: BaseForm,
-        object_data: object,
+            self,
+            request: HttpRequest,
+            form: BaseForm,
+            object_data: object,
     ) -> HttpResponse:
         self.service.create_object(object_data)
         messages.success(request, self.success_message)
@@ -74,14 +73,14 @@ class UpdateObjectMixin(BaseObjectMixin):
     success_message = _("Created successfully")
 
     def mixin_form_valid(
-        self,
-        request: HttpRequest,
-        form: BaseForm,
-        object_data: object,
-        **kwargs,
+            self,
+            request: HttpRequest,
+            form: BaseForm,
+            object_data: object,
+            **kwargs,
     ) -> HttpResponse:
         self.service.update_object(
-            self.get_from_kwargs_object_id(**kwargs),
+            kwargs.get(self.kwargs_key_for_id, 0),
             object_data,
         )
 
@@ -93,12 +92,12 @@ class DeleteObjectMixin(BaseObjectMixin):
     """Mixin for handling object deletion"""
 
     success_message = _("User successfully deleted.")
-    success_url = reverse_lazy("users_list")
+    url_to = reverse_lazy("users_list")
 
     def delete(self, request: HttpRequest, **kwargs) -> HttpResponse:
-        self.service.delete_object(self.get_from_kwargs_object_id(**kwargs))
+        self.service.delete_object(kwargs.get(self.kwargs_key_for_id, 0))
         messages.success(request, self.success_message)
-        return redirect(self.success_url)
+        return redirect(self.url_to)
 
 
 class PermissionsObjectChangeMixin(BaseObjectMixin):
@@ -109,8 +108,12 @@ class PermissionsObjectChangeMixin(BaseObjectMixin):
     )
     redirect_failed = reverse_lazy("users_list")
 
+    permission_to_edit_object: bool = True
+
     def has_permission(
-        self, request_user: object, owner_object: UserEntity,
+            self,
+            request_user: object,
+            owner_object: object,
     ) -> bool:  # noqa
         """Check if the current user is the object owner"""
         return owner_object.id == request_user.id
@@ -121,8 +124,8 @@ class PermissionsObjectChangeMixin(BaseObjectMixin):
         if self.get_from_kwargs_object_id(**kwargs) != request_user.id:
             owner_object = self.get_object(**kwargs)
             if not self.has_permission(
-                request_user=request_user,
-                owner_object=owner_object,
+                    request_user=request_user,
+                    owner_object=owner_object,
             ):
                 messages.error(request, self.message_failed_permissions)
                 return redirect(self.redirect_failed)

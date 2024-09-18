@@ -1,11 +1,11 @@
 import functools
 
-from task_manager.users.entities import UserInputEntity
+from task_manager.users.entities import UserInput
 from task_manager.users.services.user_service import UserService
 
 
 USER_SERVICE = UserService()
-USER_CREATE_DATA = UserInputEntity(
+USER_CREATE_DATA = UserInput(
     first_name="New first_name",
     last_name="New last_name",
     username="new_username",
@@ -22,6 +22,7 @@ def login_user(func):
         return func(client, *args, **kwargs)
 
     return inner
+
 
 #
 # def login_user(cl):

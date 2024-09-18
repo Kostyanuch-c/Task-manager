@@ -1,6 +1,6 @@
 import pytest
 
-from task_manager.tasks.entities.status_entity import StatusInputEntity
+from task_manager.tasks.entities.status_entity import StatusInput
 from task_manager.tasks.services.status_service import StatusService
 
 
@@ -10,7 +10,7 @@ def status_service() -> StatusService:
 
 
 @pytest.fixture()
-def status_create_data() -> StatusInputEntity:
-    return StatusInputEntity(
-        title='new_title',
+def status_create_data() -> StatusInput:
+    return StatusInput(
+        title="new_title",
     )
