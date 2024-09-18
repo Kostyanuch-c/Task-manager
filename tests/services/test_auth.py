@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from django.http import HttpRequest
 
-from tests.fixtures.auth_service import (  # noqa
+from tests.fixtures.services.auth import (  # noqa
     auth_service,
     mock_request,
 )

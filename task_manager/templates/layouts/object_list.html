@@ -3,6 +3,14 @@
 
 <div class="container-lg mt-3 ">
     <h1>{{ title_list }}</h1>
+    {% if create_button_name %}
+        <div class="row justify-content-start">
+            <div>
+                <button type="button" class=" float-start btn btn-lg btn-outline-primary mb-2"
+                        onclick="location.href='{% url url_to_create %}'">{{ create_button_name }}</button>
+            </div>
+        </div>
+    {% endif %}
     <div class="table-responsive ">
         <table class="table table-bordered text-nowrap table-striped table-dark">
             <thead>

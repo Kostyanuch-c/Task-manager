@@ -29,6 +29,8 @@ class StatusListView(MessagesLoginRequiredMixin, TemplateView):
     extra_context = {
         "title_list": _("Statuses"),
         "titles_columns": (_("Name"),),
+        "create_button_name": _("Create status"),
+        "url_to_create": "status_create",
         "url_to_update": "status_update",
         "url_to_delete": "status_delete",
         "fields": ("title",),
@@ -107,7 +109,7 @@ class StatusDeleteView(
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["object"] = self.get_object(**kwargs)
-        context["field"] = "name"
+        context["field"] = "title"
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

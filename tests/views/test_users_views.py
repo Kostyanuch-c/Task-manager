@@ -5,11 +5,11 @@ from django.shortcuts import reverse
 
 import pytest
 from tests.factories.users import UserModelFactory
-from tests.fixtures.user_service import (  # noqa
+from tests.fixtures.forms.users import users_form_data  # noqa
+from tests.fixtures.services.users import (  # noqa
     user_create_data,
     user_service,
 )
-from tests.fixtures.users_form_data import users_form_data  # noqa
 
 from task_manager.users.entities import UserInputEntity
 from task_manager.users.services.user_service import UserService
@@ -116,8 +116,8 @@ def test_update_without_permission(
 
     assert response.status_code == HTTPStatus.FOUND
 
-    login_url = reverse("users_list")
-    assert response.url.startswith(login_url)
+    url = reverse("users_list")
+    assert response.url.startswith(url)
 
 
 @pytest.mark.django_db
@@ -137,7 +137,6 @@ def test_delete_user_with_login(
     client,
     user_service: UserService,
     user_create_data: UserInputEntity,
-    users_form_data: dict,
 ):
     password = user_create_data.password
     fetched_user = user_service.create_object(user_create_data)
@@ -146,7 +145,6 @@ def test_delete_user_with_login(
 
     response = client.post(
         reverse("delete_user", args=[fetched_user.id]),
-        data=users_form_data,
     )
 
     assert response.status_code == HTTPStatus.FOUND
@@ -190,14 +188,6 @@ def test_registration_user(
     users = user_service.get_all_objects()
     assert len(users) == 1
 
-
-def test_get_statuses_without_login(client):
-    response = client.get("/statuses/")
-
-    assert response.status_code == HTTPStatus.FOUND
-
-    login_url = reverse("login")
-    assert response.url.startswith(login_url)
 
 
 def test_404(client):

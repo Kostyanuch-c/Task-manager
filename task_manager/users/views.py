@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.messages.views import SuccessMessageMixin
@@ -158,4 +160,4 @@ def logout_view(request: HttpRequest) -> HttpResponse:
 
 
 def page_not_found_view(request, exception):
-    return render(request, "errors/404.html", status=404)
+    return render(request, "errors/404.html", status=HTTPStatus.NOT_FOUND)

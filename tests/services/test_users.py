@@ -2,7 +2,7 @@ from django.http import Http404
 
 import pytest
 from tests.factories.users import UserModelFactory
-from tests.fixtures.user_service import (  # noqa
+from tests.fixtures.services.users import (  # noqa
     user_create_data,
     user_service,
 )
