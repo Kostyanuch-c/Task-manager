@@ -10,9 +10,9 @@ class TaskEntity:
     id: int  # noqa
     name: str
     description: str | None
-    status_name: str
-    author_full_name: str
-    performer_full_name: str | None
+    status: Status
+    author: User
+    performer: User | None
     created_at: datetime
 
 
@@ -23,3 +23,14 @@ class TaskInput:
     status: Status
     author: User
     performer: User | None
+
+
+@dataclass
+class TaskOutputTemplate:
+    id: int  # noqa
+    name: str
+    description: str | None
+    status_name: str
+    author_full_name: str
+    performer_full_name: str | None
+    created_at: datetime

@@ -24,6 +24,9 @@ class UserService(BaseService):
     def get_all_objects(self) -> list[UserEntity]:
         return self.repository.get_all_objects()
 
+    def get_object(self, user_id: int) -> UserEntity:
+        return self.repository.get_object(user_id)
+
     def create_object(self, user: UserInput) -> UserEntity:
         try:
             with transaction.atomic():
@@ -34,9 +37,9 @@ class UserService(BaseService):
             raise UsernameIsNotFreeException
 
     def update_object(
-            self,
-            user_id: int,
-            user_data: UserInput,
+        self,
+        user_id: int,
+        user_data: UserInput,
     ) -> None:
         if not self.repository.is_username_free(user_data.username):
             raise UsernameIsNotFreeException
@@ -49,6 +52,3 @@ class UserService(BaseService):
             return self.repository.delete_object(user_id)
         except ProtectedError:
             raise UserDeleteProtectedError
-
-    def get_object(self, user_id: int) -> UserEntity:
-        return self.repository.get_object(user_id)

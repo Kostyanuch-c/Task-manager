@@ -3,7 +3,7 @@
 
 <div class="container wrapper flex-grow-1">
     <h1 class="my-4"> {% translate "Deleting" %} {{ entity_name }} </h1>
-    <p>{% translate "Are you sure you want to delete" %} {{ object|get_attribute:field }}?</p>
+    <p>{% translate "Are you sure you want to delete" %} {{ object_name }}?</p>
     <form method="post">
         {% csrf_token %}
         {{ form }}

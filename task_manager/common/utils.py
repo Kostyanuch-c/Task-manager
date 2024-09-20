@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from task_manager.users.exceptions import ServiceNotDefinedError
+from task_manager.users.services.user_service import UserService
 
 
 class MessagesLoginRequiredMixin(LoginRequiredMixin):
@@ -25,30 +26,26 @@ class MessagesLoginRequiredMixin(LoginRequiredMixin):
 class BaseServiceMixin:
     """Mixin for init service"""
 
+    kwargs_key_for_id = "pk"
     service = None
+    _object_id = None
+    _cached_object = None
 
     def __init__(self):
         if self.service is None:
             raise ServiceNotDefinedError
 
-
-class BaseObjectMixin(BaseServiceMixin):
-    """Mixin for get  object and object_id"""
-
-    kwargs_key_for_id = "pk"
-    _owner_object = None
-
     def get_from_kwargs_object_id(self, **kwargs):
-        """Return the object id from urls params"""
-        return kwargs.get(self.kwargs_key_for_id, 0)
+        if self._object_id is None:
+            self._object_id = kwargs.get(self.kwargs_key_for_id, 0)
+        return self._object_id
 
-    def get_object(self, **kwargs) -> object:
-        """Return object from URL params (loads once)"""
-        if self._owner_object is None:
-            self._owner_object = self.service.get_object(
-                self.get_from_kwargs_object_id(**kwargs),
+    def get_object(self, **kwargs):
+        if self._cached_object is None:
+            self._cached_object = self.service.repository.get_object(
+                kwargs.get(self.kwargs_key_for_id, 0),
             )
-        return self._owner_object
+        return self._cached_object
 
 
 class CreateObjectMixin(BaseServiceMixin):
@@ -57,30 +54,30 @@ class CreateObjectMixin(BaseServiceMixin):
     success_message = _("Created successfully")
 
     def mixin_form_valid(
-            self,
-            request: HttpRequest,
-            form: BaseForm,
-            object_data: object,
+        self,
+        request: HttpRequest,
+        form: BaseForm,
+        object_data: object,
     ) -> HttpResponse:
         self.service.create_object(object_data)
         messages.success(request, self.success_message)
         return super().form_valid(form)
 
 
-class UpdateObjectMixin(BaseObjectMixin):
+class UpdateObjectMixin(BaseServiceMixin):
     """Mixin for handling object update"""
 
     success_message = _("Created successfully")
 
     def mixin_form_valid(
-            self,
-            request: HttpRequest,
-            form: BaseForm,
-            object_data: object,
-            **kwargs,
+        self,
+        request: HttpRequest,
+        form: BaseForm,
+        object_data: object,
+        **kwargs,
     ) -> HttpResponse:
         self.service.update_object(
-            kwargs.get(self.kwargs_key_for_id, 0),
+            self.get_from_kwargs_object_id(**kwargs),
             object_data,
         )
 
@@ -88,60 +85,50 @@ class UpdateObjectMixin(BaseObjectMixin):
         return super().form_valid(form)
 
 
-class DeleteObjectMixin(BaseObjectMixin):
+class DeleteObjectMixin(BaseServiceMixin):
     """Mixin for handling object deletion"""
 
     success_message = _("User successfully deleted.")
     url_to = reverse_lazy("users_list")
 
     def delete(self, request: HttpRequest, **kwargs) -> HttpResponse:
-        self.service.delete_object(kwargs.get(self.kwargs_key_for_id, 0))
+        self.service.delete_object(self.get_from_kwargs_object_id(**kwargs))
         messages.success(request, self.success_message)
         return redirect(self.url_to)
 
 
-class PermissionsObjectChangeMixin(BaseObjectMixin):
-    """Mixin check permissions for edit object"""
-
-    message_failed_permissions = _(
-        "You do not have permission to change another user.",
-    )
-    redirect_failed = reverse_lazy("users_list")
-
-    permission_to_edit_object: bool = True
-
-    def has_permission(
-            self,
-            request_user: object,
-            owner_object: object,
-    ) -> bool:  # noqa
-        """Check if the current user is the object owner"""
-        return owner_object.id == request_user.id
+class CheckMixin(BaseServiceMixin):
+    message_failed_permissions = _("You do not have permission to change")
+    redirect_failed = "/"
+    _has_permission = False
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        request_user = request.user
+        object_id = self.get_from_kwargs_object_id(**kwargs)
 
-        if self.get_from_kwargs_object_id(**kwargs) != request_user.id:
-            owner_object = self.get_object(**kwargs)
-            if not self.has_permission(
-                    request_user=request_user,
-                    owner_object=owner_object,
-            ):
-                messages.error(request, self.message_failed_permissions)
-                return redirect(self.redirect_failed)
+        if isinstance(self.service, UserService):
+            self._has_permission = request.user.id == object_id
+        else:
+            object_ = self.get_object(**kwargs)
+            self._has_permission = self.service.check_permissions(
+                request.user, object_,
+            )
+
+        if not self._has_permission:
+            messages.error(request, self.message_failed_permissions)
+            return redirect(self.redirect_failed)
 
         return super().dispatch(request, *args, **kwargs)
 
 
-class UpdateWithPermissionsMixin(
-    PermissionsObjectChangeMixin,
+class UpdateWithCheckPermissionsMixin(
+    CheckMixin,
     UpdateObjectMixin,
 ):
     """Mixin for updating object with permissions check."""
 
 
-class DeleteWithPermissionsMixin(
-    PermissionsObjectChangeMixin,
+class DeleteWithCheckPermissionsMixin(
+    CheckMixin,
     DeleteObjectMixin,
 ):
     """Mixin for delete object with permissions check."""

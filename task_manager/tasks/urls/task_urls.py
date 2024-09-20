@@ -10,6 +10,7 @@ urlpatterns = [
         task_views.TaskCreateView.as_view(),
         name="task_create",
     ),
+    path("<int:pk>/", task_views.TaskDetailView.as_view(), name="task_detail"),
     path(
         "<int:pk>/update/",
         task_views.TaskUpdateView.as_view(),

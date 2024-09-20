@@ -1,0 +1,28 @@
+{% extends "layouts/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container mt-3 mb-0 text-start">
+        <h1 class="display-3">{% translate "View task" %}</h1>
+    </div>
+    <div class=" container mt-1">
+        <div class="rounded-3 p-4 m-2 text-start bg-dark text-light shadow-lg">
+
+            <h2 class="text-break">{{ object.name }}</h2>
+
+            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Description" %}: {{ object.description }}</p>
+            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Author" %}: {{ object.author_full_name }}</p>
+
+            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Performer" %}: {{ object.performer_full_name }}</p>
+            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Status" %}: {{ object.status_name }}</p>
+            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Created at" %}: {{ object.created_at }}</p>
+            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Tags" %}:</p>
+
+            <button type="button" class="btn btn-lg btn-outline-primary "
+                    onclick="location.href='{% url 'task_update' object.id %}'">{% translate "Edit" %}</button>
+
+            <button type="button" class="btn btn-lg btn-outline-danger mx-4"
+                    onclick="location.href='{% url 'task_delete' object.id %}'">{% translate "Delete" %}</button>
+        </div>
+    </div>
+{% endblock %}

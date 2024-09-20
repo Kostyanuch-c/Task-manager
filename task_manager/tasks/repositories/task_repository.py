@@ -1,5 +1,3 @@
-from django.shortcuts import get_object_or_404
-
 from task_manager.common.base_repositories import BaseRepository
 from task_manager.tasks.entities.task_entity import (
     TaskEntity,
@@ -17,7 +15,9 @@ class TaskRepository(BaseRepository):
 
     def get_all_objects(self) -> list[TaskEntity]:
         queryset = self.task.objects.all().select_related(
-            "status", "author", "performer",
+            "status",
+            "author",
+            "performer",
         )
         return [task.to_entity() for task in queryset]
 
@@ -44,4 +44,9 @@ class TaskRepository(BaseRepository):
         self.task.objects.filter(id=task_id).delete()
 
     def get_object(self, task_id: int) -> TaskEntity:
-        return get_object_or_404(self.task, id=task_id)
+        return (
+            self.task.objects.filter(id=task_id)
+            .select_related("author", "performer")
+            .get()
+            .to_entity()
+        )

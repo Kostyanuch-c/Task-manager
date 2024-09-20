@@ -13,9 +13,9 @@ from django.views.generic import (
 
 from task_manager.common.utils import (
     CreateObjectMixin,
-    DeleteWithPermissionsMixin,
+    DeleteWithCheckPermissionsMixin,
     MessagesLoginRequiredMixin,
-    UpdateWithPermissionsMixin,
+    UpdateWithCheckPermissionsMixin,
 )
 from task_manager.users.entities import UserInput
 from task_manager.users.exceptions import (
@@ -77,14 +77,17 @@ class RegisterUserView(CreateObjectMixin, FormView):
 
 class UserUpdateView(
     MessagesLoginRequiredMixin,
-    UpdateWithPermissionsMixin,
+    UpdateWithCheckPermissionsMixin,
     FormView,
 ):
     form_class = RegisterUserForm
     template_name = "users/user_update_form.html"
 
-    success_url = reverse_lazy("users_list")
+    success_url = redirect_failed = reverse_lazy("users_list")
     success_message = _("User updated successfully.")
+    message_failed_permissions = _(
+        "you do not have permission to change another user",
+    )
 
     extra_context = {
         "title_form": _("Edit user"),
@@ -114,13 +117,15 @@ class UserUpdateView(
 
 class UserDeleteView(
     MessagesLoginRequiredMixin,
-    DeleteWithPermissionsMixin,
+    DeleteWithCheckPermissionsMixin,
     TemplateView,
 ):
     template_name = "users/user_delete.html"
     success_message = _("User successfully deleted.")
-    url_to = reverse_lazy("users_list")
-
+    url_to = redirect_failed = reverse_lazy("users_list")
+    message_failed_permissions = _(
+        "You do not have permission to change another user",
+    )
     extra_context = {
         "entity_name": _("user"),
     }
@@ -129,8 +134,7 @@ class UserDeleteView(
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context["object"] = self.get_object(**kwargs)
-        context["field"] = "full_name"
+        context["object_name"] = self.request.user.full_name
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
