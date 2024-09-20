@@ -1,9 +1,13 @@
-from django.forms import ModelForm
+from django import forms
+from django.contrib.auth import get_user_model
 
-from task_manager.tasks.models import Task
+from task_manager.tasks.models import (
+    Status,
+    Task,
+)
 
 
-class TaskForm(ModelForm):
+class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = [
@@ -24,3 +28,17 @@ class TaskForm(ModelForm):
 
     def validate_unique(self):
         pass
+
+
+class TaskFilterForm(forms.Form):
+    status = forms.ModelChoiceField(
+        queryset=Status.objects.all(), required=False,
+    )
+    performer = forms.ModelChoiceField(
+        queryset=get_user_model().objects.all(),
+        required=False,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["performer"].label_from_instance = lambda obj: obj.full_name

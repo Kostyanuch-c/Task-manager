@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load custom_filters %}
+
+<div class="container-lg mt-1">
+    <div class="row text-light shadow-lg">
+        <div class="col">
+            <form action="{% url 'task_list' %}" method="get">
+                <div class="row input-group mb-2 mt-1 justify-content-md-center">
+                    {% for field in form %}
+                        <div class="col-md-3 mx-3">
+                            <label class="form-label text-white-75 mx-2"
+                                   for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field|add_class:'form-control' }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="justify-content-start align-items-center mb-3">
+                    <div class="form-check">
+                        <label for="id_self_tasks" class="mt-1 mb-2">
+                            <input id="id_self_tasks" type="checkbox" name="self_tasks"> {% translate "Only my task" %}
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary">{% translate "Check" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

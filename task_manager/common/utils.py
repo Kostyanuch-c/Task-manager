@@ -43,7 +43,7 @@ class BaseServiceMixin:
     def get_object(self, **kwargs):
         if self._cached_object is None:
             self._cached_object = self.service.repository.get_object(
-                kwargs.get(self.kwargs_key_for_id, 0),
+                self.get_from_kwargs_object_id(**kwargs),
             )
         return self._cached_object
 
@@ -110,7 +110,8 @@ class CheckMixin(BaseServiceMixin):
         else:
             object_ = self.get_object(**kwargs)
             self._has_permission = self.service.check_permissions(
-                request.user, object_,
+                request.user,
+                object_,
             )
 
         if not self._has_permission:

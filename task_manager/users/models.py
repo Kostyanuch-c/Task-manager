@@ -22,5 +22,6 @@ class User(AbstractUser):
         return self.username
 
     class Meta:
+        ordering = ["id"]
         verbose_name = "User"
         verbose_name_plural = "Users"

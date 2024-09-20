@@ -17,7 +17,10 @@ from task_manager.tasks.entities.task_entity import TaskInput
 from task_manager.tasks.exceptions.task_exceptions import (
     TaskNameIsNotFreeException,
 )
-from task_manager.tasks.forms.task_form import TaskForm
+from task_manager.tasks.forms.task_form import (
+    TaskFilterForm,
+    TaskForm,
+)
 from task_manager.tasks.services.task_service import TaskService
 
 
@@ -48,10 +51,17 @@ class TaskListView(MessagesLoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        task_entities = TaskService().get_all_objects()
+        query_params = self.request.GET
+
+        context["form"] = TaskFilterForm(query_params)
+        task_entities = TaskService().get_all_objects(
+            query_params=query_params,
+            user_id=self.request.user.id,
+        )
         context["object_list"] = TaskEntityConverter.to_output_list(
             task_entities,
         )
+
         return context
 
 

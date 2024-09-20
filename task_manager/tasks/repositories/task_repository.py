@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from task_manager.common.base_repositories import BaseRepository
 from task_manager.tasks.entities.task_entity import (
     TaskEntity,
@@ -13,8 +15,8 @@ class TaskRepository(BaseRepository):
     def is_object_name_free(self, name: str) -> bool:
         return not self.task.objects.filter(name=name).exists()
 
-    def get_all_objects(self) -> list[TaskEntity]:
-        queryset = self.task.objects.all().select_related(
+    def get_all_objects(self, query=Q()) -> list[TaskEntity]:
+        queryset = self.task.objects.filter(query).select_related(
             "status",
             "author",
             "performer",

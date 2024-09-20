@@ -2,6 +2,7 @@ from django.db import (
     IntegrityError,
     transaction,
 )
+from django.db.models import Q
 from django.http import Http404
 
 from task_manager.common.base_service import BaseService
@@ -21,8 +22,30 @@ class TaskService(BaseService):
     def __init__(self):
         self.repository = TaskRepository()
 
-    def get_all_objects(self) -> list[TaskEntity]:
-        return self.repository.get_all_objects()
+    def _filter_query(self, query_params: dict, user_id: int) -> Q:
+        query = Q()
+
+        user_task = query_params.get("self_tasks")
+        if user_task:
+            query &= Q(author_id=user_id)
+
+        status_id = query_params.get("status")
+        if status_id:
+            query &= Q(status_id=status_id)
+
+        performer_id = query_params.get("performer")
+        if performer_id:
+            query &= Q(performer_id=performer_id)
+
+        return query
+
+    def get_all_objects(
+        self, query_params=None, user_id=None,
+    ) -> list[TaskEntity]:
+        if not query_params:
+            return self.repository.get_all_objects()
+        query = self._filter_query(query_params, user_id)
+        return self.repository.get_all_objects(query=query)
 
     def get_object(self, task_id: int) -> TaskEntity:
         try:
