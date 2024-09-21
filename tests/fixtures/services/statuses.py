@@ -12,5 +12,5 @@ def status_service() -> StatusService:
 @pytest.fixture()
 def status_create_data() -> StatusInput:
     return StatusInput(
-        title="new_title",
+        name="new_name",
     )

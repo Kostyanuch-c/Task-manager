@@ -9,5 +9,6 @@ class StatusModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Status
 
-    title = factory.Faker('word')
+    name = factory.Faker('word')
     created_at = factory.LazyFunction(timezone.now)
+    updated_at = factory.LazyFunction(timezone.now)

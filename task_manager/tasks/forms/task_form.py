@@ -14,7 +14,7 @@ class TaskForm(forms.ModelForm):
             "name",
             "description",
             "status",
-            "performer",
+            "executor",
         ]
 
     def __init__(self, *args, **kwargs) -> None:
@@ -34,11 +34,11 @@ class TaskFilterForm(forms.Form):
     status = forms.ModelChoiceField(
         queryset=Status.objects.all(), required=False,
     )
-    performer = forms.ModelChoiceField(
+    executor = forms.ModelChoiceField(
         queryset=get_user_model().objects.all(),
         required=False,
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["performer"].label_from_instance = lambda obj: obj.full_name
+        self.fields["executor"].label_from_instance = lambda obj: obj.full_name

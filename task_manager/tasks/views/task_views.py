@@ -37,10 +37,10 @@ class TaskDetailView(MessagesLoginRequiredMixin, TemplateView):
 class TaskListView(MessagesLoginRequiredMixin, TemplateView):
     template_name = "tasks/task_templates/task_list.html"
 
-    fields = ("name", "status_name", "author_full_name", "performer_full_name")
+    fields = ("name", "status_name", "author_full_name", "executor_full_name")
     extra_context = {
         "title_list": _("Tasks"),
-        "titles_columns": (_("Name"), _("Status"), _("Author"), _("Performer")),
+        "titles_columns": (_("Name"), _("Status"), _("Author"), _("Executor")),
         "create_button_name": _("Create task"),
         "url_to_detail": "task_detail",
         "url_to_create": "task_create",
@@ -84,7 +84,7 @@ class TaskCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
             name=form.cleaned_data["name"],
             description=form.cleaned_data["description"],
             status=form.cleaned_data["status"],
-            performer=form.cleaned_data["performer"],
+            executor=form.cleaned_data["executor"],
             author=self.request.user,
         )
 
@@ -118,7 +118,7 @@ class TaskUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
             name=form.cleaned_data["name"],
             description=form.cleaned_data["description"],
             status=form.cleaned_data["status"],
-            performer=form.cleaned_data["performer"],
+            executor=form.cleaned_data["executor"],
             author=self.request.user,
         )
 

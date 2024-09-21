@@ -12,26 +12,25 @@ class StatusRepository(BaseRepository):
     def __init__(self):
         self.status = Status
 
-    def is_object_name_free(self, title: str) -> bool:
-        return not self.status.objects.filter(title=title).exists()
+    def is_object_name_free(self, name: str) -> bool:
+        return not self.status.objects.filter(name=name).exists()
 
     def get_all_objects(self) -> list[StatusEntity]:
         queryset = self.status.objects.all()
         return [status.to_entity() for status in queryset]
 
-    def create_object(self, status: StatusInput) -> StatusEntity:
-        queryset = self.status.objects.create(
-            title=status.title,
+    def create_object(self, status: StatusInput) -> None:
+        self.status.objects.create(
+            name=status.name,
         )
-        return queryset.to_entity()
 
     def update_object(
-        self,
-        status_id: int,
-        status_data: StatusInput,
+            self,
+            status_id: int,
+            status_data: StatusInput,
     ) -> None:
         self.status.objects.filter(id=status_id).update(
-            title=status_data.title,
+            name=status_data.name,
         )
 
     def delete_object(self, status_id: int) -> None:

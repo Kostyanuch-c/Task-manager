@@ -29,7 +29,7 @@ class Task(BaseTimedModel):
         related_name="task_as_author",
     )
 
-    performer = models.ForeignKey(
+    executor = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         verbose_name=_("Performer"),
@@ -45,7 +45,7 @@ class Task(BaseTimedModel):
             description=self.description,
             status=self.status,
             author=self.author,
-            performer=self.performer,
+            executor=self.executor,
             created_at=self.created_at,
         )
 

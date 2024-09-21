@@ -20,17 +20,15 @@ def test_index(client):
     response = client.get("/")
     assert response.status_code == HTTPStatus.OK
     assert (
-        "Task Manager — это удобный инструмент для управления задачами."
-        in response.content.decode("utf-8")
+            "Task Manager — это удобный инструмент для управления задачами."
+            in response.content.decode("utf-8")
     )
 
 
 @login_user
 @pytest.mark.django_db
 def test_index_after_authorized(
-    client,
-    user_service: UserService,
-    user_create_data: UserInput,
+        client,
 ):
     response = client.get("/")
     assert response.status_code == HTTPStatus.OK
@@ -47,13 +45,13 @@ def test_list_users(client):
 
 @pytest.mark.django_db
 def test_list_users_after_authorized(
-    client,
-    user_service: UserService,
-    user_create_data: UserInput,
+        client,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
     password = user_create_data.password
-    fetched_user = user_service.create_object(user_create_data)
-
+    user_service.create_object(user_create_data)
+    fetched_user = user_service.get_all_objects()[0]
     client.login(username=fetched_user.username, password=password)
     response = client.get("/users/")
 
@@ -75,14 +73,14 @@ def test_update_user_without_login(client):
 
 @pytest.mark.django_db
 def test_update_user_with_login(
-    client,
-    user_service: UserService,
-    user_create_data: UserInput,
-    users_form_data: dict,
+        client,
+        user_service: UserService,
+        user_create_data: UserInput,
+        users_form_data: dict,
 ):
     password = user_create_data.password
-    fetched_user = user_service.create_object(user_create_data)
-
+    user_service.create_object(user_create_data)
+    fetched_user = user_service.get_all_objects()[0]
     client.login(username=fetched_user.username, password=password)
 
     response = client.post(
@@ -99,12 +97,13 @@ def test_update_user_with_login(
 
 @pytest.mark.django_db
 def test_update_without_permission(
-    client,
-    user_service: UserService,
-    user_create_data: UserInput,
+        client,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
     password = user_create_data.password
-    user1 = user_service.create_object(user_create_data)
+    user_service.create_object(user_create_data)
+    user1 = user_service.get_all_objects()[0]
     user2 = UserModelFactory.create()
 
     client.login(username=user1.username, password=password)
@@ -130,13 +129,13 @@ def test_delete_user_without_login(client):
 
 @pytest.mark.django_db
 def test_delete_user_with_login(
-    client,
-    user_service: UserService,
-    user_create_data: UserInput,
+        client,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
     password = user_create_data.password
-    fetched_user = user_service.create_object(user_create_data)
-
+    user_service.create_object(user_create_data)
+    fetched_user = user_service.get_all_objects()[0]
     client.login(username=fetched_user.username, password=password)
 
     response = client.post(
@@ -152,12 +151,13 @@ def test_delete_user_with_login(
 
 @pytest.mark.django_db
 def test_delete_without_permission(
-    client,
-    user_service: UserService,
-    user_create_data: UserInput,
+        client,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
     password = user_create_data.password
-    user1 = user_service.create_object(user_create_data)
+    user_service.create_object(user_create_data)
+    user1 = user_service.get_all_objects()[0]
     user_2 = UserModelFactory.create()
 
     client.login(username=user1.username, password=password)
@@ -171,10 +171,9 @@ def test_delete_without_permission(
 
 @pytest.mark.django_db
 def test_registration_user(
-    client,
-    user_service: UserService,
-    user_create_data: UserInput,
-    users_form_data: dict,
+        client,
+        user_service: UserService,
+        users_form_data: dict,
 ):
     response = client.post(reverse("create_user"), data=users_form_data)
 
@@ -199,12 +198,13 @@ def test_users_delete_without_login_and_without_users(client):
 
 @pytest.mark.django_db
 def test_login(
-    client,
-    user_service: UserService,
-    user_create_data: UserInput,
+        client,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
     password = user_create_data.password
-    fetched_user = user_service.create_object(user_create_data)
+    user_service.create_object(user_create_data)
+    fetched_user = user_service.get_all_objects()[0]
     response = client.post(
         reverse("login"),
         data={"username": fetched_user.username, "password": password},

@@ -11,10 +11,10 @@ class TaskEntityConverter:
             id=entity.id,
             name=entity.name,
             description=entity.description,
-            status_name=entity.status.title,
+            status_name=entity.status.name,
             author_full_name=entity.author.full_name,
-            performer_full_name=entity.performer.full_name
-            if entity.performer
+            executor_full_name=entity.executor.full_name
+            if entity.executor
             else None,
             created_at=entity.created_at,
         )

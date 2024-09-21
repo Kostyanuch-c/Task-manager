@@ -19,19 +19,18 @@ class TaskRepository(BaseRepository):
         queryset = self.task.objects.filter(query).select_related(
             "status",
             "author",
-            "performer",
+            "executor",
         )
         return [task.to_entity() for task in queryset]
 
-    def create_object(self, task: TaskInput) -> TaskEntity:
-        queryset = self.task.objects.create(
+    def create_object(self, task: TaskInput) -> None:
+        self.task.objects.create(
             name=task.name,
             description=task.description,
             status=task.status,
             author=task.author,
-            performer=task.performer,
+            executor=task.executor,
         )
-        return queryset.to_entity()
 
     def update_object(self, task_id: int, task: TaskInput) -> None:
         self.task.objects.filter(id=task_id).update(
@@ -39,7 +38,7 @@ class TaskRepository(BaseRepository):
             description=task.description,
             status=task.status,
             author=task.author,
-            performer=task.performer,
+            executor=task.executor,
         )
 
     def delete_object(self, task_id: int) -> None:
@@ -48,7 +47,7 @@ class TaskRepository(BaseRepository):
     def get_object(self, task_id: int) -> TaskEntity:
         return (
             self.task.objects.filter(id=task_id)
-            .select_related("author", "performer")
+            .select_related("author", "executor")
             .get()
             .to_entity()
         )

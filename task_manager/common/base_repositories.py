@@ -14,7 +14,7 @@ class BaseRepository(ABC):
         ...
 
     @abstractmethod
-    def create_object(self, obj: object) -> object:
+    def create_object(self, obj: object) -> None:
         ...
 
     @abstractmethod

@@ -8,9 +8,9 @@
     <div class=" container mt-1">
         <div class="rounded-3 p-4 m-2 text-start bg-dark text-light shadow-lg">
             <h2 class="text-break">{{ object.name }}</h2>
-            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Description" %}: {{ object.description }}</p>
+            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Description" %}: {{ object.description|default:'' }}</p>
             <p class="lh-base fst-italic fs-5 text-break"> {% translate "Author" %}: {{ object.author_full_name }}</p>
-            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Performer" %}: {{ object.performer_full_name }}</p>
+            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Performer" %}: {{ object.executor_full_name|default:'' }}</p>
             <p class="lh-base fst-italic fs-5 text-break"> {% translate "Status" %}: {{ object.status_name }}</p>
             <p class="lh-base fst-italic fs-5 text-break"> {% translate "Created at" %}: {{ object.created_at }}</p>
             <p class="lh-base fst-italic fs-5 text-break"> {% translate "Tags" %}:</p>

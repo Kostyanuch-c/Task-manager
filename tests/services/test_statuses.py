@@ -2,6 +2,7 @@ from django.http import Http404
 
 import pytest
 from tests.factories.statuses import StatusModelFactory
+from tests.factories.tasks import TaskModelFactory
 from tests.fixtures.services.statuses import (  # noqa
     status_create_data,
     status_service,
@@ -9,6 +10,7 @@ from tests.fixtures.services.statuses import (  # noqa
 
 from task_manager.tasks.entities.status_entity import StatusInput
 from task_manager.tasks.exceptions.status_exceptions import (
+    StatusDeleteProtectedError,
     StatusTitleIsNotFreeException,
 )
 from task_manager.tasks.services.status_service import StatusService
@@ -18,41 +20,42 @@ from task_manager.tasks.services.status_service import StatusService
 def test_get_status_all(status_service: StatusService):
     expected_count = 5
     status = StatusModelFactory.create_batch(expected_count)
-    titles = {status.title for status in status}
+    names = {status.name for status in status}
 
     fetched_statuses = status_service.get_all_objects()
-    fetched_titles = {status.title for status in fetched_statuses}
+    fetched_names = {status.name for status in fetched_statuses}
     assert len(fetched_statuses) == expected_count
-    assert titles == fetched_titles
+    assert names == fetched_names
 
 
 @pytest.mark.django_db
 def test_create_status(
-    status_service: StatusService,
-    status_create_data: StatusInput,
+        status_service: StatusService,
+        status_create_data: StatusInput,
 ):
-    fetched_status = status_service.create_object(status_create_data)
+    status_service.create_object(status_create_data)
+    fetched_status = status_service.get_all_objects()[0]
     assert fetched_status is not None
     assert (
-        fetched_status.title == status_create_data.title
-    ), f"{fetched_status.title=}"
+        fetched_status.name == status_create_data.name,
+    )
 
 
 @pytest.mark.django_db
-def test_create_status_title_already_exists(
-    status_service: StatusService,
-    status_create_data: StatusInput,
+def test_create_status_name_already_exists(
+        status_service: StatusService,
+        status_create_data: StatusInput,
 ):
-    StatusModelFactory.create(title="new_title")
+    StatusModelFactory.create(name="new_name")
 
     with pytest.raises(StatusTitleIsNotFreeException):
         status_service.create_object(status_create_data)
 
 
 @pytest.mark.django_db
-def test_update_user_correct(
-    status_service: StatusService,
-    status_create_data: StatusInput,
+def test_update_status_correct(
+        status_service: StatusService,
+        status_create_data: StatusInput,
 ):
     status = StatusModelFactory.create()
 
@@ -60,28 +63,40 @@ def test_update_user_correct(
 
     fetched_status = status_service.get_object(status.id)
 
-    assert fetched_status.title == status_create_data.title
+    assert fetched_status.name == status_create_data.name
     assert fetched_status.created_at == status.created_at
     assert fetched_status.id == status.id
 
 
 @pytest.mark.django_db
-def test_update_user_username_already_exists(
-    status_service: StatusService,
-    status_create_data: StatusInput,
+def test_update_status_name_already_exists(
+        status_service: StatusService,
+        status_create_data: StatusInput,
 ):
     status = StatusModelFactory.create(
-        title="new_title",
+        name="new_name",
     )
     with pytest.raises(StatusTitleIsNotFreeException):
         status_service.update_object(status.id, status_create_data)
 
 
 @pytest.mark.django_db
-def test_delete_user(status_service: StatusService):
-    user = StatusModelFactory.create()
+def test_delete_status(status_service: StatusService):
+    status = StatusModelFactory.create()
 
-    status_service.delete_object(user.id)
+    status_service.delete_object(status.id)
+    statuses = status_service.get_all_objects()
+
+    assert len(statuses) == 0
 
     with pytest.raises(Http404):
-        status_service.get_object(user.id)
+        status_service.get_object(status.id)
+
+
+@pytest.mark.django_db
+def test_delete_status_when_using(status_service: StatusService):
+    status = StatusModelFactory.create()
+    TaskModelFactory.create(status=status)
+
+    with pytest.raises(StatusDeleteProtectedError):
+        status_service.delete_object(status.id)

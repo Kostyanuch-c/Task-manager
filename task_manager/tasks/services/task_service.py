@@ -33,17 +33,19 @@ class TaskService(BaseService):
         if status_id:
             query &= Q(status_id=status_id)
 
-        performer_id = query_params.get("performer")
-        if performer_id:
-            query &= Q(performer_id=performer_id)
+        executor_id = query_params.get("executor")
+        if executor_id:
+            query &= Q(executor_id=executor_id)
 
         return query
 
     def get_all_objects(
-        self, query_params=None, user_id=None,
+            self, query_params=None, user_id=None,
     ) -> list[TaskEntity]:
+
         if not query_params:
             return self.repository.get_all_objects()
+
         query = self._filter_query(query_params, user_id)
         return self.repository.get_all_objects(query=query)
 
@@ -53,7 +55,7 @@ class TaskService(BaseService):
         except Task.DoesNotExist:
             raise Http404
 
-    def create_object(self, task: TaskInput) -> TaskEntity:
+    def create_object(self, task: TaskInput) -> None:
         try:
             with transaction.atomic():
                 return self.repository.create_object(task)

@@ -19,14 +19,13 @@ class UserRepository(BaseRepository):
         queryset = self.user.objects.all()
         return [user.to_entity() for user in queryset]
 
-    def create_object(self, user: UserInput) -> UserEntity:
-        queryset = self.user.objects.create(
+    def create_object(self, user: UserInput) -> None:
+        self.user.objects.create(
             first_name=user.first_name,
             last_name=user.last_name,
             username=user.username,
             password=user.password,
         )
-        return queryset.to_entity()
 
     def update_object(self, user_id: int, user_data: UserInput) -> None:
         self.user.objects.filter(id=user_id).update(

@@ -36,7 +36,7 @@ class StatusListView(MessagesLoginRequiredMixin, TemplateView):
         "url_to_create": "status_create",
         "url_to_update": "status_update",
         "url_to_delete": "status_delete",
-        "fields": ("title",),
+        "fields": ("name",),
     }
 
     def get_context_data(self, **kwargs) -> dict:
@@ -60,7 +60,7 @@ class StatusCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
     service = StatusService()
 
     def form_valid(self, form: StatusForm) -> HttpResponse:
-        entity = StatusInput(form.cleaned_data["title"])
+        entity = StatusInput(form.cleaned_data["name"])
         try:
             return self.mixin_form_valid(
                 request=self.request,
@@ -68,7 +68,7 @@ class StatusCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
                 object_data=entity,
             )
         except StatusTitleIsNotFreeException as exception:
-            form.add_error("title", exception.message)
+            form.add_error("name", exception.message)
             return self.form_invalid(form)
 
 
@@ -87,7 +87,7 @@ class StatusUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
     service = StatusService()
 
     def form_valid(self, form: StatusForm) -> HttpResponse:
-        entity = StatusInput(form.cleaned_data["title"])
+        entity = StatusInput(form.cleaned_data["name"])
         try:
             return self.mixin_form_valid(
                 request=self.request,
@@ -96,7 +96,7 @@ class StatusUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
                 **self.kwargs,
             )
         except StatusTitleIsNotFreeException as exception:
-            form.add_error("title", exception.message)
+            form.add_error("name", exception.message)
             return self.form_invalid(form)
 
 
@@ -118,7 +118,7 @@ class StatusDeleteView(
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["object"] = self.get_object(**kwargs)
-        context["field"] = "title"
+        context["field"] = "name"
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

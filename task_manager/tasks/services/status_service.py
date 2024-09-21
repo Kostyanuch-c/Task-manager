@@ -26,13 +26,12 @@ class StatusService(BaseService):
     def get_object(self, status_id: int) -> StatusEntity:
         return self.repository.get_object(status_id)
 
-    def create_object(self, status: StatusInput) -> StatusEntity:
+    def create_object(self, status: StatusInput) -> None:
         try:
             with transaction.atomic():
                 return self.repository.create_object(status=status)
 
         except IntegrityError:
-            print(123)
             raise StatusTitleIsNotFreeException()
 
     def update_object(
@@ -40,7 +39,7 @@ class StatusService(BaseService):
         status_id: int,
         status: StatusInput,
     ) -> None:
-        if not self.repository.is_object_name_free(status.title):
+        if not self.repository.is_object_name_free(status.name):
             raise StatusTitleIsNotFreeException()
 
         self.repository.update_object(status_id, status)

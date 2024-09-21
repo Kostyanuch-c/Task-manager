@@ -6,7 +6,7 @@ from task_manager.tasks.entities.status_entity import StatusEntity
 
 
 class Status(BaseTimedModel):
-    title = models.CharField(
+    name = models.CharField(
         max_length=100,
         verbose_name=_("Name"),
         unique=True,
@@ -15,12 +15,12 @@ class Status(BaseTimedModel):
     def to_entity(self):
         return StatusEntity(
             id=self.id,
-            title=self.title,
+            name=self.name,
             created_at=self.created_at,
         )
 
     def __str__(self):
-        return self.title
+        return self.name
 
     class Meta:
         verbose_name = "Status"

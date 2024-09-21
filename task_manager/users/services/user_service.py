@@ -27,7 +27,7 @@ class UserService(BaseService):
     def get_object(self, user_id: int) -> UserEntity:
         return self.repository.get_object(user_id)
 
-    def create_object(self, user: UserInput) -> UserEntity:
+    def create_object(self, user: UserInput) -> None:
         try:
             with transaction.atomic():
                 user.password = make_password(user.password)

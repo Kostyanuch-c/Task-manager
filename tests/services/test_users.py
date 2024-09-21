@@ -1,6 +1,7 @@
 from django.http import Http404
 
 import pytest
+from tests.factories.tasks import TaskModelFactory
 from tests.factories.users import UserModelFactory
 from tests.fixtures.services.users import (  # noqa
     user_create_data,
@@ -8,7 +9,10 @@ from tests.fixtures.services.users import (  # noqa
 )
 
 from task_manager.users.entities import UserInput
-from task_manager.users.exceptions import UsernameIsNotFreeException
+from task_manager.users.exceptions import (
+    UserDeleteProtectedError,
+    UsernameIsNotFreeException,
+)
 from task_manager.users.services.user_service import UserService
 
 
@@ -32,15 +36,15 @@ def test_get_users_zero(user_service: UserService):
 
 @pytest.mark.django_db
 def test_create_user(
-    user_service: UserService,
-    user_create_data: UserInput,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
-    fetched_user = user_service.create_object(user_create_data)
-
+    user_service.create_object(user_create_data)
+    fetched_user = user_service.get_all_objects()[0]
     assert fetched_user is not None, f"{fetched_user=}"
     assert (
-        fetched_user.full_name
-        == f"{user_create_data.first_name} {user_create_data.last_name}"
+            fetched_user.full_name
+            == f"{user_create_data.first_name} {user_create_data.last_name}"
     )
     assert fetched_user.username == user_create_data.username
     assert fetched_user.password == user_create_data.password
@@ -48,8 +52,8 @@ def test_create_user(
 
 @pytest.mark.django_db
 def test_create_user_username_already_exists(
-    user_service: UserService,
-    user_create_data: UserInput,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
     UserModelFactory.create(
         first_name="New first_name",
@@ -63,8 +67,8 @@ def test_create_user_username_already_exists(
 
 @pytest.mark.django_db
 def test_update_user_correct(
-    user_service: UserService,
-    user_create_data: UserInput,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
     user = UserModelFactory.create()
 
@@ -73,8 +77,8 @@ def test_update_user_correct(
     fetched_user = user_service.get_object(user.id)
 
     assert (
-        fetched_user.full_name
-        == f"{user_create_data.first_name} {user_create_data.last_name}"
+            fetched_user.full_name
+            == f"{user_create_data.first_name} {user_create_data.last_name}"
     )
     assert fetched_user.username == user_create_data.username
     assert fetched_user.password == user_create_data.password
@@ -84,8 +88,8 @@ def test_update_user_correct(
 
 @pytest.mark.django_db
 def test_update_user_username_already_exists(
-    user_service: UserService,
-    user_create_data: UserInput,
+        user_service: UserService,
+        user_create_data: UserInput,
 ):
     user = UserModelFactory.create(
         first_name="New first_name",
@@ -102,6 +106,17 @@ def test_delete_user(user_service: UserService):
     user = UserModelFactory.create()
 
     user_service.delete_object(user.id)
+    users = user_service.get_all_objects()
+    assert len(users) == 0
 
     with pytest.raises(Http404):
         user_service.get_object(user.id)
+
+
+@pytest.mark.django_db
+def test_delete_users_when_using(user_service: UserService):
+    user = UserModelFactory.create()
+    TaskModelFactory.create(author=user)
+
+    with pytest.raises(UserDeleteProtectedError):
+        user_service.delete_object(user.id)

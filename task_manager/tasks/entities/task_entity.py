@@ -12,7 +12,7 @@ class TaskEntity:
     description: str | None
     status: Status
     author: User
-    performer: User | None
+    executor: User | None
     created_at: datetime
 
 
@@ -22,7 +22,7 @@ class TaskInput:
     description: str | None
     status: Status
     author: User
-    performer: User | None
+    executor: User | None
 
 
 @dataclass
@@ -32,5 +32,5 @@ class TaskOutputTemplate:
     description: str | None
     status_name: str
     author_full_name: str
-    performer_full_name: str | None
+    executor_full_name: str | None
     created_at: datetime
