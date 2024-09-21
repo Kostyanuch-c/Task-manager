@@ -4,6 +4,7 @@ from django.forms import (
     CharField,
     ModelForm,
     PasswordInput,
+    TextInput,
 )
 from django.utils.translation import gettext_lazy as _
 
@@ -32,6 +33,11 @@ class RegisterUserForm(ModelForm):
             'first_name', 'last_name',
             'username', 'password1', 'password2',
         ]
+
+        widgets = {
+            'first_name': TextInput(attrs={'required': True}),
+            'last_name': TextInput(attrs={'required': True}),
+        }
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

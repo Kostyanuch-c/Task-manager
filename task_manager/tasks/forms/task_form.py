@@ -19,6 +19,10 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+
+        self.fields["executor"].label_from_instance = \
+            lambda user: user.full_name
+
         for field in self.fields.values():
             field.widget.attrs.update(
                 {
@@ -32,13 +36,17 @@ class TaskForm(forms.ModelForm):
 
 class TaskFilterForm(forms.Form):
     status = forms.ModelChoiceField(
-        queryset=Status.objects.all(), required=False,
+        queryset=Status.objects.all(),
+        required=False,
     )
     executor = forms.ModelChoiceField(
-        queryset=get_user_model().objects.all(),
+        queryset=get_user_model().objects.all().only(
+            "id", "first_name", "last_name",
+        ),
         required=False,
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["executor"].label_from_instance = lambda obj: obj.full_name
+        self.fields["executor"].label_from_instance = \
+            lambda user: user.full_name
