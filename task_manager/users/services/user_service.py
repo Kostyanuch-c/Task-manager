@@ -4,6 +4,7 @@ from django.db import (
     transaction,
 )
 from django.db.models import ProtectedError
+from django.http import Http404
 
 from task_manager.common.base_service import BaseService
 from task_manager.users.entities import (
@@ -14,6 +15,7 @@ from task_manager.users.exceptions import (
     UserDeleteProtectedError,
     UsernameIsNotFreeException,
 )
+from task_manager.users.models import User
 from task_manager.users.repositories.user_repository import UserRepository
 
 
@@ -25,7 +27,10 @@ class UserService(BaseService):
         return self.repository.get_all_objects()
 
     def get_object(self, user_id: int) -> UserEntity:
-        return self.repository.get_object(user_id)
+        try:
+            return self.repository.get_object(user_id)
+        except User.DoesNotExist:
+            raise Http404
 
     def create_object(self, user: UserInput) -> None:
         try:
@@ -37,9 +42,9 @@ class UserService(BaseService):
             raise UsernameIsNotFreeException
 
     def update_object(
-        self,
-        user_id: int,
-        user_data: UserInput,
+            self,
+            user_id: int,
+            user_data: UserInput,
     ) -> None:
         if not self.repository.is_username_free(user_data.username):
             raise UsernameIsNotFreeException

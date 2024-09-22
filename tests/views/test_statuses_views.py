@@ -46,7 +46,6 @@ def test_statuses_delete_without_login_and_without_statuses(client):
 @pytest.mark.django_db
 def test_list_status(
         client,
-        status_service: StatusService,
 ):
     status = StatusModelFactory.create()
     response = client.get("/statuses/")

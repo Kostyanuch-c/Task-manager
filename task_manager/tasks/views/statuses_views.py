@@ -117,8 +117,7 @@ class StatusDeleteView(
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context["object"] = self.get_object(**kwargs)
-        context["field"] = "name"
+        context["object_name"] = self.get_object(**kwargs).name
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

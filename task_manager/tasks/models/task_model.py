@@ -38,6 +38,13 @@ class Task(BaseTimedModel):
         related_name="task_as_performer",
     )
 
+    label = models.ManyToManyField(
+        'Label',
+        verbose_name=_("Label"),
+        blank=True,
+        related_name="task_as_label",
+    )
+
     def to_entity(self):
         return TaskEntity(
             id=self.id,

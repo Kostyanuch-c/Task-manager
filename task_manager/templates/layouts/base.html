@@ -31,7 +31,7 @@
                        href="{% url "status_list" %}">{% translate "Statuses" %}</a>
                     <a class="fs-5 text-white-50 mx-4 link-offset-3 link-offset-3-hover link-underline-opacity-75-hover
                     link-underline {% if request.path != '/labels/' %} link-underline-opacity-0 {% endif %}"
-                       href="">{% translate "Labels" %}</a>
+                       href="{% url "label_list" %}">{% translate "Labels" %}</a>
                     <a class="fs-5 text-white-50 mx-4 link-offset-3-hover link-underline-opacity-0 link-underline
                    link-underline-opacity-75-hover " href="{% url 'logout' %}">{% translate "Logout" %}</a>
                 {% else %}

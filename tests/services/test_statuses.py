@@ -18,7 +18,7 @@ from task_manager.tasks.services.status_service import StatusService
 
 @pytest.mark.django_db
 def test_get_status_all(status_service: StatusService):
-    expected_count = 5
+    expected_count = 3
     status = StatusModelFactory.create_batch(expected_count)
     names = {status.name for status in status}
 

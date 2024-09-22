@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 
 from task_manager.common.base_repositories import BaseRepository
 from task_manager.users.entities import (
@@ -39,4 +38,4 @@ class UserRepository(BaseRepository):
         self.user.objects.filter(id=user_id).delete()
 
     def get_object(self, user_id: int) -> UserEntity:
-        return get_object_or_404(self.user, id=user_id).to_entity()
+        return self.user.objects.get(id=user_id).to_entity()

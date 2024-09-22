@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 from task_manager.tasks.models import (
     Status,
@@ -36,17 +37,20 @@ class TaskForm(forms.ModelForm):
 
 class TaskFilterForm(forms.Form):
     status = forms.ModelChoiceField(
-        queryset=Status.objects.all(),
+        queryset=Status.objects.all().only('id', 'name'),
+        label=_('Status'),
         required=False,
     )
     executor = forms.ModelChoiceField(
         queryset=get_user_model().objects.all().only(
             "id", "first_name", "last_name",
         ),
+        label=_('Executor'),
         required=False,
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.fields["executor"].label_from_instance = \
             lambda user: user.full_name
