@@ -64,7 +64,7 @@ class TaskService(BaseService):
             raise TaskNameIsNotFreeException
 
     def update_object(self, task_id: int, task: TaskInput) -> None:
-        if not self.repository.is_object_name_free(task.name):
+        if not self.repository.is_object_name_free(task.name, task_id):
             raise TaskNameIsNotFreeException
 
         self.repository.update_object(task_id, task)

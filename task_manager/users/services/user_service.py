@@ -46,7 +46,7 @@ class UserService(BaseService):
             user_id: int,
             user_data: UserInput,
     ) -> None:
-        if not self.repository.is_username_free(user_data.username):
+        if not self.repository.is_username_free(user_data.username, user_id):
             raise UsernameIsNotFreeException
 
         user_data.password = make_password(user_data.password)

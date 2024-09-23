@@ -74,6 +74,9 @@ def test_update_status_name_already_exists(
         status_create_data: StatusInput,
 ):
     status = StatusModelFactory.create(
+        name="test_name",
+    )
+    StatusModelFactory.create(
         name="new_name",
     )
     with pytest.raises(StatusTitleIsNotFreeException):

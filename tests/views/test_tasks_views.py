@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import reverse
 
 import pytest
+from tests.factories.labels import LabelModelFactory
 from tests.factories.tasks import TaskModelFactory
 from tests.fixtures.forms.tasks import task_form_data  # noqa
 from tests.fixtures.login_decorator import (
@@ -68,13 +69,14 @@ def test_detail_task(
         client,
         task_service: TaskService,
 ):
-    task = TaskModelFactory.create()
+    labels = [LabelModelFactory.create(name="test")]
+    task = TaskModelFactory.create(label=labels)
     response = client.get(reverse("task_detail", args=[task.id]))
 
     assert response.status_code == HTTPStatus.OK
     assert task.name in response.content.decode("utf-8")
     assert task.author.full_name in response.content.decode("utf-8")
-
+    assert 'test' in response.content.decode("utf-8")
 
 
 @login_and_return_user
@@ -93,6 +95,7 @@ def test_create_task(client, task_service: TaskService, task_form_data: dict, **
     assert task.author == current_user
     assert task.status.id == task_form_data['status']
     assert task.executor.id == task_form_data['executor']
+    assert {label.id for label in task.label.all()} == set(task_form_data['label'])
 
 
 @login_and_return_user
@@ -121,6 +124,7 @@ def test_update_task(
     assert task_after_update.author == current_user
     assert task_after_update.status.id == task_form_data['status']
     assert task_after_update.executor.id == task_form_data['executor']
+    assert {label.id for label in task_after_update.label.all()} == set(task_form_data['label'])
 
 
 @login_user

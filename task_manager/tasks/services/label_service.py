@@ -38,7 +38,7 @@ class LabelService(BaseService):
             raise LabelNameIsNotFreeException
 
     def update_object(self, label_id: int, label: LabelInput) -> None:
-        if not self.repository.is_object_name_free(label.name):
+        if not self.repository.is_object_name_free(label.name, label_id):
             raise LabelNameIsNotFreeException
 
         self.repository.update_object(label_id, label)

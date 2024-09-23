@@ -53,6 +53,7 @@ class Task(BaseTimedModel):
             status=self.status,
             author=self.author,
             executor=self.executor,
+            label=self.label,
             created_at=self.created_at,
         )
 

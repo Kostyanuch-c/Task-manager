@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 
 from task_manager.common.base_repositories import BaseRepository
 from task_manager.users.entities import (
@@ -11,8 +12,10 @@ class UserRepository(BaseRepository):
     def __init__(self):
         self.user = get_user_model()
 
-    def is_username_free(self, username: str) -> bool:
-        return not self.user.objects.filter(username=username).exists()
+    def is_username_free(self, username: str, user_id: int) -> bool:
+        return not self.user.objects.filter(
+            Q(username=username) & ~Q(id=user_id),
+        ).exists()
 
     def get_all_objects(self) -> list[UserEntity]:
         queryset = self.user.objects.all()

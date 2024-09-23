@@ -30,7 +30,7 @@ class TaskDetailView(MessagesLoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         task_entity = TaskService().get_object(kwargs.get("pk"))
-        context["object"] = TaskEntityConverter.to_output_template(task_entity)
+        context["object"] = TaskEntityConverter.to_output_detail(task_entity)
         return context
 
 
@@ -85,6 +85,7 @@ class TaskCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
             description=form.cleaned_data["description"],
             status=form.cleaned_data["status"],
             executor=form.cleaned_data["executor"],
+            label=form.cleaned_data["label"],
             author=self.request.user,
         )
 
@@ -120,6 +121,7 @@ class TaskUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
             status=form.cleaned_data["status"],
             executor=form.cleaned_data["executor"],
             author=self.request.user,
+            label=form.cleaned_data["label"],
         )
 
         try:
@@ -127,7 +129,6 @@ class TaskUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
                 request=self.request,
                 form=form,
                 object_data=entity,
-                **self.kwargs,
             )
         except TaskNameIsNotFreeException as exception:
             form.add_error("name", exception.message)
@@ -153,8 +154,8 @@ class TaskDeleteView(
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context["object_name"] = self.get_object(**kwargs).name
+        context["object_name"] = self.get_object(kwargs.get('pk')).name
         return context
 
     def post(self, request, *args, **kwargs):
-        return self.delete(request, **kwargs)
+        return self.delete(request)

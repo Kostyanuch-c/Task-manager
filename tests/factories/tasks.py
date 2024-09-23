@@ -1,5 +1,3 @@
-from django.utils import timezone
-
 import factory
 from tests.factories.statuses import StatusModelFactory
 from tests.factories.users import UserModelFactory
@@ -16,5 +14,12 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     author = factory.SubFactory(UserModelFactory)
     executor = factory.SubFactory(UserModelFactory)
     status = factory.SubFactory(StatusModelFactory)
-    created_at = factory.LazyFunction(timezone.now)
-    updated_at = factory.LazyFunction(timezone.now)
+
+    @factory.post_generation
+    def label(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            self.label.add(*extracted)

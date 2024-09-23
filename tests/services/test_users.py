@@ -91,11 +91,10 @@ def test_update_user_username_already_exists(
         user_service: UserService,
         user_create_data: UserInput,
 ):
-    user = UserModelFactory.create(
-        first_name="New first_name",
-        last_name="New last_name",
+    user = UserModelFactory.create()
+
+    UserModelFactory.create(
         username="new_username",
-        password="new12345612dsds",
     )
     with pytest.raises(UsernameIsNotFreeException):
         user_service.update_object(user_id=user.id, user_data=user_create_data)

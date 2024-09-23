@@ -15,6 +15,8 @@ class User(AbstractUser):
             username=self.username,
             password=self.password,
             created_at=self.date_joined,
+            first_name=self.first_name,
+            last_name=self.last_name,
             full_name=self.full_name,
         )
 

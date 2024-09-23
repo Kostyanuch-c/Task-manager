@@ -80,7 +80,7 @@ class UserUpdateView(
     UpdateWithCheckPermissionsMixin,
     FormView,
 ):
-    form_class = RegisterUserForm
+
     template_name = "users/user_update_form.html"
 
     success_url = redirect_failed = reverse_lazy("users_list")
@@ -95,6 +95,7 @@ class UserUpdateView(
     }
 
     service = UserService()
+    form_class = RegisterUserForm
 
     def form_valid(self, form: RegisterUserForm) -> HttpResponse:
         entity = UserInput(
@@ -108,7 +109,6 @@ class UserUpdateView(
                 request=self.request,
                 form=form,
                 object_data=entity,
-                **self.kwargs,
             )
         except UsernameIsNotFreeException as exception:
             form.add_error("username", exception.message)
@@ -139,7 +139,7 @@ class UserDeleteView(
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
-            return self.delete(request, **kwargs)
+            return self.delete(request)
         except UserDeleteProtectedError as exception:
             messages.error(request, exception.message)
             return redirect(self.url_to)

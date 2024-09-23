@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from task_manager.common.base_repositories import BaseRepository
@@ -12,8 +13,10 @@ class StatusRepository(BaseRepository):
     def __init__(self):
         self.status = Status
 
-    def is_object_name_free(self, name: str) -> bool:
-        return not self.status.objects.filter(name=name).exists()
+    def is_object_name_free(self, name: str, status_id: int) -> bool:
+        return not self.status.objects.filter(
+            Q(name=name) & ~Q(id=status_id),
+        ).exists()
 
     def get_all_objects(self) -> list[StatusEntity]:
         queryset = self.status.objects.all()

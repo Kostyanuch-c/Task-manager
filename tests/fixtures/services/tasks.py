@@ -1,4 +1,5 @@
 import pytest
+from tests.factories.labels import LabelModelFactory
 from tests.factories.statuses import StatusModelFactory
 from tests.factories.users import UserModelFactory
 
@@ -19,4 +20,5 @@ def task_create_data() -> TaskInput:
         status=StatusModelFactory.create(),
         author=UserModelFactory.create(),
         executor=UserModelFactory.create(),
+        label=[LabelModelFactory.create(), LabelModelFactory.create()],
     )

@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import BaseForm
@@ -6,7 +8,6 @@ from django.http import (
     HttpResponse,
 )
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from task_manager.users.exceptions import ServiceNotDefinedError
@@ -26,24 +27,17 @@ class MessagesLoginRequiredMixin(LoginRequiredMixin):
 class BaseServiceMixin:
     """Mixin for init service"""
 
-    kwargs_key_for_id = "pk"
     service = None
-    _object_id = None
     _cached_object = None
 
     def __init__(self):
         if self.service is None:
             raise ServiceNotDefinedError
 
-    def get_from_kwargs_object_id(self, **kwargs):
-        if self._object_id is None:
-            self._object_id = kwargs.get(self.kwargs_key_for_id, 0)
-        return self._object_id
-
-    def get_object(self, **kwargs):
+    def get_object(self, object_id: int):
         if self._cached_object is None:
             self._cached_object = self.service.repository.get_object(
-                self.get_from_kwargs_object_id(**kwargs),
+                object_id,
             )
         return self._cached_object
 
@@ -54,10 +48,10 @@ class CreateObjectMixin(BaseServiceMixin):
     success_message = _("Created successfully")
 
     def mixin_form_valid(
-        self,
-        request: HttpRequest,
-        form: BaseForm,
-        object_data: object,
+            self,
+            request: HttpRequest,
+            form: BaseForm,
+            object_data: object,
     ) -> HttpResponse:
         self.service.create_object(object_data)
         messages.success(request, self.success_message)
@@ -69,15 +63,27 @@ class UpdateObjectMixin(BaseServiceMixin):
 
     success_message = _("Created successfully")
 
+    def get_initial(self) -> dict[str, Any]:
+        entity_object = self.service.get_object(self.kwargs.get("pk"))
+
+        initial = {
+            key: value
+            if not callable(value)
+            else value.all()
+            for key, value in entity_object.__dict__.items()
+            if key not in ('id', 'created_at')
+        }
+
+        return initial
+
     def mixin_form_valid(
-        self,
-        request: HttpRequest,
-        form: BaseForm,
-        object_data: object,
-        **kwargs,
+            self,
+            request: HttpRequest,
+            form: BaseForm,
+            object_data: object,
     ) -> HttpResponse:
         self.service.update_object(
-            self.get_from_kwargs_object_id(**kwargs),
+            self.kwargs.get("pk"),
             object_data,
         )
 
@@ -88,11 +94,11 @@ class UpdateObjectMixin(BaseServiceMixin):
 class DeleteObjectMixin(BaseServiceMixin):
     """Mixin for handling object deletion"""
 
-    success_message = _("User successfully deleted.")
-    url_to = reverse_lazy("users_list")
+    success_message = _("Successfully deleted.")
+    url_to = '/'
 
-    def delete(self, request: HttpRequest, **kwargs) -> HttpResponse:
-        self.service.delete_object(self.get_from_kwargs_object_id(**kwargs))
+    def delete(self, request: HttpRequest) -> HttpResponse:
+        self.service.delete_object(self.kwargs.get("pk"))
         messages.success(request, self.success_message)
         return redirect(self.url_to)
 
@@ -103,12 +109,12 @@ class CheckMixin(BaseServiceMixin):
     _has_permission = False
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        object_id = self.get_from_kwargs_object_id(**kwargs)
+        object_id = self.kwargs.get("pk")
 
         if isinstance(self.service, UserService):
             self._has_permission = request.user.id == object_id
         else:
-            object_ = self.get_object(**kwargs)
+            object_ = self.get_object(object_id)
             self._has_permission = self.service.check_permissions(
                 request.user,
                 object_,

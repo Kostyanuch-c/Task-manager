@@ -35,11 +35,11 @@ class StatusService(BaseService):
             raise StatusTitleIsNotFreeException()
 
     def update_object(
-        self,
-        status_id: int,
-        status: StatusInput,
+            self,
+            status_id: int,
+            status: StatusInput,
     ) -> None:
-        if not self.repository.is_object_name_free(status.name):
+        if not self.repository.is_object_name_free(status.name, status_id):
             raise StatusTitleIsNotFreeException()
 
         self.repository.update_object(status_id, status)

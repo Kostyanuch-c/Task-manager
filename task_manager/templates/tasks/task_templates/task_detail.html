@@ -13,8 +13,14 @@
             <p class="lh-base fst-italic fs-5 text-break"> {% translate "Performer" %}: {{ object.executor_full_name|default:'' }}</p>
             <p class="lh-base fst-italic fs-5 text-break"> {% translate "Status" %}: {{ object.status_name }}</p>
             <p class="lh-base fst-italic fs-5 text-break"> {% translate "Created at" %}: {{ object.created_at }}</p>
-            <p class="lh-base fst-italic fs-5 text-break"> {% translate "Tags" %}:</p>
-
+            <p class="fw-semibold lh-base fst-italic fs-5 text-break mb-1"> {% translate "Tags" %}:</p>
+            <ul>
+                {% for label in object.labels.all %}
+                    <li style="color: #ffffff;">
+                        <span class="text-white fs-5 fst-italic text-break">{{ label }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
             <button type="button" class="btn btn-lg btn-outline-primary "
                     onclick="location.href='{% url 'task_update' object.id %}'">{% translate "Edit" %}</button>
 

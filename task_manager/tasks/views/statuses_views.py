@@ -93,7 +93,6 @@ class StatusUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
                 request=self.request,
                 form=form,
                 object_data=entity,
-                **self.kwargs,
             )
         except StatusTitleIsNotFreeException as exception:
             form.add_error("name", exception.message)
@@ -117,12 +116,12 @@ class StatusDeleteView(
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context["object_name"] = self.get_object(**kwargs).name
+        context["object_name"] = self.get_object(kwargs.get('pk')).name
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
-            return self.delete(request, **kwargs)
+            return self.delete(request)
         except StatusDeleteProtectedError as exception:
             messages.error(request, exception.message)
             return redirect(self.url_to)

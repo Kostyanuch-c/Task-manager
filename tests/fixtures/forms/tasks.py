@@ -1,4 +1,5 @@
 import pytest
+from tests.factories.labels import LabelModelFactory
 from tests.factories.statuses import StatusModelFactory
 from tests.factories.users import UserModelFactory
 
@@ -10,4 +11,5 @@ def task_form_data() -> dict:
         'description': 'form_description',
         'status': StatusModelFactory.create().id,
         'executor': UserModelFactory.create().id,
+        'label': [LabelModelFactory.create().id, LabelModelFactory.create().id],
     }

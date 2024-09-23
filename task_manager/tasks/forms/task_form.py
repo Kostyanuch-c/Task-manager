@@ -16,6 +16,7 @@ class TaskForm(forms.ModelForm):
             "description",
             "status",
             "executor",
+            "label",
         ]
 
     def __init__(self, *args, **kwargs) -> None:
