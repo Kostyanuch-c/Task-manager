@@ -80,7 +80,6 @@ class UserUpdateView(
     UpdateWithCheckPermissionsMixin,
     FormView,
 ):
-
     template_name = "users/user_update_form.html"
 
     success_url = redirect_failed = reverse_lazy("users_list")
