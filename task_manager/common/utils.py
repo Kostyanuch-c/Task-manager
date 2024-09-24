@@ -25,8 +25,14 @@ class MessagesLoginRequiredMixin(LoginRequiredMixin):
 
 
 class BaseServiceMixin:
-    """Mixin for init service"""
+    """
+    Mixin for init service
 
+    Basic mixin for service initialization,
+    specifying the service is an integral part of the work of child mixins,
+    since all methods are tied to the BaseService abstract class.
+
+    """
     service = None
     _cached_object = None
 
@@ -43,8 +49,14 @@ class BaseServiceMixin:
 
 
 class CreateObjectMixin(BaseServiceMixin):
-    """Mixin to handle the logic for creating or updating objects."""
+    """
+    Mixin to handle the logic for creating objects.
 
+    Mixin calls the create_object method of the service.
+    And passes the flash message
+
+    Works in combination with FormVIew.
+    """
     success_message = _("Created successfully")
 
     def mixin_form_valid(
@@ -59,12 +71,22 @@ class CreateObjectMixin(BaseServiceMixin):
 
 
 class UpdateObjectMixin(BaseServiceMixin):
-    """Mixin for handling object update"""
+    """
+    Mixin for handling object update
+
+    Mixin, in addition to calling the update_object
+    method of the service,
+    fills the specified form from form_class by extracting
+    data using the get_object method.
+    And passes the flash message.
+
+    Like CreateObjectMixin, it works in combination with FormVIew.
+    """
 
     success_message = _("Created successfully")
 
     def get_initial(self) -> dict[str, Any]:
-        entity_object = self.service.get_object(self.kwargs.get("pk"))
+        entity_object = self.get_object(self.kwargs.get("pk"))
 
         initial = {
             key: value
@@ -92,7 +114,12 @@ class UpdateObjectMixin(BaseServiceMixin):
 
 
 class DeleteObjectMixin(BaseServiceMixin):
-    """Mixin for handling object deletion"""
+    """
+    Mixin for handling object deletion
+
+    Mixin calls the delete_object method of the service.
+    Redirected and passes the flash message.
+    """
 
     success_message = _("Successfully deleted.")
     url_to = '/'
@@ -103,7 +130,28 @@ class DeleteObjectMixin(BaseServiceMixin):
         return redirect(self.url_to)
 
 
-class CheckMixin(BaseServiceMixin):
+class CheckPermissionMixin(BaseServiceMixin):
+    """
+    Mixin for checking user access rights to an object.
+
+    This mixin is used to check if the current user
+    has permission to modify a certain object,
+    based on the passed object ID and the service logic.
+    If the user does not have the necessary rights,
+    he will be redirected to the specified URL
+    with a message about the lack of rights.
+
+    Also, to use this mixin,
+    the service must implement the check_permissions method.
+
+    An exception is the situation of checking the user's
+    rights to change their data.
+    The user's rights are checked based
+    on the belonging of the specified service
+    to UserService and a simple comparison of the current user's ID
+    with the selected object.
+    """
+
     message_failed_permissions = _("You do not have permission to change")
     redirect_failed = "/"
     _has_permission = False
@@ -128,14 +176,14 @@ class CheckMixin(BaseServiceMixin):
 
 
 class UpdateWithCheckPermissionsMixin(
-    CheckMixin,
+    CheckPermissionMixin,
     UpdateObjectMixin,
 ):
     """Mixin for updating object with permissions check."""
 
 
 class DeleteWithCheckPermissionsMixin(
-    CheckMixin,
+    CheckPermissionMixin,
     DeleteObjectMixin,
 ):
     """Mixin for delete object with permissions check."""
