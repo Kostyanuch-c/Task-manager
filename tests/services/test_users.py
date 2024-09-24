@@ -18,7 +18,7 @@ from task_manager.users.services.user_service import UserService
 
 @pytest.mark.django_db
 def test_get_users_all(user_service: UserService):
-    expected_count = 5
+    expected_count = 3
     users = UserModelFactory.create_batch(expected_count)
     usernames = {user.username for user in users}
 

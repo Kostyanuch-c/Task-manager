@@ -15,7 +15,7 @@ def task_service() -> TaskService:
 @pytest.fixture()
 def task_create_data() -> TaskInput:
     return TaskInput(
-        name="task_name",
+        name="task_nAme_",
         description="description",
         status=StatusModelFactory.create(),
         author=UserModelFactory.create(),

@@ -15,8 +15,9 @@ from task_manager.tasks.services.task_service import TaskService
 def test_get_task_only_user_tasks(task_service: TaskService):
     user = UserModelFactory.create()
 
-    TaskModelFactory.create_batch(3)
-
+    TaskModelFactory.create(name='name1')
+    TaskModelFactory.create(name='name2')
+    TaskModelFactory.create(name='name3')
     task_current_user = TaskModelFactory.create(author=user)
 
     fetched_tasks = task_service.get_all_objects()
@@ -36,7 +37,9 @@ def test_get_task_only_user_tasks(task_service: TaskService):
 def test_get_task_status_filter(task_service: TaskService):
     status = StatusModelFactory.create()
 
-    TaskModelFactory.create_batch(3)
+    TaskModelFactory.create(name='name1')
+    TaskModelFactory.create(name='name2')
+    TaskModelFactory.create(name='name3')
 
     fetched_task = TaskModelFactory.create(status=status)
 
@@ -54,7 +57,9 @@ def test_get_task_status_filter(task_service: TaskService):
 def test_get_task_executor_filter(task_service: TaskService):
     executor = UserModelFactory.create()
 
-    TaskModelFactory.create_batch(3)
+    TaskModelFactory.create(name='name1')
+    TaskModelFactory.create(name='name2')
+    TaskModelFactory.create(name='name3')
 
     fetched_task = TaskModelFactory.create(executor=executor)
 
@@ -70,11 +75,14 @@ def test_get_task_executor_filter(task_service: TaskService):
 
 @pytest.mark.django_db
 def test_get_task_label_filter(task_service: TaskService):
-    label = LabelModelFactory.create_batch(3)
+    label = [
+        LabelModelFactory.create(name='label1'), LabelModelFactory.create(name='label2'),
+        LabelModelFactory.create(name='label3'),
+    ]
 
-    TaskModelFactory.create(label=label)
-    TaskModelFactory.create(label=[label[0]])
-    TaskModelFactory.create(label=[label[-1]])
+    TaskModelFactory.create(name="name1", label=label)
+    TaskModelFactory.create(name="name2", label=[label[0]])
+    TaskModelFactory.create(name="name3", label=[label[-1]])
 
     query_params = {
         'label': f"{label[0].id}",
@@ -92,13 +100,16 @@ def test_get_task_label_filter(task_service: TaskService):
 def test_get_task_with_all_filters(task_service: TaskService):
     author = UserModelFactory.create()
     executor = UserModelFactory.create()
-    status = StatusModelFactory.create()
+    status = StatusModelFactory.create(name='status')
 
-    label = LabelModelFactory.create_batch(3)
-    TaskModelFactory.create(label=label, status=status)
-    TaskModelFactory.create(label=[label[0]], author=author)
-    TaskModelFactory.create(label=[label[-1]], executor=executor)
-    TaskModelFactory.create(label=label[1:], executor=executor, author=author, status=status)
+    label = [
+        LabelModelFactory.create(name='label1'), LabelModelFactory.create(name='label2'),
+        LabelModelFactory.create(name='label3'),
+    ]
+    TaskModelFactory.create(label=label, status=status, name='name1')
+    TaskModelFactory.create(label=[label[0]], author=author, name='name2')
+    TaskModelFactory.create(label=[label[-1]], executor=executor, name='name3')
+    TaskModelFactory.create(label=label[1:], executor=executor, author=author, status=status, name='name4')
 
     query_params = {
         'label': f"{label[1].id}",

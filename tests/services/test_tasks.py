@@ -89,7 +89,7 @@ def test_update_task_name_already_exists(
         task_service: TaskService,
         task_create_data: TaskInput,
 ):
-    task = TaskModelFactory.create()
+    task = TaskModelFactory.create(name='name')
     TaskModelFactory.create(name=task_create_data.name)
 
     with pytest.raises(TaskNameIsNotFreeException):
