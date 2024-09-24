@@ -22,7 +22,7 @@ class TaskService(BaseService):
     def __init__(self):
         self.repository = TaskRepository()
 
-    def _filter_query(self, query_params: dict, user_id: int) -> Q:
+    def _get_query(self, query_params: dict, user_id: int) -> Q:
         query = Q()
 
         user_task = query_params.get("self_tasks")
@@ -37,6 +37,10 @@ class TaskService(BaseService):
         if executor_id:
             query &= Q(executor_id=executor_id)
 
+        label_id = query_params.get('label')
+        if label_id:
+            query &= Q(label__id=label_id)
+
         return query
 
     def get_all_objects(
@@ -46,7 +50,7 @@ class TaskService(BaseService):
         if not query_params:
             return self.repository.get_all_objects()
 
-        query = self._filter_query(query_params, user_id)
+        query = self._get_query(query_params, user_id)
         return self.repository.get_all_objects(query=query)
 
     def get_object(self, task_id: int) -> TaskEntity:

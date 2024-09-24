@@ -2,6 +2,7 @@ from django.db import (
     IntegrityError,
     transaction,
 )
+from django.db.models import ProtectedError
 from django.http import Http404
 
 from task_manager.common.base_service import BaseService
@@ -10,6 +11,7 @@ from task_manager.tasks.entities.label_entity import (
     LabelInput,
 )
 from task_manager.tasks.exceptions.label_exceptions import (
+    LabelDeleteProtectedError,
     LabelNameIsNotFreeException,
 )
 from task_manager.tasks.models import Label
@@ -44,4 +46,7 @@ class LabelService(BaseService):
         self.repository.update_object(label_id, label)
 
     def delete_object(self, label_id: int) -> None:
-        self.repository.delete_object(label_id)
+        try:
+            return self.repository.delete_object(label_id)
+        except ProtectedError:
+            raise LabelDeleteProtectedError

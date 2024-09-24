@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
 from task_manager.tasks.models import (
+    Label,
     Status,
     Task,
 )
@@ -47,6 +48,11 @@ class TaskFilterForm(forms.Form):
             "id", "first_name", "last_name",
         ),
         label=_('Executor'),
+        required=False,
+    )
+    label = forms.ModelChoiceField(
+        queryset=Label.objects.all().only('id', 'name'),
+        label=_('Label'),
         required=False,
     )
 

@@ -52,8 +52,8 @@ class TaskListView(MessagesLoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         query_params = self.request.GET
-
         context["form"] = TaskFilterForm(query_params)
+
         task_entities = TaskService().get_all_objects(
             query_params=query_params,
             user_id=self.request.user.id,

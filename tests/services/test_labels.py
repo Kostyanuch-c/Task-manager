@@ -2,6 +2,7 @@ from django.http import Http404
 
 import pytest
 from tests.factories.labels import LabelModelFactory
+from tests.factories.tasks import TaskModelFactory
 from tests.fixtures.services.labels import (  # noqa
     label_create_data,
     label_service,
@@ -9,6 +10,7 @@ from tests.fixtures.services.labels import (  # noqa
 
 from task_manager.tasks.entities.label_entity import LabelInput
 from task_manager.tasks.exceptions.label_exceptions import (
+    LabelDeleteProtectedError,
     LabelNameIsNotFreeException,
 )
 from task_manager.tasks.services.label_service import LabelService
@@ -62,11 +64,11 @@ def test_delete_label(label_service: LabelService):
     with pytest.raises(Http404):
         label_service.get_object(label.id)
 
-# @pytest.mark.django_db
-# def test_delete_status(label_service: LabelService):
-#     label = LabelModelFactory.create()
-#
-#     TaskModelFactory.create(label=label)
-#
-#     with pytest.raises(Http404):
-#         label_service.get_object(label.id)
+@pytest.mark.django_db
+def test_delete_status(label_service: LabelService):
+    label = [LabelModelFactory.create()]
+
+    TaskModelFactory.create(label=label)
+
+    with pytest.raises(LabelDeleteProtectedError):
+        label_service.delete_object(label[0].id)

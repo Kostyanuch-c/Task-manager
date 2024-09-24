@@ -20,8 +20,12 @@
                     <td>{{ object.id }}</td>
                     {% for field in fields %}
                         {% if forloop.first and url_to_detail %}
-                            <td><a href="{% url url_to_detail object.id %}"
-                                   class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">{{ object|get_attribute:field|default:'' }}</a>
+                            <td>
+                                <a href="{% url url_to_detail object.id %}"
+                                   class="link-primary link-offset-2 link-underline-opacity-25
+                                   link-underline-opacity-100-hover">
+                                    {{ object|get_attribute:field|default:'' }}
+                                </a>
                             </td>
                         {% else %}
                             <td>{{ object|get_attribute:field|default:'' }}</td>

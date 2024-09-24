@@ -40,9 +40,11 @@ class Task(BaseTimedModel):
 
     label = models.ManyToManyField(
         'Label',
+        through='Membership',
         verbose_name=_("Label"),
         blank=True,
         related_name="task_as_label",
+
     )
 
     def to_entity(self):
@@ -63,3 +65,21 @@ class Task(BaseTimedModel):
     class Meta:
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
+
+
+class Membership(models.Model):
+    label = models.ForeignKey(
+        'Label',
+        on_delete=models.PROTECT,
+        verbose_name=_("Label"),
+    )
+    task = models.ForeignKey(
+        'Task',
+        on_delete=models.CASCADE,
+        verbose_name=_("Task"),
+    )
+
+    class Meta:
+        db_table = 'task_label_membership'
+        verbose_name = "Membership"
+        verbose_name_plural = "Memberships"
