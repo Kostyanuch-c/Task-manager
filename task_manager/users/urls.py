@@ -5,6 +5,7 @@ from task_manager.users.views import (
     user_views,
 )
 
+
 urlpatterns = [
     path("users/", user_views.UsersListView.as_view(), name="users_list"),
     path(
