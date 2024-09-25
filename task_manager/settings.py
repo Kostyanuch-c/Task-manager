@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_bootstrap5",
     "debug_toolbar",
+
     "task_manager.users",
     "task_manager.tasks",
 ]

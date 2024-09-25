@@ -22,10 +22,10 @@ from django.urls import (
 
 from task_manager import settings
 
-
 urlpatterns = [
-    path("admin/", admin.site.urls),
+
     path("", include("task_manager.users.urls")),
+    # path("admin/", admin.site.urls),
     path("statuses/", include("task_manager.tasks.urls.status_urls")),
     path("tasks/", include("task_manager.tasks.urls.task_urls")),
     path("labels/", include("task_manager.tasks.urls.label_urls")),
@@ -36,5 +36,5 @@ if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns = [
-        path("__debug__/", include(debug_toolbar.urls)),  # noqa
-    ] + urlpatterns
+                      path("__debug__/", include(debug_toolbar.urls)),  # noqa
+                  ] + urlpatterns

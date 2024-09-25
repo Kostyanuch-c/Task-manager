@@ -1,23 +1,23 @@
 [tool.poetry]
-name = "hexlet-code"
+name = "djangoproject"
 version = "0.1.0"
 description = ""
 authors = ["Konstantin Kiselev <konstantin.kiselev.1998@mail.ru>"]
 readme = "README.md"
 packages = [
-    { include = "task_manager" },
+    { include = "djangoProject" },
 ]
 [tool.poetry.dependencies]
 python = "^3.10"
 django = "^5.1.1"
-python-dotenv = "^1.0.1"
-django-stubs = "^5.0.4"
-gunicorn = "^23.0.0"
-django-bootstrap5 = "^24.2"
-psycopg2-binary = "^2.9.9"
-whitenoise = "^6.7.0"
-django-extensions = "^3.2.3"
 django-debug-toolbar = "^4.4.6"
+django-extensions = "^3.2.3"
+django-bootstrap5 = "^24.3"
+python-dotenv = "^1.0.1"
+whitenoise = "^6.7.0"
+psycopg2-binary = "^2.9.9"
+gunicorn = "^23.0.0"
+django-stubs = "^5.1.0"
 rollbar = "^0.16.3"
 
 
@@ -33,6 +33,7 @@ pytest-cov = "^5.0.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "task_manager.settings"

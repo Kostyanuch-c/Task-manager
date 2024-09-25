@@ -5,11 +5,7 @@ from task_manager.users.views import (
     user_views,
 )
 
-
 urlpatterns = [
-    path("", auth_views.IndexView.as_view(), name="index"),
-    path("login/", auth_views.LoginInView.as_view(), name="login"),
-    path("logout/", auth_views.logout_view, name="logout"),
     path("users/", user_views.UsersListView.as_view(), name="users_list"),
     path(
         "users/create/",
@@ -26,4 +22,7 @@ urlpatterns = [
         user_views.UserDeleteView.as_view(),
         name="delete_user",
     ),
+    path("", auth_views.IndexView.as_view(), name="index"),
+    path("login/", auth_views.LoginInView.as_view(), name="login"),
+    path("logout/", auth_views.logout_view, name="logout"),
 ]
