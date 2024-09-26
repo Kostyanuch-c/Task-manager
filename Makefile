@@ -7,7 +7,7 @@ install:
 
 .PHONY: build
 build:
-	@poetry install --no-dev
+	@poetry install --only main
 
 .PHONY: create_migrations
 create_migrations:
