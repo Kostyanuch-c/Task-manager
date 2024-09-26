@@ -3,8 +3,7 @@ from tests.factories.labels import LabelModelFactory
 from tests.factories.statuses import StatusModelFactory
 from tests.factories.tasks import TaskModelFactory
 from tests.factories.users import UserModelFactory
-from tests.fixtures.services.tasks import (  # noqa
-    task_create_data,
+from tests.fixtures.services.tasks import (
     task_service,
 )
 

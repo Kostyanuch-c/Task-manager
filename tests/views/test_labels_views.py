@@ -5,9 +5,9 @@ from django.shortcuts import reverse
 
 import pytest
 from tests.factories.labels import LabelModelFactory
-from tests.fixtures.forms.labels import label_form_data  # noqa
+from tests.fixtures.forms.labels import label_form_data
 from tests.fixtures.login_decorator import login_user
-from tests.fixtures.services.labels import label_service  # noqa
+from tests.fixtures.services.labels import label_service
 
 from task_manager.tasks.services.label_service import LabelService
 

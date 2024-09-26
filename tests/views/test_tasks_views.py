@@ -6,12 +6,12 @@ from django.shortcuts import reverse
 import pytest
 from tests.factories.labels import LabelModelFactory
 from tests.factories.tasks import TaskModelFactory
-from tests.fixtures.forms.tasks import task_form_data  # noqa
+from tests.fixtures.forms.tasks import task_form_data
 from tests.fixtures.login_decorator import (
     login_and_return_user,
     login_user,
 )
-from tests.fixtures.services.tasks import task_service  # noqa
+from tests.fixtures.services.tasks import task_service
 
 from task_manager.tasks.services.task_service import TaskService
 

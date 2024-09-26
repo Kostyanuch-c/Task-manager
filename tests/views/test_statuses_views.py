@@ -5,9 +5,9 @@ from django.shortcuts import reverse
 
 import pytest
 from tests.factories.statuses import StatusModelFactory
-from tests.fixtures.forms.status import status_form_data  # noqa
+from tests.fixtures.forms.status import status_form_data
 from tests.fixtures.login_decorator import login_user
-from tests.fixtures.services.statuses import status_service  # noqa
+from tests.fixtures.services.statuses import status_service
 
 from task_manager.tasks.services.status_service import StatusService
 

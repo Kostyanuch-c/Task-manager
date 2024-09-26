@@ -3,7 +3,7 @@ from django.http import Http404
 import pytest
 from tests.factories.statuses import StatusModelFactory
 from tests.factories.tasks import TaskModelFactory
-from tests.fixtures.services.statuses import (  # noqa
+from tests.fixtures.services.statuses import (
     status_create_data,
     status_service,
 )

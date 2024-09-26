@@ -5,9 +5,9 @@ from django.shortcuts import reverse
 
 import pytest
 from tests.factories.users import UserModelFactory
-from tests.fixtures.forms.users import users_form_data  # noqa
+from tests.fixtures.forms.users import users_form_data
 from tests.fixtures.login_decorator import login_user
-from tests.fixtures.services.users import (  # noqa
+from tests.fixtures.services.users import (
     user_create_data,
     user_service,
 )

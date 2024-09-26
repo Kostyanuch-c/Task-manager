@@ -3,7 +3,7 @@ from django.http import Http404
 import pytest
 from tests.factories.labels import LabelModelFactory
 from tests.factories.tasks import TaskModelFactory
-from tests.fixtures.services.labels import (  # noqa
+from tests.fixtures.services.labels import (
     label_create_data,
     label_service,
 )
@@ -36,9 +36,7 @@ def test_create_label(
     label_service.create_object(label_create_data)
     fetched_label = label_service.get_all_objects()[0]
     assert fetched_label is not None
-    assert (
-        fetched_label.name == label_create_data.name,
-    )
+    assert fetched_label.name == label_create_data.name
 
 
 @pytest.mark.django_db
@@ -63,6 +61,7 @@ def test_delete_label(label_service: LabelService):
 
     with pytest.raises(Http404):
         label_service.get_object(label.id)
+
 
 @pytest.mark.django_db
 def test_delete_status(label_service: LabelService):

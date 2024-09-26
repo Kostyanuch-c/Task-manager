@@ -3,7 +3,7 @@ from django.http import Http404
 import pytest
 from tests.factories.labels import LabelModelFactory
 from tests.factories.tasks import TaskModelFactory
-from tests.fixtures.services.tasks import (  # noqa
+from tests.fixtures.services.tasks import (
     task_create_data,
     task_service,
 )
@@ -28,7 +28,10 @@ def test_get_task_all_without_filters(task_service: TaskService):
 
     fetched_tasks = task_service.get_all_objects()
     fetched_task_names = {task.name for task in (task1, task2)}
-    fetched_labels_names = [{label.name for label in list(task.labels.all())} for task in fetched_tasks]
+    fetched_labels_names = [
+        {label.name for label in list(task.labels.all())}
+        for task in fetched_tasks
+    ]
 
     assert names == fetched_task_names
     assert label_names[0] == fetched_labels_names[0]
@@ -49,7 +52,9 @@ def test_create_task(
     assert fetched_task.status == task_create_data.status
     assert fetched_task.author == task_create_data.author
     assert fetched_task.executor == task_create_data.executor
-    assert {label.name for label in fetched_task.labels.all()} == {label.name for label in task_create_data.labels}
+    assert {label.name for label in fetched_task.labels.all()} == {
+        label.name for label in task_create_data.labels
+    }
 
 
 @pytest.mark.django_db
