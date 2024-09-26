@@ -5,6 +5,10 @@ PORT ?= 8000
 install:
 	@poetry install
 
+.PHONY: build
+build:
+	@poetry install --no-dev
+
 .PHONY: create_migrations
 create_migrations:
 	@$(MANAGE) makemigrations

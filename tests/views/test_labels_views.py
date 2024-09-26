@@ -5,9 +5,9 @@ from django.shortcuts import reverse
 
 import pytest
 from tests.factories.labels import LabelModelFactory
-from tests.fixtures.forms.labels import label_form_data
+from tests.fixtures.forms.labels import label_form_data  # noqa: F401
 from tests.fixtures.login_decorator import login_user
-from tests.fixtures.services.labels import label_service
+from tests.fixtures.services.labels import label_service  # noqa: F401
 
 from task_manager.tasks.services.label_service import LabelService
 
@@ -57,8 +57,8 @@ def test_list_label(
 @pytest.mark.django_db
 def test_create_label(
         client,
-        label_service: LabelService,
-        label_form_data: dict,
+        label_service: LabelService,  # noqa: F811
+        label_form_data: dict,  # noqa: F811
 ):
     response = client.post(reverse("label_create"), data=label_form_data)
 
@@ -73,8 +73,8 @@ def test_create_label(
 @pytest.mark.django_db
 def test_label_update_with_login(
         client,
-        label_service: LabelService,
-        label_form_data: dict,
+        label_service: LabelService,  # noqa: F811
+        label_form_data: dict,  # noqa: F811
 ):
     label = LabelModelFactory.create()
     response = client.post(
@@ -93,7 +93,7 @@ def test_label_update_with_login(
 @pytest.mark.django_db
 def test_label_delete_with_login(
         client,
-        label_service: LabelService,
+        label_service: LabelService,  # noqa: F811
 ):
     label = LabelModelFactory.create()
     response = client.post(

@@ -6,12 +6,12 @@ from django.shortcuts import reverse
 import pytest
 from tests.factories.labels import LabelModelFactory
 from tests.factories.tasks import TaskModelFactory
-from tests.fixtures.forms.tasks import task_form_data
+from tests.fixtures.forms.tasks import task_form_data  # noqa: F401
 from tests.fixtures.login_decorator import (
     login_and_return_user,
     login_user,
 )
-from tests.fixtures.services.tasks import task_service
+from tests.fixtures.services.tasks import task_service  # noqa: F401
 
 from task_manager.tasks.services.task_service import TaskService
 
@@ -54,7 +54,7 @@ def test_tasks_detail_without_login_and_without_tasks(client):
 @pytest.mark.django_db
 def test_list_task(
         client,
-        task_service: TaskService,
+        task_service: TaskService,  # noqa: F811
 ):
     task = TaskModelFactory.create()
     response = client.get("/tasks/")
@@ -67,7 +67,7 @@ def test_list_task(
 @pytest.mark.django_db
 def test_detail_task(
         client,
-        task_service: TaskService,
+        task_service: TaskService,  # noqa: F811
 ):
     labels = [LabelModelFactory.create(name="test")]
     task = TaskModelFactory.create(labels=labels)
@@ -81,7 +81,7 @@ def test_detail_task(
 
 @login_and_return_user
 @pytest.mark.django_db
-def test_create_task(client, task_service: TaskService, task_form_data: dict, **kwargs):
+def test_create_task(client, task_service: TaskService, task_form_data: dict, **kwargs):  # noqa: F811
     current_user = kwargs['login_user']
 
     response = client.post(reverse("task_create"), data=task_form_data)
@@ -102,8 +102,8 @@ def test_create_task(client, task_service: TaskService, task_form_data: dict, **
 @pytest.mark.django_db
 def test_update_task(
         client,
-        task_service: TaskService,
-        task_form_data: dict,
+        task_service: TaskService,  # noqa: F811
+        task_form_data: dict,  # noqa: F811
         **kwargs,
 ):
     current_user = kwargs['login_user']
@@ -129,7 +129,7 @@ def test_update_task(
 
 @login_user
 @pytest.mark.django_db
-def test_task_delete_with_login_without_permission(client, task_service: TaskService):
+def test_task_delete_with_login_without_permission(client, task_service: TaskService):  # noqa: F811
     task = TaskModelFactory.create()
 
     response = client.post(
@@ -146,7 +146,7 @@ def test_task_delete_with_login_without_permission(client, task_service: TaskSer
 
 @login_and_return_user
 @pytest.mark.django_db
-def test_task_delete_with_login_with_permission(client, task_service: TaskService, **kwargs):
+def test_task_delete_with_login_with_permission(client, task_service: TaskService, **kwargs):  # noqa: F811
     current_user = kwargs['login_user']
 
     task = TaskModelFactory.create(author=current_user)

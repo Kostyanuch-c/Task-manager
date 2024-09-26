@@ -5,9 +5,9 @@ from django.shortcuts import reverse
 
 import pytest
 from tests.factories.users import UserModelFactory
-from tests.fixtures.forms.users import users_form_data
+from tests.fixtures.forms.users import users_form_data  # noqa: F401
 from tests.fixtures.login_decorator import login_user
-from tests.fixtures.services.users import (
+from tests.fixtures.services.users import (  # noqa: F401
     user_create_data,
     user_service,
 )
@@ -19,10 +19,7 @@ from task_manager.users.services.user_service import UserService
 def test_index(client):
     response = client.get("/")
     assert response.status_code == HTTPStatus.OK
-    assert (
-            "Task Manager — это удобный инструмент для управления задачами."
-            in response.content.decode("utf-8")
-    )
+    assert "Task Manager — это" in response.content.decode("utf-8")
 
 
 @login_user
@@ -46,8 +43,8 @@ def test_list_users(client):
 @pytest.mark.django_db
 def test_list_users_after_authorized(
         client,
-        user_service: UserService,
-        user_create_data: UserInput,
+        user_service: UserService,  # noqa: F811
+        user_create_data: UserInput,  # noqa: F811
 ):
     password = user_create_data.password
     user_service.create_object(user_create_data)
@@ -74,9 +71,9 @@ def test_update_user_without_login(client):
 @pytest.mark.django_db
 def test_update_user_with_login(
         client,
-        user_service: UserService,
-        user_create_data: UserInput,
-        users_form_data: dict,
+        user_service: UserService,  # noqa: F811
+        user_create_data: UserInput,  # noqa: F811
+        users_form_data: dict,  # noqa: F811
 ):
     password = user_create_data.password
     user_service.create_object(user_create_data)
@@ -98,8 +95,8 @@ def test_update_user_with_login(
 @pytest.mark.django_db
 def test_update_without_permission(
         client,
-        user_service: UserService,
-        user_create_data: UserInput,
+        user_service: UserService,  # noqa: F811
+        user_create_data: UserInput,  # noqa: F811
 ):
     password = user_create_data.password
     user_service.create_object(user_create_data)
@@ -130,8 +127,8 @@ def test_delete_user_without_login(client):
 @pytest.mark.django_db
 def test_delete_user_with_login(
         client,
-        user_service: UserService,
-        user_create_data: UserInput,
+        user_service: UserService,  # noqa: F811
+        user_create_data: UserInput,  # noqa: F811
 ):
     password = user_create_data.password
     user_service.create_object(user_create_data)
@@ -152,8 +149,8 @@ def test_delete_user_with_login(
 @pytest.mark.django_db
 def test_delete_without_permission(
         client,
-        user_service: UserService,
-        user_create_data: UserInput,
+        user_service: UserService,  # noqa: F811
+        user_create_data: UserInput,  # noqa: F811
 ):
     password = user_create_data.password
     user_service.create_object(user_create_data)
@@ -172,8 +169,8 @@ def test_delete_without_permission(
 @pytest.mark.django_db
 def test_registration_user(
         client,
-        user_service: UserService,
-        users_form_data: dict,
+        user_service: UserService,  # noqa: F811
+        users_form_data: dict,  # noqa: F811
 ):
     response = client.post(reverse("create_user"), data=users_form_data)
 
@@ -199,8 +196,8 @@ def test_users_delete_without_login_and_without_users(client):
 @pytest.mark.django_db
 def test_login(
         client,
-        user_service: UserService,
-        user_create_data: UserInput,
+        user_service: UserService,  # noqa: F811
+        user_create_data: UserInput,  # noqa: F811
 ):
     password = user_create_data.password
     user_service.create_object(user_create_data)

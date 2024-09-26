@@ -3,7 +3,7 @@ from django.http import Http404
 import pytest
 from tests.factories.labels import LabelModelFactory
 from tests.factories.tasks import TaskModelFactory
-from tests.fixtures.services.tasks import (
+from tests.fixtures.services.tasks import (  # noqa: F401
     task_create_data,
     task_service,
 )
@@ -16,7 +16,7 @@ from task_manager.tasks.services.task_service import TaskService
 
 
 @pytest.mark.django_db
-def test_get_task_all_without_filters(task_service: TaskService):
+def test_get_task_all_without_filters(task_service: TaskService):  # noqa: F811
     labels1 = LabelModelFactory.create_batch(2)
     task1 = TaskModelFactory.create(labels=labels1, name='first task')
 
@@ -39,9 +39,9 @@ def test_get_task_all_without_filters(task_service: TaskService):
 
 
 @pytest.mark.django_db
-def test_create_task(
-        task_service: TaskService,
-        task_create_data: TaskInput,
+def test_create_task(  # noqa: F811
+        task_service: TaskService,  # noqa: F811
+        task_create_data: TaskInput,  # noqa: F811
 ):
     task_service.create_object(task_create_data)
     fetched_task = task_service.get_all_objects()[0]
@@ -58,9 +58,9 @@ def test_create_task(
 
 
 @pytest.mark.django_db
-def test_create_status_name_already_exists(
-        task_service: TaskService,
-        task_create_data: TaskInput,
+def test_create_status_name_already_exists(  # noqa: F811
+        task_service: TaskService,  # noqa: F811
+        task_create_data: TaskInput,  # noqa: F811
 ):
     TaskModelFactory.create(name=task_create_data.name)
 
@@ -69,16 +69,16 @@ def test_create_status_name_already_exists(
 
 
 @pytest.mark.django_db
-def test_update_task(
-        task_service: TaskService,
-        task_create_data: TaskInput,
+def test_update_task(  # noqa: F811
+        task_service: TaskService,  # noqa: F811
+        task_create_data: TaskInput,  # noqa: F811
 ):
     label = [LabelModelFactory.create(name='create_label')]
     task = TaskModelFactory.create(labels=label, name='task_name')
 
     task_service.update_object(task.id, task_create_data)
 
-    fetched_task = task_service.get_object(task .id)
+    fetched_task = task_service.get_object(task.id)
 
     new_labels = {label.name for label in fetched_task.labels.all()}
     assert fetched_task.name == task_create_data.name
@@ -89,10 +89,11 @@ def test_update_task(
     assert new_labels == {label.name for label in task_create_data.labels}
     assert 'create_label' not in new_labels
 
+
 @pytest.mark.django_db
-def test_update_task_name_already_exists(
-        task_service: TaskService,
-        task_create_data: TaskInput,
+def test_update_task_name_already_exists(  # noqa: F811
+        task_service: TaskService,  # noqa: F811
+        task_create_data: TaskInput,  # noqa: F811
 ):
     task = TaskModelFactory.create(name='name')
     TaskModelFactory.create(name=task_create_data.name)
@@ -102,7 +103,7 @@ def test_update_task_name_already_exists(
 
 
 @pytest.mark.django_db
-def test_delete_task(task_service: TaskService):
+def test_delete_task(task_service: TaskService):    # noqa: F811
     task = TaskModelFactory.create()
 
     task_service.delete_object(task.id)

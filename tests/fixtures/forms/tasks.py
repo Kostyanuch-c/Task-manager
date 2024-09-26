@@ -11,5 +11,8 @@ def task_form_data() -> dict:
         'description': 'form_description',
         'status': StatusModelFactory.create().id,
         'executor': UserModelFactory.create().id,
-        'labels': [LabelModelFactory.create().id, LabelModelFactory.create().id],
+        'labels': [
+            LabelModelFactory.create().id,
+            LabelModelFactory.create().id
+        ],
     }
