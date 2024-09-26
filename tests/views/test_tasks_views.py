@@ -81,7 +81,7 @@ def test_detail_task(
 
 @login_and_return_user
 @pytest.mark.django_db
-def test_create_task(client, task_service: TaskService, task_form_data: dict, **kwargs):  # noqa: F811
+def test_create_task(client, task_service: TaskService, task_form_data: dict, **kwargs):  # noqa
     current_user = kwargs['login_user']
 
     response = client.post(reverse("task_create"), data=task_form_data)
@@ -146,7 +146,11 @@ def test_task_delete_with_login_without_permission(client, task_service: TaskSer
 
 @login_and_return_user
 @pytest.mark.django_db
-def test_task_delete_with_login_with_permission(client, task_service: TaskService, **kwargs):  # noqa: F811
+def test_task_delete_with_login_with_permission(
+        client,
+        task_service: TaskService,  # noqa: F811
+        **kwargs
+):
     current_user = kwargs['login_user']
 
     task = TaskModelFactory.create(author=current_user)

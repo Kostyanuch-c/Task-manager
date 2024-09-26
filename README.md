@@ -23,6 +23,7 @@ installed.*
   ```bash
   git clone git@github.com:Kostyanuch-c/python-project-52.git
   ```
+
 + **Installing dependencies**
     ```bash
     make install
@@ -39,18 +40,22 @@ installed.*
   ```bash
   make create_migrations
   ```
+
 + **Apply Migrations**
   ```bash
   make migrate
   ```
+
 + **Open Django Shell**
   ```bash
   make shell
   ```
+
 + **Run Linters**
   ```bash
   make lint
   ```
+
 + **Collect Static Files**
   ```bash
   make collectstatic
