@@ -17,7 +17,7 @@ class TaskForm(forms.ModelForm):
             "description",
             "status",
             "executor",
-            "label",
+            "labels",
         ]
 
     def __init__(self, *args, **kwargs) -> None:
@@ -54,6 +54,7 @@ class TaskFilterForm(forms.Form):
         queryset=Label.objects.all().only('id', 'name'),
         label=_('Label'),
         required=False,
+        widget=forms.Select(attrs={'name': 'labels', 'id': 'id_labels'}),
     )
 
     def __init__(self, *args, **kwargs):

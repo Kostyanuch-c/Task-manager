@@ -39,7 +39,7 @@ class TaskService(BaseService):
 
         label_id = query_params.get('label')
         if label_id:
-            query &= Q(label__id=label_id)
+            query &= Q(labels__id=label_id)
 
         return query
 

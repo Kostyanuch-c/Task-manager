@@ -85,7 +85,7 @@ class TaskCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
             description=form.cleaned_data["description"],
             status=form.cleaned_data["status"],
             executor=form.cleaned_data["executor"],
-            label=form.cleaned_data["label"],
+            labels=form.cleaned_data["labels"],
             author=self.request.user,
         )
 
@@ -121,7 +121,7 @@ class TaskUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
             status=form.cleaned_data["status"],
             executor=form.cleaned_data["executor"],
             author=self.request.user,
-            label=form.cleaned_data["label"],
+            labels=form.cleaned_data["labels"],
         )
 
         try:

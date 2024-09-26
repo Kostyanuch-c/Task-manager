@@ -19,7 +19,9 @@
                         {% else %}
                             {{ field|add_class:'form-control' }}
                         {% endif %}
-                        <p class="form-text text-white-50 float-start">{{ field.help_text }}</p>
+                        {% if field.help_text %}
+                            <p class="form-text text-white-50 float-start">{{ field.help_text }}</p>
+                        {% endif %}
                     </div>
                 {% endfor %}
                 <button type="submit" class="btn btn btn-outline-primary">{{ name_button_in_form }}</button>

@@ -22,7 +22,7 @@ class TaskRepository(BaseRepository):
             "status",
             "author",
             "executor",
-        ).prefetch_related('label')
+        ).prefetch_related('labels')
 
         return [task.to_entity() for task in tasks]
 
@@ -35,7 +35,7 @@ class TaskRepository(BaseRepository):
             executor=task.executor,
         )
 
-        new_task.label.set(task.label)
+        new_task.labels.set(task.labels)
 
     def update_object(self, task_id: int, new_task: TaskInput) -> None:
         task = self.task.objects.get(pk=task_id)
@@ -44,7 +44,7 @@ class TaskRepository(BaseRepository):
         task.status = new_task.status
         task.author = new_task.author
         task.executor = new_task.executor
-        task.label.set(new_task.label)
+        task.labels.set(new_task.labels)
         task.save()
 
     def delete_object(self, task_id: int) -> None:
@@ -54,7 +54,7 @@ class TaskRepository(BaseRepository):
         return (
             self.task.objects.filter(id=task_id)
             .select_related("status", "author", "executor")
-            .prefetch_related('label')
+            .prefetch_related('labels')
             .get()
             .to_entity()
         )

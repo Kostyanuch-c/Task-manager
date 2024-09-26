@@ -68,7 +68,7 @@ def test_delete_label(label_service: LabelService):
 def test_delete_status(label_service: LabelService):
     label = [LabelModelFactory.create()]
 
-    TaskModelFactory.create(label=label)
+    TaskModelFactory.create(labels=label)
 
     with pytest.raises(LabelDeleteProtectedError):
         label_service.delete_object(label[0].id)

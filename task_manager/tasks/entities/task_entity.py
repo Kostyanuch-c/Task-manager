@@ -2,11 +2,12 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime
 
+from django.contrib.auth.models import AbstractUser
+
 from task_manager.tasks.models import (
     Label,
     Status,
 )
-from task_manager.users.models import User
 
 
 @dataclass
@@ -15,9 +16,9 @@ class TaskEntity:
     name: str
     description: str | None
     status: Status
-    author: User
-    executor: User | None
-    label: Iterable[Label] | None
+    author: AbstractUser
+    executor: AbstractUser | None
+    labels: Iterable[Label] | None
     created_at: datetime
 
 
@@ -26,9 +27,9 @@ class TaskInput:
     name: str
     description: str | None
     status: Status
-    author: User
-    executor: User | None
-    label: Iterable[Label] | None
+    author: AbstractUser
+    executor: AbstractUser | None
+    labels: Iterable[Label] | None
 
 
 @dataclass

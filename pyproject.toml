@@ -5,7 +5,7 @@ description = ""
 authors = ["Konstantin Kiselev <konstantin.kiselev.1998@mail.ru>"]
 readme = "README.md"
 packages = [
-    { include = "djangoProject" },
+    { include = "task_manager" },
 ]
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -19,6 +19,7 @@ psycopg2-binary = "^2.9.9"
 gunicorn = "^23.0.0"
 django-stubs = "^5.1.0"
 rollbar = "^0.16.3"
+dj-database-url = "^2.2.0"
 
 
 [tool.poetry.group.dev.dependencies]

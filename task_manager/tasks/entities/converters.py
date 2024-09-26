@@ -16,7 +16,7 @@ class TaskEntityConverter:
             executor_full_name=entity.executor.full_name
             if entity.executor
             else None,
-            labels=entity.label,
+            labels=entity.labels,
             created_at=entity.created_at,
         )
 

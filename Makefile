@@ -21,8 +21,8 @@ shell:
 lint:
 	@poetry run flake8 task_manager
 
-.PHONY: run
-run:
+.PHONY: dev
+dev:
 	@$(MANAGE) runserver
 
 .PHONY: collectstatic
@@ -48,7 +48,3 @@ test:
 .PHONY: test-coverage
 test-coverage:
 	poetry run pytest --cov=task_manager --cov-report xml
-
-.PHONY: export_env
-export_env:
-	export $$(cat .env | xargs)

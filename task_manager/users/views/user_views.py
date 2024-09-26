@@ -85,7 +85,7 @@ class UserUpdateView(
     success_url = redirect_failed = reverse_lazy("users_list")
     success_message = _("User updated successfully.")
     message_failed_permissions = _(
-        "you do not have permission to change another user",
+        'You do not have permission to change another user',
     )
 
     extra_context = {

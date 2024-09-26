@@ -70,7 +70,7 @@ def test_detail_task(
         task_service: TaskService,
 ):
     labels = [LabelModelFactory.create(name="test")]
-    task = TaskModelFactory.create(label=labels)
+    task = TaskModelFactory.create(labels=labels)
     response = client.get(reverse("task_detail", args=[task.id]))
 
     assert response.status_code == HTTPStatus.OK
@@ -86,7 +86,7 @@ def test_create_task(client, task_service: TaskService, task_form_data: dict, **
 
     response = client.post(reverse("task_create"), data=task_form_data)
 
-    assert response.status_code == HTTPStatus.FOUND, f"{response.content.decode('utf-8')}"
+    assert response.status_code == HTTPStatus.FOUND
     assert response.url.startswith(reverse("task_list"))
 
     task = task_service.get_all_objects()[0]
@@ -95,7 +95,7 @@ def test_create_task(client, task_service: TaskService, task_form_data: dict, **
     assert task.author == current_user
     assert task.status.id == task_form_data['status']
     assert task.executor.id == task_form_data['executor']
-    assert {label.id for label in task.label.all()} == set(task_form_data['label'])
+    assert {label.id for label in task.labels.all()} == set(task_form_data['labels'])
 
 
 @login_and_return_user
@@ -124,7 +124,7 @@ def test_update_task(
     assert task_after_update.author == current_user
     assert task_after_update.status.id == task_form_data['status']
     assert task_after_update.executor.id == task_form_data['executor']
-    assert {label.id for label in task_after_update.label.all()} == set(task_form_data['label'])
+    assert {label.id for label in task_after_update.labels.all()} == set(task_form_data['labels'])
 
 
 @login_user

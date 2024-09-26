@@ -20,5 +20,5 @@ def task_create_data() -> TaskInput:
         status=StatusModelFactory.create(),
         author=UserModelFactory.create(),
         executor=UserModelFactory.create(),
-        label=[LabelModelFactory.create(), LabelModelFactory.create()],
+        labels=[LabelModelFactory.create(), LabelModelFactory.create()],
     )

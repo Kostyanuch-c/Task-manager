@@ -38,10 +38,10 @@ class Task(BaseTimedModel):
         related_name="task_as_performer",
     )
 
-    label = models.ManyToManyField(
+    labels = models.ManyToManyField(
         'Label',
         through='Membership',
-        verbose_name=_("Label"),
+        verbose_name=_("Labels"),
         blank=True,
         related_name="task_as_label",
 
@@ -55,7 +55,7 @@ class Task(BaseTimedModel):
             status=self.status,
             author=self.author,
             executor=self.executor,
-            label=self.label,
+            labels=self.labels,
             created_at=self.created_at,
         )
 

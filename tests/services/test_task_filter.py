@@ -80,9 +80,9 @@ def test_get_task_label_filter(task_service: TaskService):
         LabelModelFactory.create(name='label3'),
     ]
 
-    TaskModelFactory.create(name="name1", label=label)
-    TaskModelFactory.create(name="name2", label=[label[0]])
-    TaskModelFactory.create(name="name3", label=[label[-1]])
+    TaskModelFactory.create(name="name1", labels=label)
+    TaskModelFactory.create(name="name2", labels=[label[0]])
+    TaskModelFactory.create(name="name3", labels=[label[-1]])
 
     query_params = {
         'label': f"{label[0].id}",
@@ -92,7 +92,7 @@ def test_get_task_label_filter(task_service: TaskService):
 
     assert len(filters_tasks) == 2
 
-    fetched_labels = [{label.name for label in task.label.all()} for task in filters_tasks]
+    fetched_labels = [{label.name for label in task.labels.all()} for task in filters_tasks]
     assert all(map(lambda labels: label[0].name in labels, fetched_labels))
 
 
@@ -106,10 +106,10 @@ def test_get_task_with_all_filters(task_service: TaskService):
         LabelModelFactory.create(name='label1'), LabelModelFactory.create(name='label2'),
         LabelModelFactory.create(name='label3'),
     ]
-    TaskModelFactory.create(label=label, status=status, name='name1')
-    TaskModelFactory.create(label=[label[0]], author=author, name='name2')
-    TaskModelFactory.create(label=[label[-1]], executor=executor, name='name3')
-    TaskModelFactory.create(label=label[1:], executor=executor, author=author, status=status, name='name4')
+    TaskModelFactory.create(labels=label, status=status, name='name1')
+    TaskModelFactory.create(labels=[label[0]], author=author, name='name2')
+    TaskModelFactory.create(labels=[label[-1]], executor=executor, name='name3')
+    TaskModelFactory.create(labels=label[1:], executor=executor, author=author, status=status, name='name4')
 
     query_params = {
         'label': f"{label[1].id}",
@@ -126,5 +126,5 @@ def test_get_task_with_all_filters(task_service: TaskService):
     assert filter_task[0].executor.id == executor.id
     assert filter_task[0].author.id == author.id
 
-    fetched_labels = {label.name for label in filter_task[0].label.all()}
+    fetched_labels = {label.name for label in filter_task[0].labels.all()}
     assert label[1].name in fetched_labels

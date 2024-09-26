@@ -16,10 +16,10 @@ class TaskModelFactory(factory.django.DjangoModelFactory):
     status = factory.SubFactory(StatusModelFactory)
 
     @factory.post_generation
-    def label(self, create, extracted, **kwargs):
+    def labels(self, create, extracted, **kwargs):
         if not create:
             # Simple build, do nothing.
             return
 
         if extracted:
-            self.label.add(*extracted)
+            self.labels.add(*extracted)
