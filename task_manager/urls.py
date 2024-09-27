@@ -21,12 +21,15 @@ from django.urls import (
 )
 
 from task_manager import settings
-
+from task_manager.users.views import auth_views
 
 urlpatterns = [
 
-    path("", include("task_manager.users.urls")),
     path("admin/", admin.site.urls),
+    path("", auth_views.IndexView.as_view(), name="index"),
+    path("login/", auth_views.LoginInView.as_view(), name="login"),
+    path("logout/", auth_views.logout_view, name="logout"),
+    path("users/", include("task_manager.users.urls")),
     path("statuses/", include("task_manager.tasks.urls.status_urls")),
     path("tasks/", include("task_manager.tasks.urls.task_urls")),
     path("labels/", include("task_manager.tasks.urls.label_urls")),
@@ -38,4 +41,4 @@ if settings.DEBUG:
 
     urlpatterns = [
                       path("__debug__/", include(debug_toolbar.urls)),  # noqa
-    ] + urlpatterns
+                  ] + urlpatterns

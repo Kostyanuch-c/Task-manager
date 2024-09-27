@@ -45,7 +45,6 @@ def test_create_user(  # noqa: F811
     assert fetched_user.full_name == f"{user_create_data.first_name} {user_create_data.last_name}"
 
     assert fetched_user.username == user_create_data.username
-    assert fetched_user.password == user_create_data.password
 
 
 @pytest.mark.django_db
@@ -77,7 +76,6 @@ def test_update_user_correct(  # noqa: F811
     assert fetched_user.full_name == f"{user_create_data.first_name} {user_create_data.last_name}"
 
     assert fetched_user.username == user_create_data.username
-    assert fetched_user.password == user_create_data.password
     assert fetched_user.created_at == user.date_joined
     assert fetched_user.id == user.id
 

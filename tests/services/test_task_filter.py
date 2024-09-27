@@ -60,7 +60,7 @@ def test_get_task_executor_filter(task_service: TaskService):  # noqa: F811
     TaskModelFactory.create(name='name2')
     TaskModelFactory.create(name='name3')
 
-    fetched_task = TaskModelFactory.create(executor=executor)
+    fetched_task = TaskModelFactory.create(executor=executor, name='name4')
 
     query_params = {
         'executor': f'{executor.id}',
