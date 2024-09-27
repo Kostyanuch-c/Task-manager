@@ -40,5 +40,5 @@ if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns = [
-                      path("__debug__/", include(debug_toolbar.urls)),  # noqa
-                  ] + urlpatterns
+                      path("__debug__/", include(debug_toolbar.urls)), # noqa
+                  ] + urlpatterns  # noqa

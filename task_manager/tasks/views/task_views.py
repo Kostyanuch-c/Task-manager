@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
     FormView,
-    TemplateView, CreateView,
+    TemplateView,
 )
 
 from task_manager.common.utils import (
@@ -23,8 +23,7 @@ from task_manager.tasks.forms.task_form import (
 )
 from task_manager.tasks.services.task_service import TaskService
 
-class Create(CreateView):
-    pass
+
 class TaskDetailView(MessagesLoginRequiredMixin, TemplateView):
     template_name = "tasks/task_templates/task_detail.html"
 
