@@ -58,3 +58,9 @@ class TaskFilterForm(django_filters.FilterSet):
 
     def filter_by_label(self, queryset, name, value):
         return queryset.filter(labels__id=value.id)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.form.fields["executor"].label_from_instance \
+            = lambda user: user.full_name
