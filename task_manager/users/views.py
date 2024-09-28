@@ -99,7 +99,7 @@ class UserDeleteView(
 
     def post(self, request, *args, **kwargs):
         try:
-            return self.delete(request, *args, **kwargs)
+            return super().post(request, *args, **kwargs)
         except ProtectedError:
             messages.error(
                 request,

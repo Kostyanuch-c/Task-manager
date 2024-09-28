@@ -84,7 +84,7 @@ class LabelDeleteView(
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
-            return self.delete(request)
+            return super().post(request, *args, **kwargs)
         except ProtectedError:
             messages.error(
                 request,
