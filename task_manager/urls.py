@@ -20,22 +20,21 @@ from django.urls import (
     path,
 )
 
-from task_manager import settings
-from task_manager.users.views import auth_views
+from task_manager import settings, views
 
 urlpatterns = [
 
     path("admin/", admin.site.urls),
-    path("", auth_views.IndexView.as_view(), name="index"),
-    path("login/", auth_views.LoginInView.as_view(), name="login"),
-    path("logout/", auth_views.logout_view, name="logout"),
+    path("", views.IndexView.as_view(), name="index"),
+    path("login/", views.LoginInView.as_view(), name="login"),
+    path("logout/", views.logout_view, name="logout"),
     path("users/", include("task_manager.users.urls")),
     path("statuses/", include("task_manager.tasks.urls.status_urls")),
     path("tasks/", include("task_manager.tasks.urls.task_urls")),
     path("labels/", include("task_manager.tasks.urls.label_urls")),
 ]
 
-handler404 = "task_manager.users.views.auth_views.page_not_found_view"
+handler404 = "task_manager.views.page_not_found_view"
 if settings.DEBUG:
     import debug_toolbar
 

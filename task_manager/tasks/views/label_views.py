@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import ProtectedError
 from django.http import (
     HttpRequest,
     HttpResponse,
@@ -8,27 +10,20 @@ from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
     FormView,
-    TemplateView,
+    TemplateView, CreateView, UpdateView, DeleteView, ListView
 )
 
 from task_manager.common.utils import (
-    CreateObjectMixin,
-    DeleteObjectMixin,
     MessagesLoginRequiredMixin,
-    UpdateObjectMixin,
 )
-from task_manager.tasks.entities.label_entity import LabelInput
-from task_manager.tasks.exceptions.label_exceptions import (
-    LabelDeleteProtectedError,
-    LabelNameIsNotFreeException,
-)
+
 from task_manager.tasks.forms.label_form import LabelForm
-from task_manager.tasks.services.label_service import LabelService
+from task_manager.tasks.models import Label
 
 
-class LabelListView(MessagesLoginRequiredMixin, TemplateView):
+class LabelListView(MessagesLoginRequiredMixin, ListView):
     template_name = "tasks/labels/label_list.html"
-
+    model = Label
     extra_context = {
         "title_list": _("Labels"),
         "titles_columns": (_("Name"),),
@@ -39,16 +34,11 @@ class LabelListView(MessagesLoginRequiredMixin, TemplateView):
         "fields": ("name",),
     }
 
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-        context['object_list'] = LabelService().get_all_objects()
-        return context
 
-
-class LabelCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
+class LabelCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = "tasks/labels/label_create.html"
     form_class = LabelForm
-
+    model = Label
     success_url = reverse_lazy("label_list")
     success_message = _("Label successfully created.")
 
@@ -57,25 +47,11 @@ class LabelCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
         "name_button_in_form": _("Create"),
     }
 
-    service = LabelService()
 
-    def form_valid(self, form: LabelForm) -> HttpResponse:
-        entity = LabelInput(form.cleaned_data["name"])
-        try:
-            return self.mixin_form_valid(
-                request=self.request,
-                form=form,
-                object_data=entity,
-            )
-        except LabelNameIsNotFreeException as exception:
-            form.add_error("name", exception.message)
-            return self.form_invalid(form)
-
-
-class LabelUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
+class LabelUpdateView(MessagesLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = "tasks/labels/label_update.html"
     form_class = LabelForm
-
+    model = Label
     success_url = reverse_lazy("label_list")
     success_message = _("Label successfully updated.")
 
@@ -84,44 +60,24 @@ class LabelUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
         "name_button_in_form": _("Update"),
     }
 
-    service = LabelService()
-
-    def form_valid(self, form: LabelForm) -> HttpResponse:
-        entity = LabelInput(form.cleaned_data["name"])
-        try:
-            return self.mixin_form_valid(
-                request=self.request,
-                form=form,
-                object_data=entity,
-            )
-        except LabelNameIsNotFreeException as exception:
-            form.add_error("name", exception.message)
-            return self.form_invalid(form)
-
 
 class LabelDeleteView(
     MessagesLoginRequiredMixin,
-    DeleteObjectMixin,
-    TemplateView,
+    SuccessMessageMixin,
+    DeleteView,
 ):
     template_name = "tasks/labels/label_delete.html"
     success_message = _("Label successfully deleted.")
-    url_to = reverse_lazy("label_list")
-
+    success_url = reverse_lazy("label_list")
+    model = Label
     extra_context = {
         "entity_name": _("label's"),
+        "object_field": "name"
     }
-
-    service = LabelService()
-
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-        context["object_name"] = self.get_object(kwargs.get('pk')).name
-        return context
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
             return self.delete(request)
-        except LabelDeleteProtectedError as exception:
-            messages.error(request, exception.message)
-            return redirect(self.url_to)
+        except ProtectedError:
+            messages.error(request, _("Cannot delete label because it is in use"))
+            return redirect(self.success_url)

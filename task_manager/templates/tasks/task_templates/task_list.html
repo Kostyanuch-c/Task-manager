@@ -4,8 +4,56 @@
 
 {% block content %}
 
-    {% include "layouts/title_before_content.html" %}
-    {% include 'tasks/task_templates/filter_form.html' %}
-    {% include "layouts/object_list.html" %}
+{% include "layouts/title_before_content.html" %}
+{% include 'tasks/task_templates/filter_form.html' %}
+<div class="container-lg mt-3 ">
+    <div class="table-responsive ">
+        <table class="table table-bordered text-nowrap table-striped table-dark">
+            <thead>
+            <tr>
+                <th>ID</th>
+                {% for title in titles_columns %}
+                    <th>{{ title }}</th>
+                {% endfor %}
+                <th>{% translate "Created at" %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+                <tr>
+                <td>{{ object.id }}</td>
+
+                <td>
+                    <a href="{% url "task_detail" object.id %}"
+                       class="link-primary link-offset-2 link-underline-opacity-25
+                                   link-underline-opacity-100-hover">
+                        {{ object.name }}
+                    </a>
+                </td>
+
+                <td>{{ object.status }}</td>
+                <td>{{ object.author.full_name }}</td>
+                <td>{{ object.executor.full_name }}</td>
+                    
+            <td>{{ object.created_at|date:"d:m:Y H:i" }}</td>
+            <td>
+                <div>
+                    <a class="link-info link-offset-2 link-underline-opacity-0
+                                link-underline-opacity-100-hover"
+                       href="{% url "task_update" object.id %}">{% translate "Change" %}</a>
+                </div>
+                <div>
+                    <a class="link-danger link-offset-2 link-underline-opacity-0
+                                 link-underline-opacity-100-hover"
+                       href="{% url "task_delete" object.id %}">{% translate "Delete" %} </a>
+                </div>
+            </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}

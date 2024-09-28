@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_bootstrap5",
     "debug_toolbar",
-
+    'django_filters',
     "task_manager.users",
     "task_manager.tasks",
 ]
@@ -104,16 +104,10 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        'OPTIONS': {
+            'min_length': 3,
+        }
     },
 ]
 

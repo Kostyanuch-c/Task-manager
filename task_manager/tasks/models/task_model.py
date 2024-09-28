@@ -3,7 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 from task_manager import settings
 from task_manager.common.models import BaseTimedModel
-from task_manager.tasks.entities.task_entity import TaskEntity
 
 
 class Task(BaseTimedModel):
@@ -46,18 +45,6 @@ class Task(BaseTimedModel):
         related_name="task_as_label",
 
     )
-
-    def to_entity(self):
-        return TaskEntity(
-            id=self.id,
-            name=self.name,
-            description=self.description,
-            status=self.status,
-            author=self.author,
-            executor=self.executor,
-            labels=self.labels,
-            created_at=self.created_at,
-        )
 
     def __str__(self):
         return self.name

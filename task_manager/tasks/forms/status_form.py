@@ -14,6 +14,3 @@ class StatusForm(ModelForm):
         widgets = {
             "name": TextInput(attrs={"placeholder": _("Name")}),
         }
-
-    def validate_unique(self):
-        pass

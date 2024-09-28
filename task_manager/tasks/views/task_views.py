@@ -1,74 +1,58 @@
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
     FormView,
-    TemplateView,
+    TemplateView, DetailView, ListView, CreateView, UpdateView, DeleteView
 )
+from django_filters.views import FilterView
 
 from task_manager.common.utils import (
-    CreateObjectMixin,
-    DeleteWithCheckPermissionsMixin,
     MessagesLoginRequiredMixin,
-    UpdateObjectMixin,
+
 )
-from task_manager.tasks.entities.converters import TaskEntityConverter
-from task_manager.tasks.entities.task_entity import TaskInput
-from task_manager.tasks.exceptions.task_exceptions import (
-    TaskNameIsNotFreeException,
-)
+
 from task_manager.tasks.forms.task_form import (
     TaskFilterForm,
     TaskForm,
 )
-from task_manager.tasks.services.task_service import TaskService
+from task_manager.tasks.models import Task
 
 
-class TaskDetailView(MessagesLoginRequiredMixin, TemplateView):
+class TaskDetailView(MessagesLoginRequiredMixin, DetailView):
     template_name = "tasks/task_templates/task_detail.html"
+    model = Task
 
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-        task_entity = TaskService().get_object(kwargs.get("pk"))
-        context["object"] = TaskEntityConverter.to_output_detail(task_entity)
-        return context
+    def get_queryset(self):
+        return Task.objects.select_related("status", "author", "executor").prefetch_related("labels")
+
+    def get_object(self, queryset=None):
+        task_id = self.kwargs.get("pk")
+        queryset = self.get_queryset()
+        return queryset.get(id=task_id)
 
 
-class TaskListView(MessagesLoginRequiredMixin, TemplateView):
+class TaskListView(MessagesLoginRequiredMixin, FilterView):
     template_name = "tasks/task_templates/task_list.html"
-
-    fields = ("name", "status_name", "author_full_name", "executor_full_name")
+    model = Task
+    filterset_class = TaskFilterForm
     extra_context = {
         "title_list": _("Tasks"),
         "titles_columns": (_("Name"), _("Status"), _("Author"), _("Executor")),
         "create_button_name": _("Create task"),
-        "url_to_detail": "task_detail",
         "url_to_create": "task_create",
-        "url_to_update": "task_update",
-        "url_to_delete": "task_delete",
-        "fields": fields,
     }
 
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-        query_params = self.request.GET
-        context["form"] = TaskFilterForm(query_params)
-
-        task_entities = TaskService().get_all_objects(
-            query_params=query_params,
-            user_id=self.request.user.id,
-        )
-        context["object_list"] = TaskEntityConverter.to_output_list(
-            task_entities,
-        )
-
-        return context
+    def get_queryset(self):
+        return self.model.objects.select_related("status", "author", "executor").prefetch_related("labels")
 
 
-class TaskCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
+class TaskCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = "tasks/task_templates/task_create.html"
     form_class = TaskForm
-
+    model = Task
     success_url = reverse_lazy("task_list")
     success_message = _("Task created successfully")
 
@@ -77,33 +61,15 @@ class TaskCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
         "name_button_in_form": _("Create"),
     }
 
-    service = TaskService()
-
-    def form_valid(self, form: TaskForm) -> HttpResponse:
-        entity = TaskInput(
-            name=form.cleaned_data["name"],
-            description=form.cleaned_data["description"],
-            status=form.cleaned_data["status"],
-            executor=form.cleaned_data["executor"],
-            labels=form.cleaned_data["labels"],
-            author=self.request.user,
-        )
-
-        try:
-            return self.mixin_form_valid(
-                request=self.request,
-                form=form,
-                object_data=entity,
-            )
-        except TaskNameIsNotFreeException as exception:
-            form.add_error("name", exception.message)
-            return self.form_invalid(form)
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 
-class TaskUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
+class TaskUpdateView(MessagesLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = "tasks/task_templates/task_update.html"
     form_class = TaskForm
-
+    model = Task
     success_url = reverse_lazy("task_list")
     success_message = _("Task updated successfully")
 
@@ -112,50 +78,28 @@ class TaskUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
         "name_button_in_form": _("Change"),
     }
 
-    service = TaskService()
-
-    def form_valid(self, form: TaskForm) -> HttpResponse:
-        entity = TaskInput(
-            name=form.cleaned_data["name"],
-            description=form.cleaned_data["description"],
-            status=form.cleaned_data["status"],
-            executor=form.cleaned_data["executor"],
-            author=self.request.user,
-            labels=form.cleaned_data["labels"],
-        )
-
-        try:
-            return self.mixin_form_valid(
-                request=self.request,
-                form=form,
-                object_data=entity,
-            )
-        except TaskNameIsNotFreeException as exception:
-            form.add_error("name", exception.message)
-            return self.form_invalid(form)
-
 
 class TaskDeleteView(
+    UserPassesTestMixin,
     MessagesLoginRequiredMixin,
-    DeleteWithCheckPermissionsMixin,
-    TemplateView,
+    SuccessMessageMixin,
+    DeleteView,
 ):
+    model = Task
     template_name = "tasks/task_templates/task_delete.html"
     success_message = _("Task successfully deleted")
-    message_failed_permissions = _("Task can delete only his author")
-
-    url_to = redirect_failed = reverse_lazy("task_list")
+    not_permission_message = _("Task can delete only his author")
+    success_url = redirect_failed = reverse_lazy("task_list")
 
     extra_context = {
         "entity_name": _("task"),
+        "object_field": "name",
     }
 
-    service = TaskService()
+    def get_object(self, queryset=None):
+        if not hasattr(self, '_cached_object'):
+            self._cached_object = super().get_object(queryset)
+        return self._cached_object
 
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-        context["object_name"] = self.get_object(kwargs.get('pk')).name
-        return context
-
-    def post(self, request, *args, **kwargs):
-        return self.delete(request)
+    def test_func(self):
+        return self.request.user == self.get_object().author

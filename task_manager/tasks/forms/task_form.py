@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-
+import django_filters
 from task_manager.tasks.models import (
     Label,
     Status,
@@ -33,32 +33,15 @@ class TaskForm(forms.ModelForm):
                 },
             )
 
-    def validate_unique(self):
-        pass
 
+class TaskFilterForm(django_filters.FilterSet):
+    executor = django_filters.ModelChoiceFilter(queryset=get_user_model().objects.all(), label=_("Executor"))
+    status = django_filters.ModelChoiceFilter(queryset=Status.objects.all(), label=_("Status"))
+    label = django_filters.ModelChoiceFilter(queryset=Label.objects.all(), label=_("Label"), method='filter_by_label')
 
-class TaskFilterForm(forms.Form):
-    status = forms.ModelChoiceField(
-        queryset=Status.objects.all().only('id', 'name'),
-        label=_('Status'),
-        required=False,
-    )
-    executor = forms.ModelChoiceField(
-        queryset=get_user_model().objects.all().only(
-            "id", "first_name", "last_name",
-        ),
-        label=_('Executor'),
-        required=False,
-    )
-    label = forms.ModelChoiceField(
-        queryset=Label.objects.all().only('id', 'name'),
-        label=_('Label'),
-        required=False,
-        widget=forms.Select(attrs={'name': 'labels', 'id': 'id_labels'}),
-    )
+    class Meta:
+        model = Task
+        fields = ['status', "executor", 'label']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields["executor"].label_from_instance = \
-            lambda user: user.full_name
+    def filter_by_label(self, queryset, name, value):
+        return queryset.filter(labels__id=value.id)

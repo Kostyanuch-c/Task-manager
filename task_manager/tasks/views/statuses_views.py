@@ -1,33 +1,24 @@
 from django.contrib import messages
-from django.http import (
-    HttpRequest,
-    HttpResponse,
-)
+from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import ProtectedError
+
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
-    FormView,
-    TemplateView,
+    CreateView, UpdateView, DeleteView, ListView
 )
 
 from task_manager.common.utils import (
-    CreateObjectMixin,
-    DeleteObjectMixin,
     MessagesLoginRequiredMixin,
-    UpdateObjectMixin,
-)
-from task_manager.tasks.entities.status_entity import StatusInput
-from task_manager.tasks.exceptions.status_exceptions import (
-    StatusDeleteProtectedError,
-    StatusTitleIsNotFreeException,
 )
 from task_manager.tasks.forms.status_form import StatusForm
-from task_manager.tasks.services.status_service import StatusService
+from task_manager.tasks.models import Status
 
 
-class StatusListView(MessagesLoginRequiredMixin, TemplateView):
+class StatusListView(MessagesLoginRequiredMixin, ListView):
     template_name = "tasks/statuses/status_list.html"
+    model = Status
 
     extra_context = {
         "title_list": _("Statuses"),
@@ -39,16 +30,11 @@ class StatusListView(MessagesLoginRequiredMixin, TemplateView):
         "fields": ("name",),
     }
 
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-        context["object_list"] = StatusService().get_all_objects()
-        return context
 
-
-class StatusCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
+class StatusCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = "tasks/statuses/status_create.html"
     form_class = StatusForm
-
+    model = Status
     success_url = reverse_lazy("status_list")
     success_message = _("Status successfully created.")
 
@@ -57,25 +43,11 @@ class StatusCreateView(MessagesLoginRequiredMixin, CreateObjectMixin, FormView):
         "name_button_in_form": _("Create"),
     }
 
-    service = StatusService()
 
-    def form_valid(self, form: StatusForm) -> HttpResponse:
-        entity = StatusInput(form.cleaned_data["name"])
-        try:
-            return self.mixin_form_valid(
-                request=self.request,
-                form=form,
-                object_data=entity,
-            )
-        except StatusTitleIsNotFreeException as exception:
-            form.add_error("name", exception.message)
-            return self.form_invalid(form)
-
-
-class StatusUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
+class StatusUpdateView(MessagesLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = "tasks/statuses/status_update.html"
     form_class = StatusForm
-
+    model = Status
     success_url = reverse_lazy("status_list")
     success_message = _("Status successfully updated.")
 
@@ -84,44 +56,26 @@ class StatusUpdateView(MessagesLoginRequiredMixin, UpdateObjectMixin, FormView):
         "name_button_in_form": _("Update"),
     }
 
-    service = StatusService()
-
-    def form_valid(self, form: StatusForm) -> HttpResponse:
-        entity = StatusInput(form.cleaned_data["name"])
-        try:
-            return self.mixin_form_valid(
-                request=self.request,
-                form=form,
-                object_data=entity,
-            )
-        except StatusTitleIsNotFreeException as exception:
-            form.add_error("name", exception.message)
-            return self.form_invalid(form)
-
 
 class StatusDeleteView(
     MessagesLoginRequiredMixin,
-    DeleteObjectMixin,
-    TemplateView,
+    SuccessMessageMixin,
+    DeleteView,
+
 ):
+    model = Status
     template_name = "tasks/statuses/status_delete.html"
     success_message = _("Status successfully deleted.")
-    url_to = reverse_lazy("status_list")
+    success_url = reverse_lazy("status_list")
 
     extra_context = {
         "entity_name": _("as status"),
+        "object_field": "name"
     }
 
-    service = StatusService()
-
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-        context["object_name"] = self.get_object(kwargs.get('pk')).name
-        return context
-
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def post(self, request, *args, **kwargs):
         try:
-            return self.delete(request)
-        except StatusDeleteProtectedError as exception:
-            messages.error(request, exception.message)
-            return redirect(self.url_to)
+            return self.delete(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(request, _("Cannot delete status because it is in use"))
+            return redirect(self.success_url)
