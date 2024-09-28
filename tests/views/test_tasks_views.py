@@ -83,7 +83,7 @@ def test_detail_task(
 @pytest.mark.django_db
 def test_create_task(
         client,
-        task_form_data: dict,
+        task_form_data: dict,  # noqa:F811
         **kwargs,
 ):
     current_user = kwargs["login_user"]
