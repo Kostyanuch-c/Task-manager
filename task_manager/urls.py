@@ -20,10 +20,13 @@ from django.urls import (
     path,
 )
 
-from task_manager import settings, views
+from task_manager import (
+    settings,
+    views,
+)
+
 
 urlpatterns = [
-
     path("admin/", admin.site.urls),
     path("", views.IndexView.as_view(), name="index"),
     path("login/", views.LoginInView.as_view(), name="login"),
@@ -39,5 +42,5 @@ if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns = [
-                      path("__debug__/", include(debug_toolbar.urls)), # noqa
-                  ] + urlpatterns  # noqa
+        path("__debug__/", include(debug_toolbar.urls)),  # noqa
+    ] + urlpatterns  # noqa

@@ -1,17 +1,17 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import ProtectedError
-
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
-    CreateView, UpdateView, DeleteView, ListView
+    CreateView,
+    DeleteView,
+    ListView,
+    UpdateView,
 )
 
-from task_manager.common.utils import (
-    MessagesLoginRequiredMixin,
-)
+from task_manager.common.utils import MessagesLoginRequiredMixin
 from task_manager.tasks.forms.status_form import StatusForm
 from task_manager.tasks.models import Status
 
@@ -31,7 +31,11 @@ class StatusListView(MessagesLoginRequiredMixin, ListView):
     }
 
 
-class StatusCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateView):
+class StatusCreateView(
+    MessagesLoginRequiredMixin,
+    SuccessMessageMixin,
+    CreateView,
+):
     template_name = "tasks/statuses/status_create.html"
     form_class = StatusForm
     model = Status
@@ -44,7 +48,11 @@ class StatusCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateVi
     }
 
 
-class StatusUpdateView(MessagesLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class StatusUpdateView(
+    MessagesLoginRequiredMixin,
+    SuccessMessageMixin,
+    UpdateView,
+):
     template_name = "tasks/statuses/status_update.html"
     form_class = StatusForm
     model = Status
@@ -61,7 +69,6 @@ class StatusDeleteView(
     MessagesLoginRequiredMixin,
     SuccessMessageMixin,
     DeleteView,
-
 ):
     model = Status
     template_name = "tasks/statuses/status_delete.html"
@@ -70,12 +77,15 @@ class StatusDeleteView(
 
     extra_context = {
         "entity_name": _("as status"),
-        "object_field": "name"
+        "object_field": "name",
     }
 
     def post(self, request, *args, **kwargs):
         try:
             return self.delete(request, *args, **kwargs)
         except ProtectedError:
-            messages.error(request, _("Cannot delete status because it is in use"))
+            messages.error(
+                request,
+                _("Cannot delete status because it is in use"),
+            )
             return redirect(self.success_url)

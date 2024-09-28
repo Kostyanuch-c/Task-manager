@@ -15,6 +15,7 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -50,7 +51,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_bootstrap5",
     "debug_toolbar",
-    'django_filters',
+    "django_filters",
     "task_manager.users",
     "task_manager.tasks",
 ]
@@ -65,7 +66,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+    "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
 
 ROOT_URLCONF = "task_manager.urls"
@@ -97,7 +98,7 @@ DATABASE_URL = (
 )
 
 DATABASES = {
-    'default': dj_database_url.config(default=DATABASE_URL),
+    "default": dj_database_url.config(default=DATABASE_URL),
 }
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -105,9 +106,9 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        'OPTIONS': {
-            'min_length': 3,
-        }
+        "OPTIONS": {
+            "min_length": 3,
+        },
     },
 ]
 
@@ -147,8 +148,8 @@ LOGOUT_URL = "index"
 AUTH_USER_MODEL = "users.User"
 
 ROLLBAR = {
-    'access_token': os.getenv("ROLLBAR_ACCESS_TOKEN"),
-    'environment': 'development' if DEBUG else 'production',
-    'code_version': '1.0',
-    'root': BASE_DIR,
+    "access_token": os.getenv("ROLLBAR_ACCESS_TOKEN"),
+    "environment": "development" if DEBUG else "production",
+    "code_version": "1.0",
+    "root": BASE_DIR,
 }

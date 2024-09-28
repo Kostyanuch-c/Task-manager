@@ -2,6 +2,7 @@ from django.urls import path
 
 from task_manager.users import views
 
+
 urlpatterns = [
     path("", views.UsersListView.as_view(), name="users_list"),
     path(
@@ -18,4 +19,5 @@ urlpatterns = [
         "<int:pk>/delete/",
         views.UserDeleteView.as_view(),
         name="delete_user",
-    ), ]
+    ),
+]

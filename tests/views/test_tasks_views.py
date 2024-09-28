@@ -53,8 +53,8 @@ def test_tasks_detail_without_login_and_without_tasks(client):
 @login_user
 @pytest.mark.django_db
 def test_list_task(
-        client,
-        task_service: TaskService,  # noqa: F811
+    client,
+    task_service: TaskService,  # noqa: F811
 ):
     task = TaskModelFactory.create()
     response = client.get("/tasks/")
@@ -66,8 +66,8 @@ def test_list_task(
 @login_user
 @pytest.mark.django_db
 def test_detail_task(
-        client,
-        task_service: TaskService,  # noqa: F811
+    client,
+    task_service: TaskService,  # noqa: F811
 ):
     labels = [LabelModelFactory.create(name="test")]
     task = TaskModelFactory.create(labels=labels)
@@ -76,13 +76,18 @@ def test_detail_task(
     assert response.status_code == HTTPStatus.OK
     assert task.name in response.content.decode("utf-8")
     assert task.author.full_name in response.content.decode("utf-8")
-    assert 'test' in response.content.decode("utf-8")
+    assert "test" in response.content.decode("utf-8")
 
 
 @login_and_return_user
 @pytest.mark.django_db
-def test_create_task(client, task_service: TaskService, task_form_data: dict, **kwargs):  # noqa
-    current_user = kwargs['login_user']
+def test_create_task(
+    client,
+    task_service: TaskService,
+    task_form_data: dict,
+    **kwargs,
+):  # noqa
+    current_user = kwargs["login_user"]
 
     response = client.post(reverse("task_create"), data=task_form_data)
 
@@ -90,23 +95,25 @@ def test_create_task(client, task_service: TaskService, task_form_data: dict, **
     assert response.url.startswith(reverse("task_list"))
 
     task = task_service.get_all_objects()[0]
-    assert task.name == task_form_data['name']
-    assert task_form_data['description'] == task_form_data['description']
+    assert task.name == task_form_data["name"]
+    assert task_form_data["description"] == task_form_data["description"]
     assert task.author == current_user
-    assert task.status.id == task_form_data['status']
-    assert task.executor.id == task_form_data['executor']
-    assert {label.id for label in task.labels.all()} == set(task_form_data['labels'])
+    assert task.status.id == task_form_data["status"]
+    assert task.executor.id == task_form_data["executor"]
+    assert {label.id for label in task.labels.all()} == set(
+        task_form_data["labels"],
+    )
 
 
 @login_and_return_user
 @pytest.mark.django_db
 def test_update_task(
-        client,
-        task_service: TaskService,  # noqa: F811
-        task_form_data: dict,  # noqa: F811
-        **kwargs,
+    client,
+    task_service: TaskService,  # noqa: F811
+    task_form_data: dict,  # noqa: F811
+    **kwargs,
 ):
-    current_user = kwargs['login_user']
+    current_user = kwargs["login_user"]
 
     task = TaskModelFactory.create()
 
@@ -119,17 +126,22 @@ def test_update_task(
     assert response.url.startswith(reverse("task_list"))
 
     task_after_update = task_service.get_object(task.id)
-    assert task_after_update.name == task_form_data['name']
-    assert task_after_update.description == task_form_data['description']
+    assert task_after_update.name == task_form_data["name"]
+    assert task_after_update.description == task_form_data["description"]
     assert task_after_update.author == current_user
-    assert task_after_update.status.id == task_form_data['status']
-    assert task_after_update.executor.id == task_form_data['executor']
-    assert {label.id for label in task_after_update.labels.all()} == set(task_form_data['labels'])
+    assert task_after_update.status.id == task_form_data["status"]
+    assert task_after_update.executor.id == task_form_data["executor"]
+    assert {label.id for label in task_after_update.labels.all()} == set(
+        task_form_data["labels"],
+    )
 
 
 @login_user
 @pytest.mark.django_db
-def test_task_delete_with_login_without_permission(client, task_service: TaskService):  # noqa: F811
+def test_task_delete_with_login_without_permission(
+    client,
+    task_service: TaskService,
+):  # noqa: F811
     task = TaskModelFactory.create()
 
     response = client.post(
@@ -147,11 +159,11 @@ def test_task_delete_with_login_without_permission(client, task_service: TaskSer
 @login_and_return_user
 @pytest.mark.django_db
 def test_task_delete_with_login_with_permission(
-        client,
-        task_service: TaskService,  # noqa: F811
-        **kwargs
+    client,
+    task_service: TaskService,  # noqa: F811
+    **kwargs,
 ):
-    current_user = kwargs['login_user']
+    current_user = kwargs["login_user"]
 
     task = TaskModelFactory.create(author=current_user)
 

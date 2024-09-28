@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 
@@ -10,7 +9,7 @@ class MessagesLoginRequiredMixin(LoginRequiredMixin):
 
     not_authenticated_message = _("You are not login.")
     not_permission_message = _("You are not permitted to view this page.")
-    redirect_failed = '/'
+    redirect_failed = "/"
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:

@@ -1,19 +1,17 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
-    FormView,
-    TemplateView, DetailView, ListView, CreateView, UpdateView, DeleteView
+    CreateView,
+    DeleteView,
+    DetailView,
+    UpdateView,
 )
+
 from django_filters.views import FilterView
 
-from task_manager.common.utils import (
-    MessagesLoginRequiredMixin,
-
-)
-
+from task_manager.common.utils import MessagesLoginRequiredMixin
 from task_manager.tasks.forms.task_form import (
     TaskFilterForm,
     TaskForm,
@@ -26,7 +24,11 @@ class TaskDetailView(MessagesLoginRequiredMixin, DetailView):
     model = Task
 
     def get_queryset(self):
-        return Task.objects.select_related("status", "author", "executor").prefetch_related("labels")
+        return Task.objects.select_related(
+            "status",
+            "author",
+            "executor",
+        ).prefetch_related("labels")
 
     def get_object(self, queryset=None):
         task_id = self.kwargs.get("pk")
@@ -46,10 +48,18 @@ class TaskListView(MessagesLoginRequiredMixin, FilterView):
     }
 
     def get_queryset(self):
-        return self.model.objects.select_related("status", "author", "executor").prefetch_related("labels")
+        return self.model.objects.select_related(
+            "status",
+            "author",
+            "executor",
+        ).prefetch_related("labels")
 
 
-class TaskCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateView):
+class TaskCreateView(
+    MessagesLoginRequiredMixin,
+    SuccessMessageMixin,
+    CreateView,
+):
     template_name = "tasks/task_templates/task_create.html"
     form_class = TaskForm
     model = Task
@@ -66,7 +76,11 @@ class TaskCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateView
         return super().form_valid(form)
 
 
-class TaskUpdateView(MessagesLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class TaskUpdateView(
+    MessagesLoginRequiredMixin,
+    SuccessMessageMixin,
+    UpdateView,
+):
     template_name = "tasks/task_templates/task_update.html"
     form_class = TaskForm
     model = Task
@@ -97,7 +111,7 @@ class TaskDeleteView(
     }
 
     def get_object(self, queryset=None):
-        if not hasattr(self, '_cached_object'):
+        if not hasattr(self, "_cached_object"):
             self._cached_object = super().get_object(queryset)
         return self._cached_object
 

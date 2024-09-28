@@ -9,14 +9,13 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import (
-    FormView,
-    TemplateView, CreateView, UpdateView, DeleteView, ListView
+    CreateView,
+    DeleteView,
+    ListView,
+    UpdateView,
 )
 
-from task_manager.common.utils import (
-    MessagesLoginRequiredMixin,
-)
-
+from task_manager.common.utils import MessagesLoginRequiredMixin
 from task_manager.tasks.forms.label_form import LabelForm
 from task_manager.tasks.models import Label
 
@@ -35,7 +34,11 @@ class LabelListView(MessagesLoginRequiredMixin, ListView):
     }
 
 
-class LabelCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateView):
+class LabelCreateView(
+    MessagesLoginRequiredMixin,
+    SuccessMessageMixin,
+    CreateView,
+):
     template_name = "tasks/labels/label_create.html"
     form_class = LabelForm
     model = Label
@@ -48,7 +51,11 @@ class LabelCreateView(MessagesLoginRequiredMixin, SuccessMessageMixin, CreateVie
     }
 
 
-class LabelUpdateView(MessagesLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class LabelUpdateView(
+    MessagesLoginRequiredMixin,
+    SuccessMessageMixin,
+    UpdateView,
+):
     template_name = "tasks/labels/label_update.html"
     form_class = LabelForm
     model = Label
@@ -72,12 +79,15 @@ class LabelDeleteView(
     model = Label
     extra_context = {
         "entity_name": _("label's"),
-        "object_field": "name"
+        "object_field": "name",
     }
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
             return self.delete(request)
         except ProtectedError:
-            messages.error(request, _("Cannot delete label because it is in use"))
+            messages.error(
+                request,
+                _("Cannot delete label because it is in use"),
+            )
             return redirect(self.success_url)
