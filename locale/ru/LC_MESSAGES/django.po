@@ -33,7 +33,7 @@ msgstr "Дата обновления"
 
 #: task_manager/common/utils.py:10
 msgid "You are not login."
-msgstr "Вы залогинены"
+msgstr "Вы не авторизованы! Пожалуйста, выполните вход."
 
 #: task_manager/common/utils.py:11
 msgid "You are not permitted to view this page."
@@ -401,7 +401,7 @@ msgstr "Невозможно удалить пользователя, так к�
 
 #: task_manager/views.py:24
 msgid "You have been logged in."
-msgstr "Вы не авторизованы! Пожалуйста, выполните вход. "
+msgstr "Вы залогинены"
 
 #: task_manager/views.py:29
 msgid "You have been logged out."
