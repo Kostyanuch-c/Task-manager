@@ -1,7 +1,10 @@
 from http import HTTPStatus
 
 from django.http import Http404
-from django.shortcuts import reverse
+from django.shortcuts import (
+    get_object_or_404,
+    reverse,
+)
 
 import pytest
 from tests.factories.labels import LabelModelFactory
@@ -11,9 +14,8 @@ from tests.fixtures.login_decorator import (
     login_and_return_user,
     login_user,
 )
-from tests.fixtures.services.tasks import task_service  # noqa: F401
 
-from task_manager.tasks.services.task_service import TaskService
+from task_manager.tasks.models import Task
 
 
 def test_get_tasks_without_login(client):
@@ -53,8 +55,7 @@ def test_tasks_detail_without_login_and_without_tasks(client):
 @login_user
 @pytest.mark.django_db
 def test_list_task(
-    client,
-    task_service: TaskService,  # noqa: F811
+        client,
 ):
     task = TaskModelFactory.create()
     response = client.get("/tasks/")
@@ -66,8 +67,7 @@ def test_list_task(
 @login_user
 @pytest.mark.django_db
 def test_detail_task(
-    client,
-    task_service: TaskService,  # noqa: F811
+        client,
 ):
     labels = [LabelModelFactory.create(name="test")]
     task = TaskModelFactory.create(labels=labels)
@@ -82,11 +82,10 @@ def test_detail_task(
 @login_and_return_user
 @pytest.mark.django_db
 def test_create_task(
-    client,
-    task_service: TaskService,
-    task_form_data: dict,
-    **kwargs,
-):  # noqa
+        client,
+        task_form_data: dict,
+        **kwargs,
+):
     current_user = kwargs["login_user"]
 
     response = client.post(reverse("task_create"), data=task_form_data)
@@ -94,7 +93,7 @@ def test_create_task(
     assert response.status_code == HTTPStatus.FOUND
     assert response.url.startswith(reverse("task_list"))
 
-    task = task_service.get_all_objects()[0]
+    task = Task.objects.all()[0]
     assert task.name == task_form_data["name"]
     assert task_form_data["description"] == task_form_data["description"]
     assert task.author == current_user
@@ -108,14 +107,13 @@ def test_create_task(
 @login_and_return_user
 @pytest.mark.django_db
 def test_update_task(
-    client,
-    task_service: TaskService,  # noqa: F811
-    task_form_data: dict,  # noqa: F811
-    **kwargs,
+        client,
+        task_form_data: dict,  # noqa: F811
+        **kwargs,
 ):
     current_user = kwargs["login_user"]
 
-    task = TaskModelFactory.create()
+    task = TaskModelFactory.create(author=current_user)
 
     response = client.post(
         reverse("task_update", args=[task.id]),
@@ -125,7 +123,7 @@ def test_update_task(
     assert response.status_code == HTTPStatus.FOUND
     assert response.url.startswith(reverse("task_list"))
 
-    task_after_update = task_service.get_object(task.id)
+    task_after_update = Task.objects.get(id=task.id)
     assert task_after_update.name == task_form_data["name"]
     assert task_after_update.description == task_form_data["description"]
     assert task_after_update.author == current_user
@@ -139,9 +137,8 @@ def test_update_task(
 @login_user
 @pytest.mark.django_db
 def test_task_delete_with_login_without_permission(
-    client,
-    task_service: TaskService,
-):  # noqa: F811
+        client,
+):
     task = TaskModelFactory.create()
 
     response = client.post(
@@ -151,7 +148,7 @@ def test_task_delete_with_login_without_permission(
     assert response.status_code == HTTPStatus.FOUND
     assert response.url.startswith(reverse("task_list"))
 
-    fetched_task = task_service.get_object(task.id)
+    fetched_task = Task.objects.get(id=task.id)
     assert fetched_task is not None
     assert fetched_task.id == task.id
 
@@ -159,9 +156,8 @@ def test_task_delete_with_login_without_permission(
 @login_and_return_user
 @pytest.mark.django_db
 def test_task_delete_with_login_with_permission(
-    client,
-    task_service: TaskService,  # noqa: F811
-    **kwargs,
+        client,
+        **kwargs,
 ):
     current_user = kwargs["login_user"]
 
@@ -175,4 +171,4 @@ def test_task_delete_with_login_with_permission(
     assert response.url.startswith(reverse("task_list"))
 
     with pytest.raises(Http404):
-        task_service.get_object(task.id)
+        get_object_or_404(Task, id=task.id)

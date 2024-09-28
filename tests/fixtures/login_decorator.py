@@ -2,10 +2,7 @@ import functools
 
 from tests.factories.users import UserModelFactory
 
-from task_manager.users.services.user_service import UserService
 
-
-USER_SERVICE = UserService()
 USER_PASSWORD = "new12345612dsds"
 
 

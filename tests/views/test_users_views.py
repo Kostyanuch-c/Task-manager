@@ -1,19 +1,16 @@
 from http import HTTPStatus
 
+from django.contrib.auth import get_user_model
 from django.http import Http404
-from django.shortcuts import reverse
+from django.shortcuts import (
+    get_object_or_404,
+    reverse,
+)
 
 import pytest
 from tests.factories.users import UserModelFactory
 from tests.fixtures.forms.users import users_form_data  # noqa: F401
 from tests.fixtures.login_decorator import login_user
-from tests.fixtures.services.users import (  # noqa: F401
-    user_create_data,
-    user_service,
-)
-
-from task_manager.users.entities import UserInput
-from task_manager.users.services.user_service import UserService
 
 
 def test_index(client):
@@ -43,12 +40,12 @@ def test_list_users(client):
 @pytest.mark.django_db
 def test_list_users_after_authorized(
         client,
-        user_service: UserService,  # noqa: F811
-        user_create_data: UserInput,  # noqa: F811
+        users_form_data: dict,  # noqa: F811
 ):
-    password = user_create_data.password
-    user_service.create_object(user_create_data)
-    fetched_user = user_service.get_all_objects()[0]
+    password = users_form_data.get("password1")
+    UserModelFactory.create(password=password)
+
+    fetched_user = get_user_model().objects.all()[0]
     client.login(username=fetched_user.username, password=password)
     response = client.get("/users/")
 
@@ -58,9 +55,9 @@ def test_list_users_after_authorized(
 
 @pytest.mark.django_db
 def test_update_user_without_login(client):
-    expected_count = 5
-    UserModelFactory.create_batch(expected_count)
-    response = client.get("/users/5/update/")
+    expected_count = 3
+    users = UserModelFactory.create_batch(expected_count)
+    response = client.get(f"/users/{users[2].id}/delete/")
 
     assert response.status_code == HTTPStatus.FOUND
 
@@ -71,13 +68,12 @@ def test_update_user_without_login(client):
 @pytest.mark.django_db
 def test_update_user_with_login(
         client,
-        user_service: UserService,  # noqa: F811
-        user_create_data: UserInput,  # noqa: F811
         users_form_data: dict,  # noqa: F811
 ):
-    password = user_create_data.password
-    user_service.create_object(user_create_data)
-    fetched_user = user_service.get_all_objects()[0]
+    password = 'password'
+    UserModelFactory.create(password=password)
+
+    fetched_user = get_user_model().objects.all()[0]
     client.login(username=fetched_user.username, password=password)
 
     response = client.post(
@@ -88,19 +84,16 @@ def test_update_user_with_login(
     assert response.status_code == HTTPStatus.FOUND, f"{fetched_user.username=}"
     assert response.url.startswith(reverse("users_list"))
 
-    user_after_update = user_service.get_object(fetched_user.id)
+    user_after_update = get_user_model().objects.get(id=fetched_user.id)
     assert user_after_update.username == users_form_data["username"]
 
 
 @pytest.mark.django_db
-def test_update_without_permission(
-        client,
-        user_service: UserService,  # noqa: F811
-        user_create_data: UserInput,  # noqa: F811
-):
-    password = user_create_data.password
-    user_service.create_object(user_create_data)
-    user1 = user_service.get_all_objects()[0]
+def test_update_without_permission(client):
+    password = 'password'
+    UserModelFactory.create(password=password)
+
+    user1 = get_user_model().objects.all()[0]
     user2 = UserModelFactory.create()
 
     client.login(username=user1.username, password=password)
@@ -114,9 +107,9 @@ def test_update_without_permission(
 
 @pytest.mark.django_db
 def test_delete_user_without_login(client):
-    expected_count = 5
-    UserModelFactory.create_batch(expected_count)
-    response = client.get("/users/5/delete/")
+    expected_count = 3
+    users = UserModelFactory.create_batch(expected_count)
+    response = client.get(f"/users/{users[2].id}/delete/")
 
     assert response.status_code == HTTPStatus.FOUND
 
@@ -127,12 +120,10 @@ def test_delete_user_without_login(client):
 @pytest.mark.django_db
 def test_delete_user_with_login(
         client,
-        user_service: UserService,  # noqa: F811
-        user_create_data: UserInput,  # noqa: F811
 ):
-    password = user_create_data.password
-    user_service.create_object(user_create_data)
-    fetched_user = user_service.get_all_objects()[0]
+    password = 'password'
+    UserModelFactory.create(password=password)
+    fetched_user = get_user_model().objects.all()[0]
     client.login(username=fetched_user.username, password=password)
 
     response = client.post(
@@ -143,18 +134,16 @@ def test_delete_user_with_login(
     assert response.url.startswith(reverse("users_list"))
 
     with pytest.raises(Http404):
-        user_service.get_object(fetched_user.id)
+        get_object_or_404(get_user_model(), id=fetched_user.id)
 
 
 @pytest.mark.django_db
 def test_delete_without_permission(
         client,
-        user_service: UserService,  # noqa: F811
-        user_create_data: UserInput,  # noqa: F811
 ):
-    password = user_create_data.password
-    user_service.create_object(user_create_data)
-    user1 = user_service.get_all_objects()[0]
+    password = 'password'
+    UserModelFactory.create(password=password)
+    user1 = get_user_model().objects.all()[0]
     user_2 = UserModelFactory.create()
 
     client.login(username=user1.username, password=password)
@@ -169,7 +158,6 @@ def test_delete_without_permission(
 @pytest.mark.django_db
 def test_registration_user(
         client,
-        user_service: UserService,  # noqa: F811
         users_form_data: dict,  # noqa: F811
 ):
     response = client.post(reverse("create_user"), data=users_form_data)
@@ -177,7 +165,7 @@ def test_registration_user(
     assert response.status_code == HTTPStatus.FOUND
     assert response.url.startswith(reverse("login"))
 
-    users = user_service.get_all_objects()
+    users = get_user_model().objects.all()
     assert len(users) == 1
 
 
@@ -196,12 +184,10 @@ def test_users_delete_without_login_and_without_users(client):
 @pytest.mark.django_db
 def test_login(
         client,
-        user_service: UserService,  # noqa: F811
-        user_create_data: UserInput,  # noqa: F811
 ):
-    password = user_create_data.password
-    user_service.create_object(user_create_data)
-    fetched_user = user_service.get_all_objects()[0]
+    password = 'password'
+    UserModelFactory.create(password=password)
+    fetched_user = get_user_model().objects.all()[0]
     response = client.post(
         reverse("login"),
         data={"username": fetched_user.username, "password": password},

@@ -1,15 +1,17 @@
 from http import HTTPStatus
 
 from django.http import Http404
-from django.shortcuts import reverse
+from django.shortcuts import (
+    get_object_or_404,
+    reverse,
+)
 
 import pytest
 from tests.factories.statuses import StatusModelFactory
 from tests.fixtures.forms.status import status_form_data  # noqa: F401
 from tests.fixtures.login_decorator import login_user
-from tests.fixtures.services.statuses import status_service  # noqa: F401
 
-from task_manager.tasks.services.status_service import StatusService
+from task_manager.tasks.models import Status
 
 
 def test_get_statuses_without_login(client):
@@ -58,7 +60,6 @@ def test_list_status(
 @pytest.mark.django_db
 def test_status_update_with_login(
         client,
-        status_service: StatusService,  # noqa: F811
         status_form_data: dict,  # noqa: F811
 ):
     status = StatusModelFactory.create()
@@ -70,7 +71,7 @@ def test_status_update_with_login(
     assert response.status_code == HTTPStatus.FOUND
     assert response.url.startswith(reverse("status_list"))
 
-    status_after_update = status_service.get_object(status.id)
+    status_after_update = Status.objects.get(id=status.id)
     assert status_after_update.name == status_form_data["name"]
 
 
@@ -78,7 +79,6 @@ def test_status_update_with_login(
 @pytest.mark.django_db
 def test_status_delete_with_login(
         client,
-        status_service: StatusService,  # noqa: F811
 ):
     status = StatusModelFactory.create()
     response = client.post(
@@ -89,14 +89,13 @@ def test_status_delete_with_login(
     assert response.url.startswith(reverse("status_list")), f"{response.url}"
 
     with pytest.raises(Http404):
-        status_service.get_object(status.id)
+        get_object_or_404(Status, id=status.id)
 
 
 @login_user
 @pytest.mark.django_db
 def test_create_status(
         client,
-        status_service: StatusService,  # noqa: F811
         status_form_data: dict,  # noqa: F811
 ):
     response = client.post(reverse("status_create"), data=status_form_data)
@@ -104,5 +103,5 @@ def test_create_status(
     assert response.status_code == HTTPStatus.FOUND
     assert response.url.startswith(reverse("status_list"))
 
-    statuses = status_service.get_all_objects()
+    statuses = Status.objects.all()
     assert len(statuses) == 1
