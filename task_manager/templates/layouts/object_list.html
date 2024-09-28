@@ -31,7 +31,9 @@
                             <td>{{ object|get_attribute:field|default:'' }}</td>
                         {% endif %}
                     {% endfor %}
-                    <td>{{ object.created_at|date:"d:m:Y H:i" }}</td>
+                    <td>
+                        {% firstof object.created_at|date:"d:m:Y H:i" object.date_joined|date:"d:m:Y H:i" %}
+                    </td>
                     <td>
                         <div>
                             <a class="link-info link-offset-2 link-underline-opacity-0
