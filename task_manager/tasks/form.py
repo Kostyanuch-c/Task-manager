@@ -11,6 +11,7 @@ from task_manager.tasks.models import Task
 
 class TaskListForm(forms.Form):
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.create_button_name = _("Create task")
         self.url_to_create = "task_create"
         self.title_list = _("Tasks")
@@ -20,8 +21,6 @@ class TaskListForm(forms.Form):
             _("Author"),
             _("Executor"),
         ]
-
-        super().__init__(*args, **kwargs)
 
 
 class TaskForm(forms.ModelForm):

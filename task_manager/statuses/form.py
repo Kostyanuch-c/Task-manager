@@ -10,6 +10,7 @@ from task_manager.statuses.models import Status
 
 class StatusListForm(Form):
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.create_button_name = _("Create status")
         self.url_to_update = "status_update"
         self.url_to_delete = "status_delete"
@@ -17,8 +18,6 @@ class StatusListForm(Form):
         self.title_list = _("Statuses")
         self.titles_columns = (_("Name"),)
         self.attrs = ["id", "name", "created_at"]
-
-        super().__init__(*args, **kwargs)
 
 
 class StatusForm(ModelForm):

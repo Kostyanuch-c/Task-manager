@@ -7,13 +7,12 @@ from django.utils.translation.trans_real import gettext as _
 
 class UserListForm(forms.Form):
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.url_to_update = "update_user"
         self.url_to_delete = "delete_user"
         self.title_list = _("Users")
         self.titles_columns = (_("Name user"), _("Full name"))
         self.attrs = ["id", "username", "full_name", "date_joined"]
-
-        super().__init__(*args, **kwargs)
 
 
 class RegisterUserForm(UserCreationForm):

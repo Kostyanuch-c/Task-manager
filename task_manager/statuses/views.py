@@ -20,7 +20,7 @@ from task_manager.statuses.models import Status
 
 
 class StatusListView(MessagesLoginRequiredMixin, ListView):
-    template_name = "tasks/../templates/statuses/status_list.html"
+    template_name = "statuses/status_list.html"
     model = Status
 
     extra_context = {
@@ -33,7 +33,7 @@ class StatusCreateView(
     SuccessMessageMixin,
     CreateView,
 ):
-    template_name = "tasks/../templates/statuses/status_create.html"
+    template_name = "statuses/status_create.html"
     form_class = StatusForm
     model = Status
     success_url = reverse_lazy("status_list")
@@ -50,7 +50,7 @@ class StatusUpdateView(
     SuccessMessageMixin,
     UpdateView,
 ):
-    template_name = "tasks/../templates/statuses/status_update.html"
+    template_name = "statuses/status_update.html"
     form_class = StatusForm
     model = Status
     success_url = reverse_lazy("status_list")
@@ -68,7 +68,7 @@ class StatusDeleteView(
     DeleteView,
 ):
     model = Status
-    template_name = "tasks/../templates/statuses/status_delete.html"
+    template_name = "statuses/status_delete.html"
     success_message = _("Status successfully deleted.")
     success_url = reverse_lazy("status_list")
 
