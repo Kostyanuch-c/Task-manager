@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
@@ -11,10 +10,14 @@ from django.views.generic import (
 
 from django_filters.views import FilterView
 
-from task_manager.common.utils import MessagesLoginRequiredMixin
-from task_manager.tasks.forms.task_form import (
+from task_manager.common.utils import (
+    LoginRequiredTaskTestMixin,
+    MessagesLoginRequiredMixin,
+)
+from task_manager.tasks.form import (
     TaskFilterForm,
     TaskForm,
+    TaskListForm,
 )
 from task_manager.tasks.models import Task
 
@@ -23,36 +26,14 @@ class TaskDetailView(MessagesLoginRequiredMixin, DetailView):
     template_name = "tasks/task_templates/task_detail.html"
     model = Task
 
-    def get_queryset(self):
-        return Task.objects.select_related(
-            "status",
-            "author",
-            "executor",
-        ).prefetch_related("labels")
-
-    def get_object(self, queryset=None):
-        task_id = self.kwargs.get("pk")
-        queryset = self.get_queryset()
-        return queryset.get(id=task_id)
-
 
 class TaskListView(MessagesLoginRequiredMixin, FilterView):
     template_name = "tasks/task_templates/task_list.html"
     model = Task
     filterset_class = TaskFilterForm
     extra_context = {
-        "title_list": _("Tasks"),
-        "titles_columns": (_("Name"), _("Status"), _("Author"), _("Executor")),
-        "create_button_name": _("Create task"),
-        "url_to_create": "task_create",
+        "form": TaskListForm,
     }
-
-    def get_queryset(self):
-        return self.model.objects.select_related(
-            "status",
-            "author",
-            "executor",
-        ).prefetch_related("labels")
 
 
 class TaskCreateView(
@@ -94,26 +75,17 @@ class TaskUpdateView(
 
 
 class TaskDeleteView(
-    UserPassesTestMixin,
-    MessagesLoginRequiredMixin,
+    LoginRequiredTaskTestMixin,
     SuccessMessageMixin,
     DeleteView,
 ):
     model = Task
     template_name = "tasks/task_templates/task_delete.html"
     success_message = _("Task successfully deleted")
-    not_permission_message = _("Task can delete only his author")
+
     success_url = redirect_failed = reverse_lazy("task_list")
 
     extra_context = {
         "entity_name": _("task"),
         "object_field": "name",
     }
-
-    def get_object(self, queryset=None):
-        if not hasattr(self, "_cached_object"):
-            self._cached_object = super().get_object(queryset)
-        return self._cached_object
-
-    def test_func(self):
-        return self.request.user == self.get_object().author

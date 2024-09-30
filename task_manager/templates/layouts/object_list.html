@@ -7,7 +7,7 @@
             <thead>
             <tr>
                 <th>ID</th>
-                {% for title in titles_columns %}
+                {% for title in form.titles_columns %}
                     <th>{{ title }}</th>
                 {% endfor %}
                 <th>{% translate "Created at" %}</th>
@@ -17,33 +17,29 @@
             <tbody>
             {% for object in object_list %}
                 <tr>
-                    <td>{{ object.id }}</td>
-                    {% for field in fields %}
-                        {% if forloop.first and url_to_detail %}
+                    {% for attr in form.attrs %}
+                        {% if url_to_detail %}
                             <td>
                                 <a href="{% url url_to_detail object.id %}"
                                    class="link-primary link-offset-2 link-underline-opacity-25
                                    link-underline-opacity-100-hover">
-                                    {{ object|get_attribute:field|default:'' }}
+                                    {{ object|get_attribute:attr|default:'' }}
                                 </a>
                             </td>
                         {% else %}
-                            <td>{{ object|get_attribute:field|default:'' }}</td>
+                            <td>{{ object|get_attribute:attr|default:'' }}</td>
                         {% endif %}
                     {% endfor %}
-                    <td>
-                        {% firstof object.created_at|date:"d:m:Y H:i" object.date_joined|date:"d:m:Y H:i" %}
-                    </td>
                     <td>
                         <div>
                             <a class="link-info link-offset-2 link-underline-opacity-0
                                 link-underline-opacity-100-hover"
-                               href="{% url url_to_update object.id %}">{% translate "Change" %}</a>
+                               href="{% url form.url_to_update object.id %}">{% translate "Change" %}</a>
                         </div>
                         <div>
                             <a class="link-danger link-offset-2 link-underline-opacity-0
                                  link-underline-opacity-100-hover"
-                               href="{% url url_to_delete object.id %}">{% translate "Delete" %} </a>
+                               href="{% url form.url_to_delete object.id %}">{% translate "Delete" %} </a>
                         </div>
                     </td>
                 </tr>

@@ -11,7 +11,7 @@ from tests.factories.statuses import StatusModelFactory
 from tests.fixtures.forms.status import status_form_data  # noqa: F401
 from tests.fixtures.login_decorator import login_user
 
-from task_manager.tasks.models import Status
+from task_manager.statuses.models import Status
 
 
 def test_get_statuses_without_login(client):
@@ -47,7 +47,7 @@ def test_statuses_delete_without_login_and_without_statuses(client):
 @login_user
 @pytest.mark.django_db
 def test_list_status(
-        client,
+    client,
 ):
     status = StatusModelFactory.create()
     response = client.get("/statuses/")
@@ -59,8 +59,8 @@ def test_list_status(
 @login_user
 @pytest.mark.django_db
 def test_status_update_with_login(
-        client,
-        status_form_data: dict,  # noqa: F811
+    client,
+    status_form_data: dict,  # noqa: F811
 ):
     status = StatusModelFactory.create()
     response = client.post(
@@ -78,7 +78,7 @@ def test_status_update_with_login(
 @login_user
 @pytest.mark.django_db
 def test_status_delete_with_login(
-        client,
+    client,
 ):
     status = StatusModelFactory.create()
     response = client.post(
@@ -95,8 +95,8 @@ def test_status_delete_with_login(
 @login_user
 @pytest.mark.django_db
 def test_create_status(
-        client,
-        status_form_data: dict,  # noqa: F811
+    client,
+    status_form_data: dict,  # noqa: F811
 ):
     response = client.post(reverse("status_create"), data=status_form_data)
 

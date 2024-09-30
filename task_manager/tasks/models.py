@@ -17,7 +17,7 @@ class Task(BaseTimedModel):
         null=True,
     )
     status = models.ForeignKey(
-        "Status",
+        "statuses.Status",
         on_delete=models.PROTECT,
         verbose_name=_("Status"),
     )
@@ -38,12 +38,11 @@ class Task(BaseTimedModel):
     )
 
     labels = models.ManyToManyField(
-        'Label',
-        through='Membership',
+        "labels.Label",
+        through="Membership",
         verbose_name=_("Labels"),
         blank=True,
         related_name="task_as_label",
-
     )
 
     def __str__(self):
@@ -56,17 +55,17 @@ class Task(BaseTimedModel):
 
 class Membership(models.Model):
     label = models.ForeignKey(
-        'Label',
+        "labels.Label",
         on_delete=models.PROTECT,
         verbose_name=_("Label"),
     )
     task = models.ForeignKey(
-        'Task',
+        "Task",
         on_delete=models.CASCADE,
         verbose_name=_("Task"),
     )
 
     class Meta:
-        db_table = 'task_label_membership'
+        db_table = "task_label_membership"
         verbose_name = "Membership"
         verbose_name_plural = "Memberships"

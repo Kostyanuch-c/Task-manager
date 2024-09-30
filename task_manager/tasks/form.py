@@ -4,11 +4,24 @@ from django.utils.translation import gettext_lazy as _
 
 import django_filters
 
-from task_manager.tasks.models import (
-    Label,
-    Status,
-    Task,
-)
+from task_manager.labels.models import Label
+from task_manager.statuses.models import Status
+from task_manager.tasks.models import Task
+
+
+class TaskListForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.create_button_name = _("Create task")
+        self.url_to_create = "task_create"
+        self.title_list = _("Tasks")
+        self.titles_columns = [
+            _("Name"),
+            _("Status"),
+            _("Author"),
+            _("Executor"),
+        ]
+
+        super().__init__(*args, **kwargs)
 
 
 class TaskForm(forms.ModelForm):
@@ -62,5 +75,6 @@ class TaskFilterForm(django_filters.FilterSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.form.fields["executor"].label_from_instance \
-            = lambda user: user.full_name
+        self.form.fields[
+            "executor"
+        ].label_from_instance = lambda user: user.full_name

@@ -11,7 +11,7 @@ from tests.factories.labels import LabelModelFactory
 from tests.fixtures.forms.labels import label_form_data  # noqa: F401
 from tests.fixtures.login_decorator import login_user
 
-from task_manager.tasks.models import Label
+from task_manager.labels.models import Label
 
 
 def test_get_labels_without_login(client):
@@ -46,7 +46,7 @@ def test_label_delete_without_login_and_without_statuses(client):
 @login_user
 @pytest.mark.django_db
 def test_list_label(
-        client,
+    client,
 ):
     label = LabelModelFactory.create()
     response = client.get("/labels/")
@@ -58,8 +58,8 @@ def test_list_label(
 @login_user
 @pytest.mark.django_db
 def test_create_label(
-        client,
-        label_form_data: dict,  # noqa: F811
+    client,
+    label_form_data: dict,  # noqa: F811
 ):
     response = client.post(reverse("label_create"), data=label_form_data)
 
@@ -73,8 +73,8 @@ def test_create_label(
 @login_user
 @pytest.mark.django_db
 def test_label_update_with_login(
-        client,
-        label_form_data: dict,  # noqa: F811
+    client,
+    label_form_data: dict,  # noqa: F811
 ):
     label = LabelModelFactory.create()
     response = client.post(
@@ -92,7 +92,7 @@ def test_label_update_with_login(
 @login_user
 @pytest.mark.django_db
 def test_label_delete_with_login(
-        client,
+    client,
 ):
     label = LabelModelFactory.create()
     response = client.post(

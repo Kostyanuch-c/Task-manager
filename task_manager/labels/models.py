@@ -7,7 +7,7 @@ from task_manager.common.models import BaseTimedModel
 class Label(BaseTimedModel):
     name = models.CharField(
         max_length=100,
-        verbose_name=_('Name'),
+        verbose_name=_("Name"),
         unique=True,
     )
 
@@ -15,5 +15,5 @@ class Label(BaseTimedModel):
         return self.name
 
     class Meta:
-        verbose_name = 'Label'
-        verbose_name_plural = 'Labels'
+        verbose_name = "Label"
+        verbose_name_plural = "Labels"

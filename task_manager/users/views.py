@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import ProtectedError
 from django.shortcuts import redirect
@@ -13,8 +12,11 @@ from django.views.generic import (
     UpdateView,
 )
 
-from task_manager.common.utils import MessagesLoginRequiredMixin
-from task_manager.users.form import RegisterUserForm
+from task_manager.common.utils import LoginRequiredUserTestMixin
+from task_manager.users.form import (
+    RegisterUserForm,
+    UserListForm,
+)
 
 
 class RegisterUserView(SuccessMessageMixin, CreateView):
@@ -33,19 +35,13 @@ class RegisterUserView(SuccessMessageMixin, CreateView):
 class UsersListView(ListView):
     model = get_user_model()
     template_name = "users/users_list.html"
-    fields = ["username", "full_name"]
     extra_context = {
-        "title_list": _("Users"),
-        "titles_columns": (_("Name user"), _("Full name")),
-        "url_to_update": "update_user",
-        "url_to_delete": "delete_user",
-        "fields": fields,
+        "form": UserListForm,
     }
 
 
 class UserUpdateView(
-    UserPassesTestMixin,
-    MessagesLoginRequiredMixin,
+    LoginRequiredUserTestMixin,
     SuccessMessageMixin,
     UpdateView,
 ):
@@ -54,48 +50,27 @@ class UserUpdateView(
     template_name = "users/user_update_form.html"
     success_url = redirect_failed = reverse_lazy("users_list")
     success_message = _("User successfully changed.")
-    not_permission_message = _(
-        "You do not have permission to change another user.",
-    )
+
     extra_context = {
         "title_form": _("Edit user"),
         "name_button_in_form": _("Update"),
     }
 
-    def get_object(self, queryset=None):
-        if not hasattr(self, "_cached_object"):
-            self._cached_object = super().get_object(queryset)
-        return self._cached_object
-
-    def test_func(self):
-        return self.request.user == self.get_object()
-
 
 class UserDeleteView(
-    UserPassesTestMixin,
-    MessagesLoginRequiredMixin,
+    LoginRequiredUserTestMixin,
     SuccessMessageMixin,
     DeleteView,
 ):
     model = get_user_model()
     success_url = redirect_failed = reverse_lazy("users_list")
     success_message = _("User successfully deleted.")
-    not_permission_message = _(
-        "You do not have permission to change another user.",
-    )
+
     template_name = "users/user_delete.html"
     extra_context = {
         "entity_name": _("user"),
         "object_field": "full_name",
     }
-
-    def get_object(self, queryset=None):
-        if not hasattr(self, "_cached_object"):
-            self._cached_object = super().get_object(queryset)
-        return self._cached_object
-
-    def test_func(self):
-        return self.request.user == self.get_object()
 
     def post(self, request, *args, **kwargs):
         try:

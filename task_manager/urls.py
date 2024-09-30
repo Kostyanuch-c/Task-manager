@@ -24,20 +24,21 @@ from task_manager import (
     settings,
     views,
 )
+from task_manager.views import ErrorView
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.IndexView.as_view(), name="index"),
     path("login/", views.LoginInView.as_view(), name="login"),
-    path("logout/", views.logout_view, name="logout"),
+    path("logout/", views.LogoutsView.as_view(), name="logout"),
     path("users/", include("task_manager.users.urls")),
-    path("statuses/", include("task_manager.tasks.urls.status_urls")),
-    path("tasks/", include("task_manager.tasks.urls.task_urls")),
-    path("labels/", include("task_manager.tasks.urls.label_urls")),
+    path("statuses/", include("task_manager.statuses.urls")),
+    path("tasks/", include("task_manager.tasks.urls")),
+    path("labels/", include("task_manager.labels.urls")),
 ]
 
-handler404 = "task_manager.views.page_not_found_view"
+handler404 = ErrorView.page_not_found
 if settings.DEBUG:
     import debug_toolbar
 

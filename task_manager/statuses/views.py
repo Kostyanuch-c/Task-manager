@@ -12,8 +12,11 @@ from django.views.generic import (
 )
 
 from task_manager.common.utils import MessagesLoginRequiredMixin
-from task_manager.tasks.forms.status_form import StatusForm
-from task_manager.tasks.models import Status
+from task_manager.statuses.form import (
+    StatusForm,
+    StatusListForm,
+)
+from task_manager.statuses.models import Status
 
 
 class StatusListView(MessagesLoginRequiredMixin, ListView):
@@ -21,13 +24,7 @@ class StatusListView(MessagesLoginRequiredMixin, ListView):
     model = Status
 
     extra_context = {
-        "title_list": _("Statuses"),
-        "titles_columns": (_("Name"),),
-        "create_button_name": _("Create status"),
-        "url_to_create": "status_create",
-        "url_to_update": "status_update",
-        "url_to_delete": "status_delete",
-        "fields": ("name",),
+        "form": StatusListForm,
     }
 
 

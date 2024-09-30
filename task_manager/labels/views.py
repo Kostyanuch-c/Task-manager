@@ -16,21 +16,18 @@ from django.views.generic import (
 )
 
 from task_manager.common.utils import MessagesLoginRequiredMixin
-from task_manager.tasks.forms.label_form import LabelForm
-from task_manager.tasks.models import Label
+from task_manager.labels.form import (
+    LabelForm,
+    LabelListForm,
+)
+from task_manager.labels.models import Label
 
 
 class LabelListView(MessagesLoginRequiredMixin, ListView):
     template_name = "tasks/labels/label_list.html"
     model = Label
     extra_context = {
-        "title_list": _("Labels"),
-        "titles_columns": (_("Name"),),
-        "create_button_name": _("Create label"),
-        "url_to_create": "label_create",
-        "url_to_update": "label_update",
-        "url_to_delete": "label_delete",
-        "fields": ("name",),
+        "form": LabelListForm,
     }
 
 
