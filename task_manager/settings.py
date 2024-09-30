@@ -144,6 +144,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SHELL_PLUS_PRINT_SQL = True
 
 LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = "login"
 LOGOUT_URL = "index"
 

@@ -23,12 +23,12 @@ from task_manager.tasks.models import Task
 
 
 class TaskDetailView(MessagesLoginRequiredMixin, DetailView):
-    template_name = "tasks/task_templates/task_detail.html"
+    template_name = "tasks/task_detail.html"
     model = Task
 
 
 class TaskListView(MessagesLoginRequiredMixin, FilterView):
-    template_name = "tasks/task_templates/task_list.html"
+    template_name = "tasks/task_list.html"
     model = Task
     filterset_class = TaskFilterForm
     extra_context = {
@@ -41,7 +41,7 @@ class TaskCreateView(
     SuccessMessageMixin,
     CreateView,
 ):
-    template_name = "tasks/task_templates/task_create.html"
+    template_name = "tasks/task_create.html"
     form_class = TaskForm
     model = Task
     success_url = reverse_lazy("task_list")
@@ -62,7 +62,7 @@ class TaskUpdateView(
     SuccessMessageMixin,
     UpdateView,
 ):
-    template_name = "tasks/task_templates/task_update.html"
+    template_name = "tasks/task_update.html"
     form_class = TaskForm
     model = Task
     success_url = reverse_lazy("task_list")
@@ -80,7 +80,7 @@ class TaskDeleteView(
     DeleteView,
 ):
     model = Task
-    template_name = "tasks/task_templates/task_delete.html"
+    template_name = "tasks/task_delete.html"
     success_message = _("Task successfully deleted")
 
     success_url = redirect_failed = reverse_lazy("task_list")

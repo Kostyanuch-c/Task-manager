@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import (
     LoginView,
@@ -7,7 +8,6 @@ from django.contrib.auth.views import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.utils.translation.trans_real import gettext as _
 from django.views.generic import TemplateView
 
@@ -22,9 +22,12 @@ class LoginInView(SuccessMessageMixin, LoginView):
     success_message = _("You have been logged in.")
 
 
-class LogoutsView(SuccessMessageMixin, LogoutView):
+class LogoutsView(LogoutView):
     success_message = _("You have been logged out.")
-    next_page = reverse_lazy("index")
+
+    def dispatch(self, request, *args, **kwargs):
+        messages.success(request, self.success_message)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ErrorView:

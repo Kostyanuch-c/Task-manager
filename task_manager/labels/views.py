@@ -24,7 +24,7 @@ from task_manager.labels.models import Label
 
 
 class LabelListView(MessagesLoginRequiredMixin, ListView):
-    template_name = "tasks/labels/label_list.html"
+    template_name = "tasks/../templates/labels/label_list.html"
     model = Label
     extra_context = {
         "form": LabelListForm,
@@ -36,7 +36,7 @@ class LabelCreateView(
     SuccessMessageMixin,
     CreateView,
 ):
-    template_name = "tasks/labels/label_create.html"
+    template_name = "tasks/../templates/labels/label_create.html"
     form_class = LabelForm
     model = Label
     success_url = reverse_lazy("label_list")
@@ -53,7 +53,7 @@ class LabelUpdateView(
     SuccessMessageMixin,
     UpdateView,
 ):
-    template_name = "tasks/labels/label_update.html"
+    template_name = "tasks/../templates/labels/label_update.html"
     form_class = LabelForm
     model = Label
     success_url = reverse_lazy("label_list")
@@ -70,7 +70,7 @@ class LabelDeleteView(
     SuccessMessageMixin,
     DeleteView,
 ):
-    template_name = "tasks/labels/label_delete.html"
+    template_name = "tasks/../templates/labels/label_delete.html"
     success_message = _("Label successfully deleted.")
     success_url = reverse_lazy("label_list")
     model = Label
