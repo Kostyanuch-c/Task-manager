@@ -39,7 +39,7 @@ class Task(BaseTimedModel):
 
     labels = models.ManyToManyField(
         "labels.Label",
-        through="Membership",
+        through="TaskLabels",
         verbose_name=_("Labels"),
         blank=True,
         related_name="task_as_label",
@@ -53,7 +53,7 @@ class Task(BaseTimedModel):
         verbose_name_plural = "Tasks"
 
 
-class Membership(models.Model):
+class TaskLabels(models.Model):
     label = models.ForeignKey(
         "labels.Label",
         on_delete=models.PROTECT,
@@ -67,5 +67,5 @@ class Membership(models.Model):
 
     class Meta:
         db_table = "task_label_membership"
-        verbose_name = "Membership"
-        verbose_name_plural = "Memberships"
+        verbose_name = "task_label_membership"
+        verbose_name_plural = "task_label_memberships"

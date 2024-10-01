@@ -12,7 +12,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from task_manager.common.utils import LoginRequiredUserTestMixin
+from task_manager.common.mixin import LoginRequiredUserTestMixin
 from task_manager.users.form import (
     RegisterUserForm,
     UserListForm,

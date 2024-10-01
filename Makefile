@@ -13,7 +13,7 @@ build:
 create_migrations:
 	@$(MANAGE) makemigrations
 
-.PHONY: create_migrations migrate
+.PHONY: migrate
 migrate:
 	@$(MANAGE) migrate
 

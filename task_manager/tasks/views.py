@@ -10,12 +10,12 @@ from django.views.generic import (
 
 from django_filters.views import FilterView
 
-from task_manager.common.utils import (
+from task_manager.common.mixin import (
     LoginRequiredTaskTestMixin,
     MessagesLoginRequiredMixin,
 )
+from task_manager.tasks.filters import TaskFilterForm
 from task_manager.tasks.form import (
-    TaskFilterForm,
     TaskForm,
     TaskListForm,
 )

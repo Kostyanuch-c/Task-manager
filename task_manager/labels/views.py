@@ -15,7 +15,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from task_manager.common.utils import MessagesLoginRequiredMixin
+from task_manager.common.mixin import MessagesLoginRequiredMixin
 from task_manager.labels.form import (
     LabelForm,
     LabelListForm,
