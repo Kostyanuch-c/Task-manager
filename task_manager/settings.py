@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "django_bootstrap5",
-    "debug_toolbar",
     "django_filters",
     "task_manager.users",
     "task_manager.statuses",

@@ -20,10 +20,7 @@ from django.urls import (
     path,
 )
 
-from task_manager import (
-    settings,
-    views,
-)
+from task_manager import views
 from task_manager.views import ErrorView
 
 
@@ -39,9 +36,3 @@ urlpatterns = [
 ]
 
 handler404 = ErrorView.page_not_found
-if settings.DEBUG:
-    import debug_toolbar
-
-    urlpatterns = [
-        path("__debug__/", include(debug_toolbar.urls)),  # noqa
-    ] + urlpatterns  # noqa
